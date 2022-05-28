@@ -1,0 +1,3 @@
+[submodule "private-flake"]
+	path = private-flake
+	url = git@github.com:Francesco149/private-flake
