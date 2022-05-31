@@ -120,6 +120,10 @@
                    :major-modes '(nix-mode)
                    :server-id 'nix))
 
+;; nix-direnv integration
+(require 'direnv)
+(direnv-mode)
+
 ;; company: fancy auto complete
 (require 'company)
 (setq company-idle-delay 0)

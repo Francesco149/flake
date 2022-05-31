@@ -26,6 +26,7 @@ let
       general # makes it easier to customize keybindings
       hydra # creates a prompt with timeout with its own keybinds
       tree-sitter tree-sitter-langs # way faster syntax gl than emacs' built in
+      direnv # integrate nix-direnv into emacs
     ] ++ (with pkgs; with pythonPackages; [
       go
       jedi-language-server
@@ -75,6 +76,8 @@ in with config; {
   home.sessionVariables = {
     EDITOR="vim";
   };
+  programs.direnv.enable = true;
+  programs.direnv.nix-direnv.enable = true;
   programs.bash = {
     enable = true;
     shellAliases = {
