@@ -130,11 +130,7 @@
 (require 'company)
 (setq company-idle-delay 0)
 (setq company-minimum-prefix-length 1)
-(add-hook 'prog-mode #'company-mode)
-
-;; I don't really understand why, but in some langs company-mode is not on
-;; through the prog-mode hook, so I have to hook it specifically
-(add-hook 'emacs-lisp-mode #'company-mode)
+(global-company-mode)
 
 ;; ccls: c/c++ auto complete
 (require 'ccls)
