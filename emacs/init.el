@@ -123,6 +123,8 @@
 ;; nix-direnv integration
 (require 'direnv)
 (direnv-mode)
+(setq direnv-always-show-summary nil)
+(setq direnv-use-faces-in-summary nil)
 
 ;; company: fancy auto complete
 (require 'company)
