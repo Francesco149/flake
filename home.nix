@@ -27,20 +27,14 @@ let
       hydra # creates a prompt with timeout with its own keybinds
       tree-sitter tree-sitter-langs # way faster syntax gl than emacs' built in
       direnv # integrate nix-direnv into emacs
-    ] ++ (with pkgs; with pythonPackages; [
-      go
-      jedi-language-server
-      gopls
-      ccls
-      rnix-lsp
-    ]))
+    ])
   );
   menuProg = "dmenu";
 in with config; {
   home.username = "${user}";
   home.homeDirectory = "/home/${user}";
   home.stateVersion = "22.05";
-  home.packages = with pkgs; [
+  home.packages = with pkgs; with pythonPackages; [
     curl
     wget
     htop
@@ -72,6 +66,13 @@ in with config; {
     obs-studio
     simplescreenrecorder
     screenkey
+
+    # TODO: would be nice to find a way to have these isolated in the custom
+    # emacs instead of home-wide
+    jedi-language-server
+    gopls
+    ccls
+    rnix-lsp
   ];
   home.sessionVariables = {
     EDITOR="vim";
