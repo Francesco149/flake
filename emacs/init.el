@@ -120,6 +120,11 @@
                    :major-modes '(nix-mode)
                    :server-id 'nix))
 
+;; python
+(require 'lsp-jedi)
+(add-to-list 'lsp-disabled-clients 'pyls)
+(add-to-list 'lsp-enabled-clients 'jedi)
+
 ;; nix-direnv integration
 (require 'direnv)
 (direnv-mode)
