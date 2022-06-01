@@ -114,11 +114,13 @@
 ;; nix
 (require 'nix-mode)
 (add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
+(add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
 
 (lsp-register-client
   (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
-                   :major-modes '(nix-mode)
+                   :activation-fn (lsp-activate-on "nix")
                    :server-id 'nix))
+(add-to-list 'lsp-enabled-clients 'nix)
 
 ;; python
 (require 'lsp-jedi)
