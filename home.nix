@@ -10,24 +10,24 @@ let
       });
       emacsCustom = (pkgs.emacsPackagesFor emacsBuild).emacsWithPackages;
     in
-    emacsCustom (epkgs: with epkgs; [
-      undo-tree
-      sudo-edit
-      nix-mode
-      go-mode
-      magit
-      smex # ido-like completion for M-x
-      which-key # display all possible command completions
-      ido-vertical-mode # makes ido fuzzy search display results vertically
-      nlinum-relative # relative line number
-      company lsp-mode lsp-jedi ccls # auto complete
-      evil # vim-like keybindings
-      evil-collection # pre-configured evil keybinds for things not covered by core evil
-      general # makes it easier to customize keybindings
-      hydra # creates a prompt with timeout with its own keybinds
-      tree-sitter tree-sitter-langs # way faster syntax gl than emacs' built in
-      direnv # integrate nix-direnv into emacs
-    ])
+      emacsCustom (epkgs: with epkgs; [
+        undo-tree
+        sudo-edit
+        nix-mode
+        go-mode
+        magit
+        smex # ido-like completion for M-x
+        which-key # display all possible command completions
+        ido-vertical-mode # makes ido fuzzy search display results vertically
+        nlinum-relative # relative line number
+        company lsp-mode lsp-jedi ccls # auto complete
+        evil # vim-like keybindings
+        evil-collection # pre-configured evil keybinds for things not covered by core evil
+        general # makes it easier to customize keybindings
+        hydra # creates a prompt with timeout with its own keybinds
+        tree-sitter tree-sitter-langs # way faster syntax gl than emacs' built in
+        direnv # integrate nix-direnv into emacs
+      ])
   );
   menuProg = "dmenu";
 in with config; {
