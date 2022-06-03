@@ -159,6 +159,7 @@
 
 ;; dired settings (file browser)
 (setq dired-listing-switches "-agho --group-directories-first")
+(require 'dired-single) ; single buffer for dired
 
 ;; disable annoying elements
 (tool-bar-mode -1)
@@ -404,8 +405,8 @@
 (define-key evil-insert-state-map (kbd "C-h") #'evil-delete-backward-char-and-join)
 
 (evil-collection-define-key 'normal 'dired-mode-map
-  "h" 'dired-up-directory
-  "l" 'dired-find-file)
+  "h" 'dired-single-up-directory
+  "l" 'dired-single-buffer)
 
 ;; visual mode is when lines that are too long are wrapped and they appear as multiple lines.
 ;; a normal next line command would go to the next real line, but next-visual-line goes to the

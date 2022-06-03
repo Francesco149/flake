@@ -17,6 +17,7 @@ let
         nix-mode
         go-mode
         magit
+        dired-single # single buffer for dired
         vertico # fancy fuzzy completion everywhere
         embark # quick actions on current completion selection
         ace-window # window management utils, also integrates with embark
