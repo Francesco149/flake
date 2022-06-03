@@ -163,6 +163,19 @@ in with config; {
     '';
   };
 
+  programs.gpg = {
+    enable = true;
+    homedir = "${xdg.dataHome}/gnupg";
+    settings.use-agent = true;
+  };
+  home.file."${programs.gpg.homedir}/.keep".text = "";
+  services.gpg-agent = {
+    enable = true;
+    defaultCacheTtl = 31536000;
+    maxCacheTtl = 31536000;
+    pinentryFlavor = "gnome3";
+  };
+
   # NOTE: private config files. comment out or provide your own
   xdg.configFile."gh2md/token".source = ./private-flake/gh2md/token;
 }
