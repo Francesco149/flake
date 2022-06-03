@@ -44,16 +44,28 @@
       });
 
       pxplus-ibm-vga8-bin = let
-        version = "2020-09-15";
         pname = "pxplus-ibm-vga8-bin";
-      in fetchurl {
-        name = "${pname}-${version}";
-        url = "https://github.com/pocketfood/Fontpkg-PxPlus_IBM_VGA8/raw/bf08976574bbaf4c9efb208025c71109a07e259f/PxPlus_IBM_VGA8.ttf";
-        sha256 = "sha256-T6is06C/1w02D9+Y3bQplLSgBWunTZfYfV0XHQJh5NE=";
-        downloadToTemp = true;
-        recursiveHash = true; # ttf fetches in nixpkgs seem to use this, not sure if it's specific to ttf hashing
-        postFetch = ''
-          install -Dm 444 "$downloadedFile" "$out/share/fonts/truetype/${pname}.ttf"
+        bname = "PxPlus_IBM_VGA8";
+        ttfname = "${bname}.ttf";
+        fname = "${bname}.otf";
+      in stdenv.mkDerivation {
+        pname = pname;
+        version = "2022-06-02-r8";
+        src = fetchFromGitHub {
+          owner = "pocketfood";
+          repo = "Fontpkg-PxPlus_IBM_VGA8";
+          rev = "bf08976574bbaf4c9efb208025c71109a07e259f";
+          sha256 = "sha256-WMNqehxLBeo4YC8QrH/UFSh3scvs7oAAPenPhyJ+UVA=";
+        };
+        nativeBuildInputs = [ pkgs.fontforge ];
+        buildPhase = ''
+          runHook preBuild
+          fontforge -lang=py -c "import fontforge; from sys import argv; \
+            f = fontforge.open(argv[1]); f.generate(argv[2]);" "${ttfname}" "${fname}"
+          runHook postBuild
+        '';
+        installPhase = ''
+          install -Dm 444 "${fname}" "$out/share/fonts/truetype/${pname}.otf"
         '';
 
         meta = with lib; {
