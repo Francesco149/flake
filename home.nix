@@ -19,6 +19,7 @@ let
         magit
         vertico # fancy fuzzy completion everywhere
         embark # quick actions on current completion selection
+        ace-window # window management utils, also integrates with embark
         marginalia # extra info in vertico
         which-key # display all possible command completions
         nlinum-relative # relative line number

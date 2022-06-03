@@ -249,6 +249,26 @@
 (global-set-key (kbd "C-;") #'embark-dwim)
 (global-set-key (kbd "C-h B") #'embark-bindings)
 
+;; ace window: window manage utilities, also provides actions to create windows with embark
+(require 'ace-window)
+(setq aw-dispatch-always t)
+(global-set-key (kbd "M-o") #'ace-window)
+
+(eval-when-compile
+  (defmacro loli/embark-ace-action (fn)
+    "ace-window prompt for embark"
+    `(defun ,(intern (concat "loli/embark-ace-" (symbol-name fn))) ()
+       (interactive)
+       (with-demoted-errors "%s"
+         (require 'ace-window)
+         (let ((aw-dispatch-always t))
+           (aw-switch-to-window (aw-select nil))
+           (call-interactively (symbol-function ',fn)))))))
+
+(define-key embark-file-map     (kbd "o") (loli/embark-ace-action find-file))
+(define-key embark-buffer-map   (kbd "o") (loli/embark-ace-action switch-to-buffer))
+(define-key embark-bookmark-map (kbd "o") (loli/embark-ace-action bookmark-jump))
+
 ;; which-key: display command completions
 (require 'which-key)
 (which-key-mode)
