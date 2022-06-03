@@ -17,9 +17,9 @@ let
         nix-mode
         go-mode
         magit
-        smex # ido-like completion for M-x
+        vertico # fancy fuzzy completion everywhere
+        marginalia # extra info in vertico
         which-key # display all possible command completions
-        ido-vertical-mode # makes ido fuzzy search display results vertically
         nlinum-relative # relative line number
         company lsp-mode lsp-jedi ccls # auto complete
         evil # vim-like keybindings

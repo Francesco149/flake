@@ -218,22 +218,31 @@
 
 (electric-pair-mode t)
 
-;; ido: fancy fuzzy search everywhere
-(setq ido-enable-flex-matching nil)
-(setq ido-create-new-buffer 'always)
-(setq ido-everywhere t)
-(ido-mode t)
+;; vertico: fancy fuzzy search everywhere
+(require 'vertico)
 
-(require 'ido-vertical-mode)
-(ido-vertical-mode t)
+(defun loli/minibuffer-backward-kill (arg)
+  "when minibuffer is completing a file name delete up to parent folder, otherwise delete a word"
+  (interactive "p")
+  (if minibuffer-completing-file-name
+      ;; borrowed from https://github.com/raxod502/selectrum/issues/498#issuecomment-803283608
+      (if (string-match-p "/." (minibuffer-contents))
+          (zap-up-to-char (- arg) ?/)
+        (delete-minibuffer-contents))
+    (delete-word (- arg))))
 
-(defun loli/ido-keys ()
-  "my ido keybinds"
-  (define-key ido-completion-map (kbd "C-j") #'ido-next-match)
-  (define-key ido-completion-map (kbd "C-k") #'ido-prev-match))
+(define-key vertico-map (kbd "C-j") #'vertico-next)
+(define-key vertico-map (kbd "C-k") #'vertico-previous)
+(define-key vertico-map (kbd "M-h") #'loli/minibuffer-backward-kill)
+(setq vertico-cycle t)
+(vertico-mode)
 
-(add-hook 'ido-setup-hook #'loli/ido-keys)
-(global-set-key (kbd "C-x C-b") #'ido-switch-buffer)
+(require 'savehist)
+(savehist-mode)
+
+(require 'marginalia)
+(setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
+(marginalia-mode)
 
 ;; which-key: display command completions
 (require 'which-key)
