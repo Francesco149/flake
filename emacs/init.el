@@ -29,6 +29,8 @@
   '(org-tag ((t (:inherit (shadow fixed-pitch) :weight bold :height 0.8))))
   '(org-verbatim ((t (:inherit (shadow fixed-pitch))))))
 
+(set-variable 'frame-background-mode 'dark)
+
 (defun loli/font-setup ()
   "font settings that need fonts to be loaded"
 
