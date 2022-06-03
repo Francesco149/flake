@@ -151,6 +151,8 @@
 
 (load-theme 'xterm t)
 
+;; undo-tree: remember multiple undo/redo paths and navigate them as a tree
+(require 'undo-tree)
 (global-undo-tree-mode)
 (setq undo-tree-auto-save-history t)
 (setq undo-tree-enable-undo-in-region nil)
