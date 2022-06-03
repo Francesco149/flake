@@ -325,7 +325,7 @@
   :prefix "SPC"
   :global-prefix "C-SPC")
 
-;; evil mode: sorry, I just cannot get used to emacs keybinds
+;; evil mode: vim keybinds because emacs keybinds are wack
 
 (setq evil-want-integration t)
 (setq evil-want-keybinding nil)
