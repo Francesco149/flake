@@ -157,6 +157,9 @@
 (setq undo-tree-auto-save-history t)
 (setq undo-tree-enable-undo-in-region nil)
 
+;; dired settings (file browser)
+(setq dired-listing-switches "-agho --group-directories-first")
+
 ;; disable annoying elements
 (tool-bar-mode -1)
 (menu-bar-mode -1)
