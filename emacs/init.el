@@ -151,6 +151,8 @@
 
 (global-undo-tree-mode)
 (setq undo-tree-auto-save-history t)
+(setq undo-tree-enable-undo-in-region nil)
+(evil-set-undo-system 'undo-tree)
 
 ;; disable annoying elements
 (tool-bar-mode -1)
