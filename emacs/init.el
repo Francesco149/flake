@@ -154,7 +154,6 @@
 (global-undo-tree-mode)
 (setq undo-tree-auto-save-history t)
 (setq undo-tree-enable-undo-in-region nil)
-(evil-set-undo-system 'undo-tree)
 
 ;; disable annoying elements
 (tool-bar-mode -1)
@@ -322,7 +321,6 @@
 
 ;; general: easier way to set up prefixed keybinds
 (require 'general)
-(general-evil-setup t)
 
 (general-create-definer loli/leader-keys
   :keymaps '(normal insert visual emacs)
@@ -356,6 +354,9 @@
 
 (require 'evil-collection)
 (evil-collection-init)
+
+(general-evil-setup t)
+(evil-set-undo-system 'undo-tree)
 
 ;; ctrl-h is backspace, saves some hand movement
 (define-key evil-insert-state-map (kbd "C-h") #'evil-delete-backward-char-and-join)
