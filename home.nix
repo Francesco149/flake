@@ -39,7 +39,7 @@ in with config; {
   home.username = "${user}";
   home.homeDirectory = "/home/${user}";
   home.stateVersion = "22.05";
-  home.packages = with pkgs; with pythonPackages; [
+  home.packages = (with pkgs; [
     curl
     wget
     htop
@@ -79,11 +79,12 @@ in with config; {
 
     # TODO: would be nice to find a way to have these isolated in the custom
     # emacs instead of home-wide
-    jedi-language-server
     gopls
     ccls
     rnix-lsp
-  ];
+  ]) ++ (with pythonPackages; [
+    jedi-language-server
+  ]);
   home.sessionVariables = {
     EDITOR="vim";
   };
