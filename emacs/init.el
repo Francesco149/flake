@@ -398,6 +398,10 @@
 ;; ctrl-h is backspace, saves some hand movement
 (define-key evil-insert-state-map (kbd "C-h") #'evil-delete-backward-char-and-join)
 
+(evil-collection-define-key 'normal 'dired-mode-map
+  "h" 'dired-up-directory
+  "l" 'dired-find-file)
+
 ;; visual mode is when lines that are too long are wrapped and they appear as multiple lines.
 ;; a normal next line command would go to the next real line, but next-visual-line goes to the
 ;; next apparent line, so that you can move between lines of a huge wrapped line
