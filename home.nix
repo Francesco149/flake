@@ -11,6 +11,7 @@ let
       emacsCustom = (pkgs.emacsPackagesFor emacsBuild).emacsWithPackages;
     in
       emacsCustom (epkgs: with epkgs; [
+        org org-superstar
         undo-tree
         sudo-edit
         nix-mode
