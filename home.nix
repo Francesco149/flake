@@ -51,6 +51,10 @@ in with config; {
 
     pxplus-ibm-vga8-bin
     unifont
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-emoji
+    noto-fonts-extra
 
     pinentry-gnome
     gnome3.gnome-tweaks
