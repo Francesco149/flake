@@ -18,6 +18,7 @@ let
         go-mode
         magit
         vertico # fancy fuzzy completion everywhere
+        embark # quick actions on current completion selection
         marginalia # extra info in vertico
         which-key # display all possible command completions
         nlinum-relative # relative line number

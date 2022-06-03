@@ -244,6 +244,11 @@
 (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
 (marginalia-mode)
 
+(require 'embark)
+(global-set-key (kbd "C-.") #'embark-act)
+(global-set-key (kbd "C-;") #'embark-dwim)
+(global-set-key (kbd "C-h B") #'embark-bindings)
+
 ;; which-key: display command completions
 (require 'which-key)
 (which-key-mode)
