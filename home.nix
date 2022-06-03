@@ -18,6 +18,7 @@ let
         go-mode
         magit
         dired-single # single buffer for dired
+        all-the-icons-dired
         vertico # fancy fuzzy completion everywhere
         embark # quick actions on current completion selection
         ace-window # window management utils, also integrates with embark
@@ -58,6 +59,7 @@ in with config; {
     noto-fonts-cjk-sans
     noto-fonts-emoji
     noto-fonts-extra
+    emacs-all-the-icons-fonts
 
     pinentry-gnome
     gnome3.gnome-tweaks

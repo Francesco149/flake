@@ -160,6 +160,8 @@
 ;; dired settings (file browser)
 (setq dired-listing-switches "-agho --group-directories-first")
 (require 'dired-single) ; single buffer for dired
+(require 'all-the-icons-dired)
+(add-hook 'dired-mode-hook #'all-the-icons-dired-mode)
 
 ;; disable annoying elements
 (tool-bar-mode -1)
