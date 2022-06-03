@@ -237,13 +237,16 @@
 (setq vertico-cycle t)
 (vertico-mode)
 
+;; savehist: save minibuffer history and optionally other things
 (require 'savehist)
 (savehist-mode)
 
+;; marginalia: provides extra info in vertico
 (require 'marginalia)
 (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
 (marginalia-mode)
 
+;; embark: provides a hotkey to perform actions everywhere
 (require 'embark)
 (global-set-key (kbd "C-.") #'embark-act)
 (global-set-key (kbd "C-;") #'embark-dwim)
