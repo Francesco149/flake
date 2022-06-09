@@ -559,6 +559,17 @@ requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)
 
 (defun loli/exwm-manage-finish ()
   "called when a new window is captured by exwm"
+
+  ;; temporary hack: when telegram opens a fullscreen image/video viewer,
+  ;; it freezes exwm for a moment and causes errors due to the window being
+  ;; dedicated. I have no idea how to handle this at the moment.
+  ;; the undedicated window is buggy as it's trying to be fullscreen.
+  ;; TODO: find a way to force the window to be within the emacs window
+  (pcase exwm-class-name
+    ("TelegramDesktop"
+     (when (window-dedicated-p)
+       (set-window-dedicated-p (selected-window) nil))))
+
   (pcase exwm-class-name
     ((loli/exwm-pin-to-window-any-of 5 "browser-side" "chatterino"))
     ((loli/exwm-pin-to-workspace-any-of 1 "browser-default"))
