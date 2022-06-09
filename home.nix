@@ -49,6 +49,7 @@ in with config; {
     bpytop
     tokei
     pass
+    xclip # required for pass show -c, also useful in general
     git
     fusee-launcher
     mpv
