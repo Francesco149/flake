@@ -180,7 +180,9 @@ in with config; {
     homedir = "${xdg.dataHome}/gnupg";
     settings.use-agent = true;
   };
+
   home.file."${programs.gpg.homedir}/.keep".text = "";
+
   services.gpg-agent = {
     enable = true;
     defaultCacheTtl = 31536000;
