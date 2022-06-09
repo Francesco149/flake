@@ -172,6 +172,23 @@
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
+  # bluetooth
+  hardware.bluetooth = {
+    enable = true;
+
+    # TODO: is this still doing anything?
+    settings = {
+      General = {
+        Enable = "Source,Sink,Media,Socket";
+      };
+    };
+  };
+
+  services.blueman.enable = true;
+
+  # TODO: check if this is actually required for bluetooth
+  hardware.pulseaudio.package = pkgs.pulseaudioFull;
+
   services.xserver = {
     enable = true;
     layout = "us";
