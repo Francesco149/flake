@@ -38,15 +38,12 @@
   "font settings that need fonts to be loaded"
 
   ;; disable all bold fonts for my coding font
-  (mapc
-    (lambda (face)
-      (when (string-match ".*PxPlus.*" (face-font face)) (set-face-attribute face nil :weight 'normal)))
-    (face-list))
+  (mapc (lambda (face)
+          (when (string-match ".*PxPlus.*" (face-font face)) (set-face-attribute face nil :weight 'normal)))
+   (face-list))
 
   ;; TODO: somehow the above also affects org mode variable pitch font for some reason. WHY?
-  (custom-theme-set-faces
-    'user
-    '(bold ((t (:weight bold)))))
+  (custom-theme-set-faces 'user '(bold ((t (:weight bold)))))
 
   (set-fontset-font "fontset-default" 'adlam "Noto Sans Adlam")
   (set-fontset-font "fontset-default" 'anatolian "Noto Sans Anatolian Hieroglyphs")
