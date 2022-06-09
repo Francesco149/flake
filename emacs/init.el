@@ -287,6 +287,11 @@
 (require 'which-key)
 (which-key-mode)
 
+;; consult
+;; fancier buffer switching with preview
+(require 'consult)
+(global-set-key (kbd "C-x b") #'consult-buffer)
+
 ;; tree-sitter
 ;; emacs' built-in font-lock is ridiculously slow and choppy when scrolling through lines quickly.
 ;; if syntax highlighting is not available with tree-sitter, we just don't use it because that

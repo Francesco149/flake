@@ -33,6 +33,7 @@ let
         hydra # creates a prompt with timeout with its own keybinds
         tree-sitter tree-sitter-langs # way faster syntax gl than emacs' built in
         direnv # integrate nix-direnv into emacs
+        consult # fancy buffer switching
       ])
   );
   menuProg = "dmenu";
