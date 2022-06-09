@@ -129,7 +129,6 @@ in with config; {
         `((".*" "${xdg.dataHome}/emacs/backup//" t)))
       (setq undo-tree-history-directory-alist '(("." . "${xdg.dataHome}/emacs/undo")))
 
-      ;; polkit agent
       (setq loli/polkit-agent-command "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1")
     '';
 
