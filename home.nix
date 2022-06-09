@@ -71,7 +71,6 @@ in with config; {
     gnomeExtensions.appindicator
     gnomeExtensions.color-picker
 
-    barrier
     alacritty
     librewolf
     tdesktop
@@ -133,7 +132,12 @@ in with config; {
   };
 
   services.emacs.package = emacs-custom;
-  services.emacs.enable = true;
+
+  services.barrier.client = {
+    enable = true;
+    server = "192.168.1.202";
+    enableDragDrop = true;
+  };
 
   programs.vim = {
     enable = true;
@@ -150,7 +154,6 @@ in with config; {
     extraConfig = builtins.readFile ./vim/init.vim;
   };
   xsession.initExtra = ''
-    barrier &
     chatterino7 &
     tdesktop &
     librewolf &
