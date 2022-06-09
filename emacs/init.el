@@ -512,8 +512,9 @@
   "pins the current exwm window to workspace, window.
 requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)"
   (let ( (buf (current-buffer)) )
-    (set-window-buffer window buf)
-    (message "pinned %s to workspace %d %s" buf workspace window)))
+    (unless (window-dedicated-p window)
+      (set-window-buffer window buf)
+      (message "pinned %s to workspace %d %s" buf workspace window))))
 
 ;; NOTE: these are pcase macros, so they must return non-nil to signal the the expr matched.
 ;;       this is basically a hacky way to execute code when the expr matches within a pcase
