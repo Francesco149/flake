@@ -272,6 +272,8 @@
 ;; ace window: window manage utilities, also provides actions to create windows with embark
 (require 'ace-window)
 (setq aw-dispatch-always t)
+(setq aw-scope 'frame) ; only choose windows within this frame
+(setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
 (global-set-key (kbd "M-o") #'ace-window)
 
 (eval-when-compile
