@@ -163,6 +163,9 @@
 (require 'all-the-icons-dired)
 (add-hook 'dired-mode-hook #'all-the-icons-dired-mode)
 
+(require 'dired-hide-dotfiles)
+(add-hook 'dired-mode-hook #'dired-hide-dotfiles-mode)
+
 ;; disable annoying elements
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -408,7 +411,8 @@
 
 (evil-collection-define-key 'normal 'dired-mode-map
   "h" 'dired-single-up-directory
-  "l" 'dired-single-buffer)
+  "l" 'dired-single-buffer
+  "H" 'dired-hide-dotfiles-mode)
 
 ;; visual mode is when lines that are too long are wrapped and they appear as multiple lines.
 ;; a normal next line command would go to the next real line, but next-visual-line goes to the

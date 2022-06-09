@@ -19,6 +19,7 @@ let
         magit
         dired-single # single buffer for dired
         all-the-icons-dired
+        dired-hide-dotfiles
         vertico # fancy fuzzy completion everywhere
         embark # quick actions on current completion selection
         ace-window # window management utils, also integrates with embark
