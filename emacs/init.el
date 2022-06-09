@@ -313,7 +313,9 @@
 (global-font-lock-mode nil)
 (require 'tree-sitter)
 (require 'tree-sitter-langs)
-(global-tree-sitter-mode)
+
+;; global-tree-sitter-mode causes errors with exwm buffers. let's just do prog-mode
+(add-hook 'prog-mode-hook #'turn-on-tree-sitter-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
 ;; lsp: language server
