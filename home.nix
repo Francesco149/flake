@@ -136,8 +136,6 @@ in with config; {
     "git/config".source = ./git/gitconfig;
   };
 
-  services.emacs.package = emacs-custom;
-
   services.barrier.client = {
     enable = true;
     server = "192.168.1.202";
