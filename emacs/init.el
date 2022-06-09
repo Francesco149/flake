@@ -335,9 +335,9 @@
 (add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
 
 (lsp-register-client
-  (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
-                   :activation-fn (lsp-activate-on "nix")
-                   :server-id 'nix))
+ (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
+                  :activation-fn (lsp-activate-on "nix")
+                  :server-id 'nix))
 (add-to-list 'lsp-enabled-clients 'nix)
 
 ;; python
