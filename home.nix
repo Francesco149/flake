@@ -79,6 +79,7 @@ in with config; {
     obs-studio
     simplescreenrecorder
     screenkey
+    pavucontrol
 
     # TODO: would be nice to find a way to have these isolated in the custom
     # emacs instead of home-wide
