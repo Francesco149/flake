@@ -142,6 +142,8 @@ in with config; {
     enableDragDrop = true;
   };
 
+  services.blueman-applet.enable = true;
+
   programs.vim = {
     enable = true;
     plugins = with pkgs.vimPlugins; [ vim-nix ];
