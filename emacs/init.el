@@ -291,6 +291,11 @@
 (define-key embark-buffer-map   (kbd "o") (loli/embark-ace-action switch-to-buffer))
 (define-key embark-bookmark-map (kbd "o") (loli/embark-ace-action bookmark-jump))
 
+;; avy: qutebrowser-like movement hints
+(require 'avy)
+(global-set-key (kbd "C-,") #'avy-goto-char)
+(global-set-key (kbd "C-/") #'avy-goto-char-2)
+
 ;; which-key: display command completions
 (require 'which-key)
 (which-key-mode)

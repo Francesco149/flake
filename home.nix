@@ -34,6 +34,7 @@ let
         tree-sitter tree-sitter-langs # way faster syntax gl than emacs' built in
         direnv # integrate nix-direnv into emacs
         consult # fancy buffer switching
+        avy # fancy jump to char
       ])
   );
   menuProg = "dmenu";
