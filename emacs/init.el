@@ -246,6 +246,12 @@
 (define-key vertico-map (kbd "C-k") #'vertico-previous)
 (define-key vertico-map (kbd "M-h") #'loli/minibuffer-backward-kill)
 (setq vertico-cycle t)
+
+(setq completion-styles '(basic substring partial-completion flex)
+      read-file-name-completion-ignore-case t
+      read-buffer-completion-ignore-case t
+      completion-ignore-case t)
+
 (vertico-mode)
 
 ;; savehist: save minibuffer history and optionally other things
