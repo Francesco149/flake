@@ -440,6 +440,10 @@
 (evil-set-initial-state 'messages-buffer-mode 'normal)
 (evil-set-initial-state 'dashboard-mode 'normal)
 
+;; I don't want :q to close emacs entirely, it should just kill the buffer
+(evil-ex-define-cmd "q" 'kill-this-buffer)
+(evil-ex-define-cmd "quit" 'evil-quit)
+
 ;; hydra lets you create custom prompts with their own keybinds and a timeout
 (require 'hydra)
 (defhydra loli/text-scale ()
