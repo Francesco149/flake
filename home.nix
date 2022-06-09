@@ -33,6 +33,7 @@ let
         hydra # creates a prompt with timeout with its own keybinds
         tree-sitter tree-sitter-langs # way faster syntax gl than emacs' built in
         direnv # integrate nix-direnv into emacs
+        exwm # emacs as a window manager
         consult # fancy buffer switching
         avy # fancy jump to char
       ])
@@ -56,6 +57,7 @@ in with config; {
     dmenu
     v4l-utils
     gh2md
+    autorandr # save and detect xrandr configurations automatically
 
     pxplus-ibm-vga8-bin
     unifont
@@ -66,10 +68,9 @@ in with config; {
     emacs-all-the-icons-fonts
 
     pinentry-gnome
-    gnome3.gnome-tweaks
-    gnome3.gnome-settings-daemon
-    gnomeExtensions.appindicator
-    gnomeExtensions.color-picker
+    gcr # required for pinentry-gnome?
+    polkit_gnome
+    gnome3.nautilus
 
     alacritty
     librewolf
@@ -127,6 +128,9 @@ in with config; {
       (setq auto-save-file-name-transforms
         `((".*" "${xdg.dataHome}/emacs/backup//" t)))
       (setq undo-tree-history-directory-alist '(("." . "${xdg.dataHome}/emacs/undo")))
+
+      ;; polkit agent
+      (setq loli/polkit-agent-command "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1")
     '';
 
     "git/config".source = ./git/gitconfig;
@@ -154,11 +158,13 @@ in with config; {
     };
     extraConfig = builtins.readFile ./vim/init.vim;
   };
-  xsession.initExtra = ''
-    chatterino7 &
-    tdesktop &
-    librewolf &
-  '';
+  xsession = {
+    enable = true;
+    windowManager.command = ''
+      exec ${emacs-custom}/bin/emacs --debug-init -mm
+    '';
+  };
+  xsession.scriptPath = ".hm-xsession";
   xresources.properties = {
     "*xterm*faceName" = "PxPlus IBM VGA8";
     "*xterm*faceNameDoublesize" = "Unifont";
@@ -189,6 +195,8 @@ in with config; {
     maxCacheTtl = 31536000;
     pinentryFlavor = "gnome3";
   };
+
+  services.gnome-keyring.enable = true;
 
   # NOTE: private config files. comment out or provide your own
   xdg.configFile."gh2md/token".source = ./private-flake/gh2md/token;
