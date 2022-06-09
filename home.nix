@@ -51,6 +51,7 @@ in with config; {
     tokei
     pass
     xclip # required for pass show -c, also useful in general
+    clipit # clipboard manager, to hold onto copied stuff when programs terminate
     git
     fusee-launcher
     mpv
@@ -142,6 +143,11 @@ in with config; {
   };
 
   services.blueman-applet.enable = true;
+
+  services.parcellite = {
+    enable = true;
+    package = pkgs.clipit;
+  };
 
   programs.vim = {
     enable = true;
