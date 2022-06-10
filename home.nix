@@ -1,4 +1,4 @@
-{ config, pkgs, user, ... }:
+{ config, pkgs, user, nur, ... }:
 
 let
   pythonPackages = pkgs.python39Packages; # adjust python version here as needed
@@ -207,6 +207,47 @@ in with config; {
   };
 
   services.gnome-keyring.enable = true;
+
+  xdg.mimeApps.defaultApplications = {
+    "x-scheme-handler/http" = "librewolf.desktop";
+    "x-scheme-handler/https" = "librewolf.desktop";
+    "text/html" = "librewolf.desktop";
+    "application/x-extension-htm" = "librewolf.desktop";
+    "application/x-extension-html" = "librewolf.desktop";
+    "application/x-extension-shtml" = "librewolf.desktop";
+    "application/xhtml+xml" = "librewolf.desktop";
+    "application/x-extension-xhtml" = "librewolf.desktop";
+    "application/x-extension-xht" = "librewolf.desktop";
+  };
+
+  home.sessionVariables.DEFAULT_BROWSER = "${pkgs.librewolf}/bin/librewolf";
+
+  programs.firefox = {
+    enable = true;
+    package = pkgs.librewolf;
+
+    extensions = (with nur.repos.rycee.firefox-addons; [
+      ublock-origin
+      i-dont-care-about-cookies
+      return-youtube-dislikes
+      sponsorblock
+    ]) ++ (with nur.repos.loli.firefox-addons; [
+      image-search-options
+      frankerfacez
+      seventv
+    ]);
+
+    profiles.dom.id = 6969;
+    profiles.dom.settings = {
+      "browser.policies.runOncePerModification.removeSearchEngines" = "";
+      "browser.policies.runOncePerModification.setDefaultSearchEngine" = "Google";
+      "privacy.sanitize.sanitizeOnShutdown" = false;
+    };
+
+    profiles.sub.id = 420420;
+    profiles.sub.isDefault = true;
+    profiles.sub.settings = programs.firefox.profiles.dom.settings;
+  };
 
   # NOTE: private config files. comment out or provide your own
   xdg.configFile."gh2md/token".source = ./private-flake/gh2md/token;

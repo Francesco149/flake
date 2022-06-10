@@ -492,8 +492,8 @@
 (defun loli/exwm-update-title ()
   "called when exwm buffers are renamed"
   (pcase exwm-class-name
-    ("browser-default" (exwm-workspace-rename-buffer (format "(default): %s" exwm-title)))
-    ("browser-side" (exwm-workspace-rename-buffer (format "(side): %s" exwm-title)))))
+    ("browser-dom" (exwm-workspace-rename-buffer (format "(dom): %s" exwm-title)))
+    ("browser-sub" (exwm-workspace-rename-buffer (format "(sub): %s" exwm-title)))))
 
 (add-hook 'exwm-update-title-hook #'loli/exwm-update-title)
 
@@ -571,8 +571,8 @@ requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)
        (set-window-dedicated-p (selected-window) nil))))
 
   (pcase exwm-class-name
-    ((loli/exwm-pin-to-window-any-of 5 "browser-side" "chatterino"))
-    ((loli/exwm-pin-to-workspace-any-of 1 "browser-default"))
+    ((loli/exwm-pin-to-window-any-of 5 "browser-sub" "chatterino"))
+    ((loli/exwm-pin-to-workspace-any-of 1 "browser-dom"))
     ((loli/exwm-pin-to-workspace-any-of 6 "TelegramDesktop"))
     ((loli/one-of-strings "mpv")
       (exwm-floating-toggle-floating)
@@ -585,7 +585,7 @@ requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)
 
   ;; set up 2nd screen layout
   (exwm-workspace-switch-create 5)
-  (setq loli/browser-side-window (selected-window))
+  (setq loli/browser-sub-window (selected-window))
   (setq loli/chatterino-window (split-window-horizontally (- (window-width) 45)))
 
   ;; I map workspaces to the same number key as their index to make it less confusing
@@ -600,8 +600,8 @@ requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)
         `( ,loli/polkit-agent-command
            "chatterino"
            "telegram-desktop"
-           ,(loli/browser-command "default" "--no-remote")
-           ,(loli/browser-command "side") ))
+           ,(loli/browser-command "dom" "--new-instance")
+           ,(loli/browser-command "sub" "--new-instance") ))
 
   ;; there's some update focus nil window errors on startup.
   ;; this might fix it
