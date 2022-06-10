@@ -91,11 +91,14 @@ in with config; {
   ]) ++ (with pythonPackages; [
     jedi-language-server
   ]);
+
   home.sessionVariables = {
     EDITOR="vim";
   };
+
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
+
   programs.bash = {
     enable = true;
     shellAliases = {
@@ -163,6 +166,7 @@ in with config; {
     };
     extraConfig = builtins.readFile ./vim/init.vim;
   };
+
   xsession = {
     enable = true;
     windowManager.command = ''
@@ -170,6 +174,7 @@ in with config; {
     '';
   };
   xsession.scriptPath = ".hm-xsession";
+
   xresources.properties = {
     "*xterm*faceName" = "PxPlus IBM VGA8";
     "*xterm*faceNameDoublesize" = "Unifont";
