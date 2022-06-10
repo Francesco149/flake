@@ -102,7 +102,7 @@ in with config; {
   programs.bash = {
     enable = true;
     shellAliases = {
-      xb="pushd ~/flake && sudo nixos-rebuild switch --flake .?submodules=1#; popd";
+      xb="pushd ~/flake && sudo nixos-rebuild switch --use-remote-sudo --flake .?submodules=1#; popd";
       xu="pushd ~/flake && nix flake update; popd";
       xub="xu && xb";
       xq="nix search nixpkgs";
