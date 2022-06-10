@@ -426,9 +426,9 @@
   (interactive)
   (loli/shell "passmenu"))
 
-(defun loli/browser-command (profile)
+(defun loli/browser-command (profile &optional extra-params)
   "shell command to start a browser with window class name browser-profile> and given profile"
-  (format "librewolf --class browser-%s --no-remote -P %s" profile profile))
+  (format "librewolf --class browser-%s -P %s %s" profile profile (or extra-params "")))
 
 ;; global exwm keybinds. they work regardless of input state.
 ;; you must restart emacs to apply changes to these
@@ -595,11 +595,12 @@ requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)
   (setq loli/main-window (selected-window))
 
   ;; startup programs
+  ;; the browser without --no-remote is the one that opens links I click in programs
   (mapc #'loli/shell
         `( ,loli/polkit-agent-command
            "chatterino"
            "telegram-desktop"
-           ,(loli/browser-command "default")
+           ,(loli/browser-command "default" "--no-remote")
            ,(loli/browser-command "side") ))
 
   ;; there's some update focus nil window errors on startup.
