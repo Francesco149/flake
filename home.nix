@@ -39,6 +39,52 @@ let
         avy # fancy jump to char
       ])
   );
+
+  firefox-custom = pkgs.wrapFirefox pkgs.firefox-unwrapped {
+    extraPolicies = {
+      CaptivePortal = false;
+      DisableFirefoxStudies = true;
+      DisablePocket = true;
+      DisableTelemetry = true;
+      DisableFirefoxAccounts = true;
+      DisableProfileImport = true;
+      DisableProfileRefresh = true;
+      DisableSystemAddonUpdate = true;
+
+      FirefoxHome = {
+        Pocket = false;
+        Snippets = false;
+      };
+
+      UserMessaging = {
+        ExtensionRecommendations = false;
+        SkipOnboarding = true;
+      };
+
+      Extensions.Install = [
+        "https://addons.mozilla.org/firefox/downloads/file/3933192/ublock_origin-1.42.4.xpi"
+        "https://addons.mozilla.org/firefox/downloads/file/3948477/i_dont_care_about_cookies-3.4.0.xpi"
+        "https://addons.mozilla.org/firefox/downloads/file/3941589/return_youtube_dislikes-3.0.0.1.xpi"
+        "https://addons.mozilla.org/firefox/downloads/file/3958238/sponsorblock-4.5.1.xpi"
+        "https://addons.mozilla.org/firefox/downloads/file/3059971/image_search_options-3.0.12.xpi"
+        "https://cdn.frankerfacez.com/script/frankerfacez-4.0-an+fx.xpi"
+        "https://addons.mozilla.org/firefox/downloads/file/3945159/7tv-2.2.2.xpi"
+      ];
+    };
+
+    extraPrefs = ''
+      // show more ssl cert infos
+      lockPref("security.identityblock.show_extended_validation", true);
+
+      // DDG is fucked so might as well use a better botnet
+      lockPref("browser.policies.runOncePerModification.setDefaultSearchEngine", "Google");
+
+      lockPref("privacy.sanitize.sanitizeOnShutdown", false); // don't clear cookies/history
+      lockPref("browser.startup.page", 3); // restore tabs on startup
+      lockPref("browser.link.open_newwindow", 2); // open links in new windows (for exwm)
+    '';
+  };
+
   menuProg = "dmenu";
 in with config; {
   home.username = "${user}";
@@ -75,7 +121,6 @@ in with config; {
     gnome3.nautilus
 
     alacritty
-    librewolf
     tdesktop
     chatterino7
     emacs-custom
@@ -135,6 +180,7 @@ in with config; {
       (setq undo-tree-history-directory-alist '(("." . "${xdg.dataHome}/emacs/undo")))
 
       (setq loli/polkit-agent-command "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1")
+      (setq loli/browser-command "${firefox-custom}/bin/firefox")
     '';
 
     "git/config".source = ./git/gitconfig;
@@ -210,45 +256,18 @@ in with config; {
   services.gnome-keyring.enable = true;
 
   xdg.mimeApps.defaultApplications = {
-    "x-scheme-handler/http" = "librewolf.desktop";
-    "x-scheme-handler/https" = "librewolf.desktop";
-    "text/html" = "librewolf.desktop";
-    "application/x-extension-htm" = "librewolf.desktop";
-    "application/x-extension-html" = "librewolf.desktop";
-    "application/x-extension-shtml" = "librewolf.desktop";
-    "application/xhtml+xml" = "librewolf.desktop";
-    "application/x-extension-xhtml" = "librewolf.desktop";
-    "application/x-extension-xht" = "librewolf.desktop";
+    "x-scheme-handler/http" = "firefox.desktop";
+    "x-scheme-handler/https" = "firefox.desktop";
+    "text/html" = "firefox.desktop";
+    "application/x-extension-htm" = "firefox.desktop";
+    "application/x-extension-html" = "firefox.desktop";
+    "application/x-extension-shtml" = "firefox.desktop";
+    "application/xhtml+xml" = "firefox.desktop";
+    "application/x-extension-xhtml" = "firefox.desktop";
+    "application/x-extension-xht" = "firefox.desktop";
   };
 
-  home.sessionVariables.DEFAULT_BROWSER = "${pkgs.librewolf}/bin/librewolf";
-
-  programs.firefox = {
-    enable = true;
-    package = pkgs.librewolf;
-
-    extensions = (with nur.repos.rycee.firefox-addons; [
-      ublock-origin
-      i-dont-care-about-cookies
-      return-youtube-dislikes
-      sponsorblock
-    ]) ++ (with nur.repos.loli.firefox-addons; [
-      image-search-options
-      frankerfacez
-      seventv
-    ]);
-
-    profiles.dom.id = 6969;
-    profiles.dom.settings = {
-      "browser.policies.runOncePerModification.removeSearchEngines" = "";
-      "browser.policies.runOncePerModification.setDefaultSearchEngine" = "Google";
-      "privacy.sanitize.sanitizeOnShutdown" = false;
-    };
-
-    profiles.sub.id = 420420;
-    profiles.sub.isDefault = true;
-    profiles.sub.settings = programs.firefox.profiles.dom.settings;
-  };
+  home.sessionVariables.DEFAULT_BROWSER = "${firefox-custom}/bin/firefox";
 
   # NOTE: private config files. comment out or provide your own
   xdg.configFile."gh2md/token".source = ./private-flake/gh2md/token;
