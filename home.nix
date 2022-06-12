@@ -2,6 +2,7 @@
 
 let
   pythonPackages = pkgs.python39Packages; # adjust python version here as needed
+
   emacs-custom = (
     let
       emacsBuild = (pkgs.emacs.override {
