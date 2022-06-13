@@ -21,11 +21,14 @@
     pkgs = import nixpkgs {
       inherit system;
       config.allowUnfree = true;
+      overlays = [
+        (import ./custom-packages.nix)
+      ];
     };
 
     mkSystem = conf: (
       nixpkgs.lib.nixosSystem {
-        inherit system;
+        inherit system pkgs;
         specialArgs = { inherit user; }; # pass user to modules (configuration.nix for example)
         modules = conf.modules ++ [
           home-manager.nixosModules.home-manager {
