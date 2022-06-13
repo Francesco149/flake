@@ -5,10 +5,13 @@ my personal nix flake
 ```sh
 git clone https://github.com/Francesco149/flake
 cd flake
-sudo nixos-rebuild switch --flake .?submodules=1#nixos-11400f
+nixos-rebuild switch --use-remote-sudo --flake .#nixos-11400f
 ```
 
 where nixos-11400f is the name of one of the nixosConfiguration entries in `flake.nix`
+
+whenever you want to rebuild the system, you can simply run the alias `xb` from a shell. the flake must be
+located at `~/flake` for this to work
 
 # things to do if you're not me
 edit .gitmodules to your own private repo or comment out the private part at the bottom of `home.nix`

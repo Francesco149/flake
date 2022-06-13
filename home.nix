@@ -1,4 +1,4 @@
-{ config, pkgs, user, nur, ... }:
+{ config, pkgs, user, configName, ... }:
 
 let
   pythonPackages = pkgs.python39Packages; # adjust python version here as needed
@@ -150,7 +150,7 @@ in with config; {
   programs.bash = {
     enable = true;
     shellAliases = {
-      xb="pushd ~/flake && nixos-rebuild switch --use-remote-sudo --flake .?submodules=1#; popd";
+      xb="pushd ~/flake && nixos-rebuild switch --use-remote-sudo --flake .#${configName}; popd";
       xu="pushd ~/flake && nix flake update; popd";
       xub="xu && xb";
       xq="nix search nixpkgs";

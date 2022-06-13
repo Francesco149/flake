@@ -31,7 +31,10 @@
           home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = true; # instead of having its own private nixpkgs
             home-manager.useUserPackages = true; # install to /etc/profiles instead of ~/.nix-profile
-            home-manager.extraSpecialArgs = { inherit user; }; # pass user to modules in conf (home.nix or whatever)
+            home-manager.extraSpecialArgs = {
+              inherit user; # pass user to modules in conf (home.nix or whatever)
+              configName = conf.configName;
+            };
             home-manager.users.${user} = { imports = conf.homeImports; };
           }
         ];
@@ -42,6 +45,7 @@
     nixosConfigurations = {
 
       nixos-11400f = mkSystem {
+        configName = "nixos-11400f"; # TODO: any way to avoid this duplication?
         modules = [./config-11400f.nix ];
         homeImports = [ ./home.nix ];
       };
