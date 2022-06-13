@@ -5,6 +5,8 @@ my personal nix flake
 ```sh
 git clone https://github.com/Francesco149/flake
 cd flake
+nix develop # or nix-shell
+git-crypt unlock # or replace the secrets files with your own
 nixos-rebuild switch --use-remote-sudo --flake .#nixos-11400f
 ```
 
