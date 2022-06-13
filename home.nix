@@ -273,6 +273,10 @@ in with config; {
 
   home.sessionVariables.DEFAULT_BROWSER = "${firefox-custom}/bin/firefox";
 
+  gtk.enable = true;
+  gtk.theme.name = "Adwaita-dark";
+  gtk.theme.package = pkgs.gnome.gnome-themes-extra;
+
   # NOTE: private config files. comment out or provide your own
   xdg.configFile."gh2md/token".source = ./secrets/gh2md/token;
   home.file.".gist".source = ./secrets/gist/token;
