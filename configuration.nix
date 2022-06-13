@@ -1,8 +1,6 @@
-{ config, pkgs, user, ... }:
+{ pkgs, user, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
-
   nix = {
     package = pkgs.nixFlakes;
     extraOptions = ''
@@ -105,32 +103,11 @@
     "amdgpu.ppfeaturemask=0xffffffff"
   ];
 
-  services.zfs.trim.enable = true;
-  services.nfs.server.enable = true;
-
-  services.zfs.autoScrub = {
-    enable = true;
-    pools = [ "rpool" ];
-  };
-
-  services.zfs.autoSnapshot = {
-    enable = true;
-    frequent = 96; # keep the latest x 15-minute snapshots (instead of four)
-    monthly = 24;  # keep x monthly snapshot (instead of twelve)
-  };
-
-  # according to the wiki, zfs has its own scheduler and this supposedly prevent freezes
-  # I haven't had any issues personally
-  services.udev.extraRules = ''
-  ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="zfs_member", ATTR{../queue/scheduler}="none"
-  '';
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   networking = {
     hostName = "nixos";
-    hostId = "8556b001";
     domain = "localhost";
     dhcpcd.enable = false;
     usePredictableInterfaceNames = false;
@@ -144,13 +121,7 @@
     interfaces = [ "eth0" ];
   };
 
-  networking.interfaces.br0 = {
-    virtual = true;
-    ipv4.addresses = [{
-      address = "192.168.1.9";
-      prefixLength = 24;
-    }];
-  };
+  networking.interfaces.br0.virtual = true;
 
   environment.etc."qemu/bridge.conf".text = "allow br0";
 

@@ -5,38 +5,36 @@ my personal nix flake
 ```sh
 git clone https://github.com/Francesco149/flake
 cd flake
+sudo nixos-rebuild switch --flake .?submodules=1#nixos-11400f
 ```
 
-if you're not me, edit .gitmodules to your own private repo or comment out the private part at the
-bottom of `home.nix`
+where nixos-11400f is the name of one of the nixosConfiguration entries in `flake.nix`
+
+# things to do if you're not me
+edit .gitmodules to your own private repo or comment out the private part at the bottom of `home.nix`
 
 ```sh
 git submodule init
 git submodule update --recursive
 ```
 
-if you're not me, generate your own `hardware-configuration.nix` with `nixos-generate-config` ,
-see nix wiki for more info and then copy it
+generate your own `hardware-configuration.nix` with `nixos-generate-config` (see nix wiki for more info)
+and then copy it
 
 ```sh
 cp /etc/nixos/hardware-configuration.nix .
 ```
 
-if you're not me, customize network config in `configuration.nix` and re-enable spectre/meltdown
+customize network config in `configuration.nix` and re-enable spectre/meltdown
 mitigations in `boot.kernelParams`
 
+create your own machine-specific config. see `config-11400f.nix` as an example.
 
-build and switch to the flake
+add your own machine configuration to `flake.nix` in nixosConfigurations
 
-```sh
-sudo nixos-rebuild switch --flake .?submodules=1#
+```nix
+      my-configuration = mkSystem {
+        modules = [./config-my-machine.nix ];
+        homeImports = [ ./home.nix ];
+      };
 ```
-
-# known issues
-on boot, you have to `systemctl --user restart emacs` otherwise emacsclient in gui mode won't work
-
-# vim vs emacs?
-both, I use vim as a minimal editor when I don't need fancy autocomplete and plugins, and emacs
-as a full fat IDE. if I'm writing a familiar language and not using any unfamiliar libraries, then
-vim is just fine. otherwise I fire up emacs to speed up the process of exploring stuff with auto
-complete
