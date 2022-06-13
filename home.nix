@@ -273,5 +273,5 @@ in with config; {
   home.sessionVariables.DEFAULT_BROWSER = "${firefox-custom}/bin/firefox";
 
   # NOTE: private config files. comment out or provide your own
-  xdg.configFile."gh2md/token".source = ./private-flake/gh2md/token;
+  xdg.configFile."gh2md/token".source = ./secrets/gh2md/token;
 }
