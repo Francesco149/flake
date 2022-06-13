@@ -106,6 +106,7 @@ in with config; {
     dmenu
     v4l-utils
     gh2md
+    gist
     autorandr # save and detect xrandr configurations automatically
 
     pxplus-ibm-vga8-bin
@@ -274,4 +275,5 @@ in with config; {
 
   # NOTE: private config files. comment out or provide your own
   xdg.configFile."gh2md/token".source = ./secrets/gh2md/token;
+  xdg.configFile.".gist".source = ./secrets/gist/token;
 }
