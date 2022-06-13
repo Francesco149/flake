@@ -160,6 +160,7 @@ in with config; {
       set -o vi
     '';
   };
+
   xdg.dataFile = {
     "vim/swap/.keep".text = "";
     "vim/backup/.keep".text = "";
@@ -167,6 +168,7 @@ in with config; {
     "emacs/backup/.keep".text = "";
     "emacs/undo/.keep".text = "";
   };
+
   xdg.configFile = {
     "emacs/init.el".source = ./emacs/init.el;
     "emacs/xterm-theme.el".source = ./emacs/xterm-theme.el;
