@@ -12,6 +12,7 @@
     address = "192.168.1.9";
     prefixLength = 24;
   }];
+  networking.dhcpcd.enable = false;
 
   boot.supportedFilesystems =  [ "zfs" ];
   boot.zfs.devNodes = "/dev/";

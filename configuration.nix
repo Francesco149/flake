@@ -12,7 +12,6 @@
 
   networking = {
     domain = "localhost";
-    dhcpcd.enable = false;
     usePredictableInterfaceNames = false;
     nameservers = [ "8.8.8.8" ];
     resolvconf.enable = false;
