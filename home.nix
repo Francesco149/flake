@@ -153,6 +153,7 @@ in with config; {
     enable = true;
     shellAliases = {
       xb="pushd ~/flake && nixos-rebuild switch --use-remote-sudo --flake .#${configName}; popd";
+      xt="pushd ~/flake && nixos-rebuild test --use-remote-sudo --flake .#${configName}; popd";
       xu="pushd ~/flake && nix flake update; popd";
       xub="xu && xb";
       xq="nix search nixpkgs";
