@@ -34,8 +34,9 @@ configs (see nixos-11400f for an example)
 add your own machine configuration to `flake.nix` in nixosConfigurations
 
 ```nix
-      my-configuration = mkSystem {
-        modules = [./my-machine/configuration.nix ];
+      my-machine = mkSystem {
+        configName = "my-machine";
+        modules = [ ./my-machine/configuration.nix ];
         homeImports = [ ./home.nix ];
       };
 ```
