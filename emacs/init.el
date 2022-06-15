@@ -671,3 +671,5 @@ requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)
 (loli/leader-keys
   "t" '(:ignore t :which-key "toggle prompts")
   "ts" '(loli/text-scale/body :which-key "scale text"))
+
+(server-start) ; so we can use emacsclient from polybar and such to extract info or launch things
