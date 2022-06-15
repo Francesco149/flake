@@ -5,7 +5,7 @@ my personal nix flake
 ```sh
 nix-shell -p git --run 'git clone https://github.com/Francesco149/flake ~/flake'
 cd ~/flake
-nix develop # or nix-shell
+nix-shell -p git --run 'nix develop' # or nix-shell
 git-crypt unlock # or replace the secrets files with your own
 nixos-rebuild switch --use-remote-sudo --flake .#nixos-11400f
 
