@@ -208,131 +208,133 @@ in with config; {
     script = ''
       polybar top --reload &
     '';
-    config = {
-      colors = {
-        underline-1 = "#c792ea";
-        foreground-alt = "#555";
-        secondary = "#e60053";
-      };
+  };
 
-      "bar/top" = {
-        #monitor = "HDMI-A-0";
-        width = "100%";
-        height = "32px";
-        radius = 0;
-        modules-center = "date";
-        modules-left = "cpu temperature memory";
-        modules-right = "filesystem volume";
-        padding-right = 2;
-        padding-left = 2;
-        separator = "   ";
-        tray-position = "right"; # enables tray on right side (disabled otherwise)
-        cursor-click = "pointer"; # instead of the X
-        cursor-scroll = "ns-resize"; # instead of the X
-        tray-maxsize = 28;
-        line-size = 2;
-        line-color = "#f00";
+  services.polybar.config = {
 
-        #font-0 = "Noto Sans:weight=bold";
-        font-0 = "Noto Sans:weight=bold";
-        font-1 = "Font Awesome";
-        font-2 = "Material Icons";
-        font-3 = "Fira Mono:size=8";
-        # some emoji fonts need scale= otherwise they appear way too big
-        #font-4 = "Noto Emoji:scale=6";
-      };
-
-      "module/volume" = {
-        # the polybar module is supposed to convert things like format.volume -> format-volume.
-        # this doesn't seem to work, so I have to name them like the actual polybar cfg.
-        # array conversion also doesn't seem to work.
-        # also, for some reason format-underline doesn't work for this volume module
-        type = "internal/pulseaudio";
-        format-volume = "<ramp-volume> <label-volume>";
-        label-muted = "";
-        label-muted-foreground = "#ff7777";
-        ramp-volume-0 = "";
-        ramp-volume-1 = "";
-        ramp-volume-2 = "";
-        ramp-volume-3 = "";
-        click-right = "pavucontrol";
-      };
-
-      "module/date" = {
-        type = "internal/date";
-        internal = 5;
-        date-alt = "%Y-%m-%d";
-        time-alt = "%H:%M:%S";
-        date = "%A, %d %B %Y";
-        time = "%H:%M";
-        label = "%date% %time%";
-        format = " <label>";
-        format-underline = "\${colors.underline-1}";
-      };
-
-      "module/cpu" = {
-        type = "internal/cpu";
-        interval = 2;
-        format = "<label> <ramp-coreload>";
-        format-underline = "\${colors.underline-1}";
-        click-left = ''
-          emacsclient -e "(proced)"
-        '';
-        label = "%percentage:2%%";
-        ramp-coreload-spacing = 0;
-        ramp-coreload-0-foreground = "\${colors.foreground-alt}";
-        ramp-coreload-0 = "▁";
-        ramp-coreload-1 = "▂";
-        ramp-coreload-2 = "▃";
-        ramp-coreload-3 = "▄";
-        ramp-coreload-4 = "▅";
-        ramp-coreload-5 = "▆";
-        ramp-coreload-6 = "▇";
-      };
-
-      "module/memory" = {
-        type = "internal/memory";
-        interval = 3;
-        warn-percentage = 95;
-        format = "<ramp-used> <label>";
-        label = " %gb_used%/%gb_total%";
-        ramp-used-0 = "▁";
-        ramp-used-1 = "▂";
-        ramp-used-2 = "▃";
-        ramp-used-3 = "▄";
-        ramp-used-4 = "▅";
-        ramp-used-5 = "▆";
-        ramp-used-6 = "▇";
-        format-underline = "\${colors.underline-1}";
-      };
-
-      "module/temperature" = {
-        type = "internal/temperature";
-        thermal-zone = 0;
-        warn-temperature = 60;
-
-        format = "<label>";
-        format-underline = "\${colors.underline-1}";
-        format-warn = "<label-warn>";
-        format-warn-underline = "\${self.format-underline}";
-
-        label = "%temperature-c%";
-        label-warn = "%temperature-c%!";
-        label-warn-foreground = "\${colors.secondary}";
-      };
-
-      "module/filesystem" = {
-        type = "internal/fs";
-        mount-0 = "/home";
-        interval = 10;
-        fixed-values = true;
-        spacing = 4;
-        warn-percentage = 75;
-        label-mounted = " %mountpoint% %percentage_used%%";
-        format-underline = "\${colors.underline-1}";
-      };
-
+    colors = {
+      underline-1 = "#c792ea";
+      foreground-alt = "#555";
+      secondary = "#e60053";
     };
+
+    "bar/top" = {
+      #monitor = "HDMI-A-0";
+      width = "100%";
+      height = "32px";
+      radius = 0;
+      modules-center = "date";
+      modules-left = "cpu temperature memory";
+      modules-right = "filesystem volume";
+      padding-right = 2;
+      padding-left = 2;
+      separator = "   ";
+      tray-position = "right"; # enables tray on right side (disabled otherwise)
+      cursor-click = "pointer"; # instead of the X
+      cursor-scroll = "ns-resize"; # instead of the X
+      tray-maxsize = 28;
+      line-size = 2;
+      line-color = "#f00";
+
+      #font-0 = "Noto Sans:weight=bold";
+      font-0 = "Noto Sans:weight=bold";
+      font-1 = "Font Awesome";
+      font-2 = "Material Icons";
+      font-3 = "Fira Mono:size=8";
+      # some emoji fonts need scale= otherwise they appear way too big
+      #font-4 = "Noto Emoji:scale=6";
+    };
+
+    "module/volume" = {
+      # the polybar module is supposed to convert things like format.volume -> format-volume.
+      # this doesn't seem to work, so I have to name them like the actual polybar cfg.
+      # array conversion also doesn't seem to work.
+      # also, for some reason format-underline doesn't work for this volume module
+      type = "internal/pulseaudio";
+      format-volume = "<ramp-volume> <label-volume>";
+      label-muted = "";
+      label-muted-foreground = "#ff7777";
+      ramp-volume-0 = "";
+      ramp-volume-1 = "";
+      ramp-volume-2 = "";
+      ramp-volume-3 = "";
+      click-right = "pavucontrol";
+    };
+
+    "module/date" = {
+      type = "internal/date";
+      internal = 5;
+      date-alt = "%Y-%m-%d";
+      time-alt = "%H:%M:%S";
+      date = "%A, %d %B %Y";
+      time = "%H:%M";
+      label = "%date% %time%";
+      format = " <label>";
+      format-underline = "\${colors.underline-1}";
+    };
+
+    "module/cpu" = {
+      type = "internal/cpu";
+      interval = 2;
+      format = "<label> <ramp-coreload>";
+      format-underline = "\${colors.underline-1}";
+      click-left = ''
+        emacsclient -e "(proced)"
+      '';
+      label = "%percentage:2%%";
+      ramp-coreload-spacing = 0;
+      ramp-coreload-0-foreground = "\${colors.foreground-alt}";
+      ramp-coreload-0 = "▁";
+      ramp-coreload-1 = "▂";
+      ramp-coreload-2 = "▃";
+      ramp-coreload-3 = "▄";
+      ramp-coreload-4 = "▅";
+      ramp-coreload-5 = "▆";
+      ramp-coreload-6 = "▇";
+    };
+
+    "module/memory" = {
+      type = "internal/memory";
+      interval = 3;
+      warn-percentage = 95;
+      format = "<ramp-used> <label>";
+      label = " %gb_used%/%gb_total%";
+      ramp-used-0 = "▁";
+      ramp-used-1 = "▂";
+      ramp-used-2 = "▃";
+      ramp-used-3 = "▄";
+      ramp-used-4 = "▅";
+      ramp-used-5 = "▆";
+      ramp-used-6 = "▇";
+      format-underline = "\${colors.underline-1}";
+    };
+
+    "module/temperature" = {
+      type = "internal/temperature";
+      thermal-zone = 0;
+      warn-temperature = 60;
+
+      format = "<label>";
+      format-underline = "\${colors.underline-1}";
+      format-warn = "<label-warn>";
+      format-warn-underline = "\${self.format-underline}";
+
+      label = "%temperature-c%";
+      label-warn = "%temperature-c%!";
+      label-warn-foreground = "\${colors.secondary}";
+    };
+
+    "module/filesystem" = {
+      type = "internal/fs";
+      mount-0 = "/home";
+      interval = 10;
+      fixed-values = true;
+      spacing = 4;
+      warn-percentage = 75;
+      label-mounted = " %mountpoint% %percentage_used%%";
+      format-underline = "\${colors.underline-1}";
+    };
+
   };
 
   services.parcellite = {
