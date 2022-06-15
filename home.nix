@@ -108,6 +108,7 @@ in with config; {
     gh2md
     gist
     autorandr # save and detect xrandr configurations automatically
+    libnotify # notify-send
 
     pxplus-ibm-vga8-bin
     unifont
@@ -334,6 +335,38 @@ in with config; {
       warn-percentage = 75;
       label-mounted = " %mountpoint% %percentage_used%%";
       format-underline = "\${colors.underline-1}";
+    };
+
+  };
+
+  services.dunst.enable = true;
+
+  services.dunst.settings = {
+
+    global = {
+      font = "Noto Sans Bold";
+      background = "#000";
+      foreground = "#bebebe";
+      corner_radius = 20;
+      frame_color = "#bebebe";
+      frame_width = 2;
+      padding = 16;
+      horizontal_padding = 16;
+    };
+
+    urgency_low.timeout = 5;
+    urgency_normal.timeout = 10;
+    urgency_critical.timeout = 0;
+
+    urgency_critical = {
+      foreground = "#fff";
+      background = "#900000";
+      frame_color = "#ff0000";
+    };
+
+    fullscreen_show_critical = {
+      msg_urgency = "critical";
+      fullscreen = "show";
     };
 
   };
