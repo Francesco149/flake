@@ -19,6 +19,4 @@
     # docker.enable = true;
   };
 
-  networking.dhcpcd.enable = true;
-
 }
