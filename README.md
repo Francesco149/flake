@@ -3,7 +3,7 @@ my personal nix flake
 # usage (nixos)
 
 ```sh
-nix-shell -p git --run git clone https://github.com/Francesco149/flake ~/flake
+nix-shell -p git --run 'git clone https://github.com/Francesco149/flake ~/flake'
 cd ~/flake
 nix develop # or nix-shell
 git-crypt unlock # or replace the secrets files with your own
