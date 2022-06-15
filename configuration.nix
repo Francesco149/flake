@@ -10,63 +10,12 @@
     '';
   };
 
-  boot.supportedFilesystems = [ "zfs" ];
-  boot.zfs.devNodes = "/dev/";
-  boot.kernelParams = [
-    "amd_iommu=on"
-    "intel_iommu=on"
-    "iommu=pt"
-    "rd.driver.pre=vfio-pci"
-    "pcie_acs_override=downstream,multifunction"
-    "usbhid.kbpoll=1"
-    "usbhid.mousepoll=1"
-    "usbhid.jspoll=1"
-    "noibrs"
-    "noibpb"
-    "nopti"
-    "nospectre_v2"
-    "nospectre_v1"
-    "l1tf=off"
-    "nospec_store_bypass_disable"
-    "no_stf_barrier"
-    "mds=off"
-    "mitigations=off"
-    "zfs.zfs_arc_max=2147483648"
-    "amdgpu.ppfeaturemask=0xffffffff"
-  ];
-
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
   networking = {
-    hostName = "nixos";
     domain = "localhost";
     dhcpcd.enable = false;
     usePredictableInterfaceNames = false;
     nameservers = [ "8.8.8.8" ];
     resolvconf.enable = false;
-  };
-
-  # bridge + tap setup for qemu
-  networking.bridges.br0 = {
-    rstp = false;
-    interfaces = [ "eth0" ];
-  };
-
-  networking.interfaces.br0.virtual = true;
-
-  environment.etc."qemu/bridge.conf".text = "allow br0";
-
-  networking.interfaces.tap0 = {
-    virtualOwner = "${user}";
-    virtual = true;
-    virtualType = "tap";
-    useDHCP = true;
-  };
-
-  networking.defaultGateway = {
-    interface = "br0";
-    address = "192.168.1.1";
   };
 
   time.timeZone = "Europe/Rome";

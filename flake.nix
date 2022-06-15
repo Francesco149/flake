@@ -11,9 +11,15 @@
       # we want to make sure everything pins to the same version of nixpkgs to be more efficient
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # TODO: separate each config into its own flake to avoid pulling unnecessary deps? or is nix smart enough
+    nixos-wsl = {
+      url = "github:nix-community/NixOS-WSL";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager }:
+  outputs = { self, nixpkgs, home-manager, nixos-wsl }:
   let
     user = "loli";
     system = "x86_64-linux";
@@ -29,7 +35,7 @@
     mkSystem = conf: (
       nixpkgs.lib.nixosSystem {
         inherit system pkgs;
-        specialArgs = { inherit user; }; # pass user to modules (configuration.nix for example)
+        specialArgs = { inherit user; inherit nixos-wsl; }; # pass user to modules (configuration.nix for example)
         modules = conf.modules ++ [
           home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = true; # instead of having its own private nixpkgs
@@ -50,6 +56,12 @@
       nixos-11400f = mkSystem {
         configName = "nixos-11400f"; # TODO: any way to avoid this duplication?
         modules = [./config-11400f.nix ];
+        homeImports = [ ./home.nix ];
+      };
+
+      nixos-wsl-5900x = mkSystem {
+        configName = "nixos-wsl-5900x";
+        modules = [ ./config-wsl-5900x.nix ];
         homeImports = [ ./home.nix ];
       };
 
