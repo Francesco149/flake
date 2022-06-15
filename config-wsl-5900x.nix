@@ -12,7 +12,7 @@
   wsl = {
     enable = true;
     automountPath = "/mnt";
-    defaultUser = "nixos";
+    defaultUser = "loli";
     startMenuLaunchers = true;
 
     # Enable integration with Docker Desktop (needs to be installed)
