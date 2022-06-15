@@ -5,7 +5,6 @@
     "${modulesPath}/profiles/minimal.nix"
     nixos-wsl.nixosModules.wsl
 
-    ./hardware-configuration.nix
     ../configuration.nix
   ];
 
