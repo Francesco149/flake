@@ -55,13 +55,13 @@
 
       nixos-11400f = mkSystem {
         configName = "nixos-11400f"; # TODO: any way to avoid this duplication?
-        modules = [./config-11400f.nix ];
+        modules = [./nixos-11400f/configuration.nix ];
         homeImports = [ ./home.nix ];
       };
 
       nixos-wsl-5900x = mkSystem {
         configName = "nixos-wsl-5900x";
-        modules = [ ./config-wsl-5900x.nix ];
+        modules = [ ./nixos-wsl-5900x/configuration.nix ];
         homeImports = [ ./home.nix ];
       };
 

@@ -5,8 +5,8 @@
     "${modulesPath}/profiles/minimal.nix"
     nixos-wsl.nixosModules.wsl
 
-    ./hardware-wsl-5900x.nix
-    ./configuration.nix
+    ./hardware-configuration.nix
+    ../configuration.nix
   ];
 
   wsl = {

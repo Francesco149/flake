@@ -2,8 +2,8 @@
 
 {
   imports = [
-    ./hardware-11400f.nix
-    ./configuration.nix
+    ./hardware-configuration.nix
+    ../configuration.nix
   ];
 
   networking.hostName = "nixos";
