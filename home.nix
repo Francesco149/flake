@@ -85,8 +85,6 @@ let
     '';
   };
 
-  menuProg = "dmenu";
-
 in with config; {
   home.username = "${user}";
   home.homeDirectory = "/home/${user}";
@@ -158,7 +156,7 @@ in with config; {
       xu="pushd ~/flake && nix flake update; popd";
       xub="xu && xb";
       xq="nix search nixpkgs";
-      cam="mpv --profile=low-latency --untimed $(ls /dev/video* | ${menuProg})";
+      cam="mpv --profile=low-latency --untimed $(ls /dev/video* | ${pkgs.dmenu}/bin/dmenu)";
       eq="nix-env -f '<nixpkgs>' -qaP -A pkgs.emacsPackages | grep";
     };
     bashrcExtra = ''
