@@ -436,6 +436,7 @@
       ([?\s-&] . loli/shell-launcher)
       ([?\s-d] . loli/shell-launcher) ;; TODO: application launcher
       ([?\s-U] . loli/passmenu)
+      ([?\C-$] . loli/screenshot-to-clipboard)
 
       ;; this maps s-0 -> workspace 0, ..., s->9 -> workspace 9
       ;; and generates named, documented functions

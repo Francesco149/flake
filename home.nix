@@ -196,6 +196,12 @@ in with config; {
         "run password manager menu"
         (interactive)
         (loli/shell "${pkgs.pass}/bin/passmenu"))
+
+      (defun loli/screenshot-to-clipboard ()
+        "select a section to screenshot and copy png to clipboard"
+        (interactive)
+        (loli/shell "${pkgs.maim}/bin/maim -s --format png /dev/stdout |
+                     ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png -i"))
     '';
 
     "git/config".source = ./git/gitconfig;
