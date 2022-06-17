@@ -551,14 +551,28 @@ requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)
 (pcase-defmacro loli/exwm-pin-to-workspace-any-of (workspace &rest r)
   `(loli/exwm--apply-any-of loli/exwm-pin-to-workspace ,workspace ,@r))
 
+(defun loli/exwm-toggle-floating ()
+  "toggle floating and mode line on a window"
+  (message "floating %s" exwm-title)
+  (exwm-floating-toggle-floating)
+  (exwm-layout-toggle-mode-line))
+
+;; TODO: figure out how to do this with exwm-manage-configurations
+
 (defun loli/exwm-manage-finish ()
   "called when a new window is captured by exwm"
-  (pcase exwm-class-name
-    ((loli/exwm-pin-to-window-any-of 5 "browser-web" "chatterino"))
-    ((loli/exwm-pin-to-workspace-any-of 6 "TelegramDesktop"))
-    ((loli/one-of-strings "mpv")
-      (exwm-floating-toggle-floating)
-      (exwm-layout-toggle-mode-line))))
+  (if exwm--floating-frame
+      ;; don't try to pin floating windows, just hide the modeline.
+      ;; for example if chatterino opens its settings, it would remove the chatterino window from its emacs window
+      ;;  if I didn't do this
+      (exwm-layout-toggle-mode-line)
+
+    ;; not a floating window, so we can apply these rules
+    (pcase exwm-class-name
+      ((loli/exwm-pin-to-window-any-of 5 "browser-web" "chatterino"))
+      ((loli/exwm-pin-to-workspace-any-of 6 "TelegramDesktop"))
+      ((loli/one-of-strings "mpv")
+       (loli/exwm-toggle-floating)))))
 
 (add-hook 'exwm-manage-finish-hook #'loli/exwm-manage-finish)
 
