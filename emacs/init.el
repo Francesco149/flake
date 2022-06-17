@@ -445,7 +445,7 @@
                       (interactive)
                       (exwm-workspace-switch-create ,i))))
                 (number-sequence 0 9))
-     ))
+      ))
 
 ;; initial number of workspaces
 (setq exwm-workspace-number 10)
