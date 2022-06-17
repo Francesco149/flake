@@ -396,12 +396,6 @@
   "run shell command asynchronously, sets buffer name to the command itself"
   (start-process-shell-command command nil command))
 
-(defun loli/exwm-randr-screen-change ()
-  "runs when the exwm screen changes. for example, when you plug/unplug a monitor"
-  (loli/shell "autorandr --change --force")
-  (message "autorandr config: %s"
-           (string-trim (shell-command-to-string "autorandr --current"))))
-
 ;; NOTE: set up autorandr before using this
 (add-hook 'exwm-randr-screen-change-hook #'loli/exwm-randr-screen-change)
 

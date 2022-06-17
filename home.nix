@@ -202,6 +202,12 @@ in with config; {
         (interactive)
         (loli/shell "${pkgs.maim}/bin/maim -s --format png /dev/stdout |
                      ${pkgs.xclip}/bin/xclip -selection clipboard -t image/png -i"))
+
+      (defun loli/exwm-randr-screen-change ()
+        "runs when the exwm screen changes. for example, when you plug/unplug a monitor"
+        (loli/shell "${pkgs.autorandr}/bin/autorandr --change --force")
+        (message "autorandr config: %s"
+                (string-trim (shell-command-to-string "${pkgs.autorandr}/bin/autorandr --current"))))
     '';
 
     "git/config".source = ./git/gitconfig;
