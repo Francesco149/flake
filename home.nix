@@ -191,6 +191,8 @@ in with config; {
 
       (setq loli/polkit-agent-command "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1")
       (setq loli/browser-command "${firefox-custom}/bin/firefox")
+      (setq loli/chatterino-command "${pkgs.chatterino7}/bin/chatterino")
+      (setq loli/telegram-command "${pkgs.tdesktop}/bin/telegram-desktop")
 
       (defun loli/passmenu ()
         "run password manager menu"
