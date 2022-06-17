@@ -107,6 +107,8 @@ in with config; {
     gist
     autorandr # save and detect xrandr configurations automatically
     libnotify # notify-send
+    ffmpeg
+    yt-dlp aria
 
     pxplus-ibm-vga8-bin
     unifont
@@ -116,6 +118,7 @@ in with config; {
     noto-fonts-extra
     font-awesome
     fira-mono
+    roboto
     emacs-all-the-icons-fonts
 
     pinentry-gnome
@@ -131,6 +134,7 @@ in with config; {
     simplescreenrecorder
     screenkey
     pavucontrol
+    krita
 
     # TODO: would be nice to find a way to have these isolated in the custom
     # emacs instead of home-wide
