@@ -421,11 +421,6 @@
   (interactive (list (read-shell-command "$ ")))
   (loli/shell command))
 
-(defun loli/passmenu ()
-  "run password manager menu"
-  (interactive)
-  (loli/shell "passmenu"))
-
 (defun loli/make-browser-command (class &optional extra-params)
   "shell command to start a new browser window with window class browser-<class>"
   (format "%s --class browser-%s %s" loli/browser-command class (or extra-params "")))
