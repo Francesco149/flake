@@ -43,39 +43,8 @@
   services.gvfs.enable = true; # for nautilus
   services.udisks2.enable = true; # to mount removable devices more easily
 
-  services.xserver = {
-    enable = true;
-    layout = "us";
-    displayManager.gdm.enable = true;
-    displayManager.gdm.wayland = false;
-    displayManager.autoLogin.enable = true;
-    displayManager.autoLogin.user = "${user}";
-  };
-
-  services.xserver.desktopManager.session = [
-    {
-      name = "home-manager";
-      start = ''
-        ${pkgs.runtimeShell} $HOME/.hm-xsession &
-        waitPID=$!
-      '';
-    }
-  ];
-
-  # workaround for race condition in autologin
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
-
   # don't wanna get suck in emergency mode over benign errors
   systemd.enableEmergencyMode = false;
-
-  services.xserver.libinput = {
-    enable = true;
-    mouse.accelProfile = "flat";
-    touchpad.accelProfile = "flat";
-  };
-
-  services.xserver.xkbOptions = "caps:escape";
 
   users.users.${user} = {
     isNormalUser = true;

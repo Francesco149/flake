@@ -1,0 +1,3 @@
+#!/bin/sh
+
+mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)

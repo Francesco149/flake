@@ -83,4 +83,35 @@
     interface = "br0";
     address = "192.168.1.1";
   };
+
+  services.xserver = {
+    enable = true;
+    layout = "us";
+    displayManager.gdm.enable = true;
+    displayManager.gdm.wayland = false;
+    displayManager.autoLogin.enable = true;
+    displayManager.autoLogin.user = "${user}";
+  };
+
+  services.xserver.desktopManager.session = [
+    {
+      name = "home-manager";
+      start = ''
+        ${pkgs.runtimeShell} $HOME/.hm-xsession &
+        waitPID=$!
+      '';
+    }
+  ];
+
+  # workaround for race condition in autologin
+  systemd.services."getty@tty1".enable = false;
+  systemd.services."autovt@tty1".enable = false;
+
+  services.xserver.libinput = {
+    enable = true;
+    mouse.accelProfile = "flat";
+    touchpad.accelProfile = "flat";
+  };
+
+  services.xserver.xkbOptions = "caps:escape";
 }

@@ -53,16 +53,16 @@
   in {
     nixosConfigurations = {
 
-      nixos-11400f = mkSystem {
+      nixos-11400f = mkSystem rec {
         configName = "nixos-11400f"; # TODO: any way to avoid this duplication?
-        modules = [./nixos-11400f/configuration.nix ];
-        homeImports = [ ./home.nix ];
+        modules = [./${configName}/configuration.nix ];
+        homeImports = [ ./${configName}/home.nix ];
       };
 
-      nixos-wsl-5900x = mkSystem {
+      nixos-wsl-5900x = mkSystem rec {
         configName = "nixos-wsl-5900x";
-        modules = [ ./nixos-wsl-5900x/configuration.nix ];
-        homeImports = [ ./home.nix ];
+        modules = [ ./${configName}/configuration.nix ];
+        homeImports = [ ./${configName}/home.nix ];
       };
 
     };
