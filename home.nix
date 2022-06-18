@@ -187,8 +187,4 @@ in with config; {
 
   xdg.configFile."yt-dlp/config".source = ./yt-dlp/config;
 
-  # NOTE: private config files. comment out or provide your own
-  xdg.configFile."gh2md/token".source = ./secrets/gh2md/token;
-  home.file.".gist".source = ./secrets/gist/token;
-
 }
