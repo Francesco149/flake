@@ -45,6 +45,10 @@ let
 
       //this seems to cause bugs when i click links on a fullscreened firefox
       //lockPref("browser.link.open_newwindow", 2); // open links in new windows (for exwm)
+
+      // fuck off with this sponsored shit
+      lockPref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsored", false);
+      lockPref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsoredTopSites", false);
     '';
   };
 
