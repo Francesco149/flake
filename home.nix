@@ -81,7 +81,9 @@ let
 
       lockPref("privacy.sanitize.sanitizeOnShutdown", false); // don't clear cookies/history
       lockPref("browser.startup.page", 3); // restore tabs on startup
-      lockPref("browser.link.open_newwindow", 2); // open links in new windows (for exwm)
+
+      //this seems to cause bugs when i click links on a fullscreened firefox
+      //lockPref("browser.link.open_newwindow", 2); // open links in new windows (for exwm)
     '';
   };
 
