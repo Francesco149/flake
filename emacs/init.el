@@ -230,6 +230,9 @@
 (add-hook 'go-mode-hook #'loli/style-tabs)
 (add-hook 'before-save-hook #'gofmt-before-save)
 
+;; python coding style
+(setq python-indent-offset 2)
+
 ;; electric-pairs: automatically close delimiter pairs
 (setq electric-pair-pairs
       '((?\( . ?\))
