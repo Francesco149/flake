@@ -114,4 +114,47 @@
   };
 
   services.xserver.xkbOptions = "caps:escape";
+  # NOTE: private config files. comment out or provide your own
+
+  # by default, agenix does not look in your home dir for keys
+  # TODO: do not hardcode this home path, get it from home-manager somehow or something
+  age.identityPaths = [
+    "/home/${user}/.ssh/id_rsa"
+  ];
+
+  # agenix secrets are owned by root and symlinked from /run/agenix.d .
+  # so to have user-owned secrets I have to disable symlinking and make sure the ownership is correct
+  age.secrets = let
+
+    mkUserSecret = { file, path }: {
+      inherit file path;
+      owner = "${user}";
+      group = "users";
+      symlink = false;
+    };
+
+  in {
+
+    dendrite-crt = {
+      file = ../secrets/dendrite-keys/server.crt.age;
+      path = "/var/lib/dendrite/server.crt";
+    };
+
+    dendrite-key = {
+      file = ../secrets/dendrite-keys/server.key.age;
+      path = "/var/lib/dendrite/server.key";
+    };
+
+    gh2md-token = mkUserSecret {
+      file = ../secrets/gh2md/token.age;
+      path = "/home/${user}/.config/gh2md/token";
+    };
+
+    gist-token = mkUserSecret {
+      file = ../secrets/gist/token.age;
+      path = "/home/${user}/.gist";
+    };
+
+  };
+
 }

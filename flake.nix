@@ -17,9 +17,17 @@
       url = "github:nix-community/NixOS-WSL";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # agenix allows me to store encrypted secrets in the repo just like git-crypt, except
+    # it integrates with nix so I don't need to have world-readable secrets in the nix store.
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs, home-manager, nixos-wsl }:
+  # TODO: I could do inherit inputs and just have { ... } here, but I don't want to inherit nixpkgs
+  outputs = { self, nixpkgs, home-manager, nixos-wsl, agenix }:
   let
     user = "loli";
     system = "x86_64-linux";
@@ -29,6 +37,7 @@
       config.allowUnfree = true;
       overlays = [
         (import ./custom-packages.nix)
+        (final: prev: { agenix = agenix.defaultPackage.x86_64-linux; })
       ];
     };
 
@@ -55,7 +64,10 @@
 
       nixos-11400f = mkSystem rec {
         configName = "nixos-11400f"; # TODO: any way to avoid this duplication?
-        modules = [./${configName}/configuration.nix ];
+        modules = [
+          ./${configName}/configuration.nix
+          agenix.nixosModule
+        ];
         homeImports = [ ./${configName}/home.nix ];
       };
 
@@ -71,7 +83,7 @@
     devShell.x86_64-linux = pkgs.mkShell {
       packages = [
         pkgs.nixpkgs-fmt
-        pkgs.git-crypt
+        pkgs.agenix
       ];
     };
   };
