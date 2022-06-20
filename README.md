@@ -6,7 +6,6 @@ my personal nix flake
 nix-shell -p git --run 'git clone https://github.com/Francesco149/flake ~/flake'
 cd ~/flake
 nix-shell -p git --run 'nix develop' # or nix-shell
-git-crypt unlock # or replace the secrets files with your own
 nixos-rebuild switch --use-remote-sudo --flake .#nixos-11400f
 
 # relog into your user or reboot
@@ -40,3 +39,5 @@ add your own machine configuration to `flake.nix` in nixosConfigurations
         homeImports = [ ./home.nix ];
       };
 ```
+
+edit `secrets/secrets.nix` to have your own ssh key and secrets
