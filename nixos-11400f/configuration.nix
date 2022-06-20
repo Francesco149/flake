@@ -114,6 +114,13 @@
   };
 
   services.xserver.xkbOptions = "caps:escape";
+  services.openssh = {
+    enable = true;
+    passwordAuthentication = false;
+    permitRootLogin = "no";
+    kbdInteractiveAuthentication = false;
+  };
+
   # NOTE: private config files. comment out or provide your own
 
   # by default, agenix does not look in your home dir for keys
