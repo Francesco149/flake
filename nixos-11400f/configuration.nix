@@ -114,6 +114,120 @@
   };
 
   services.xserver.xkbOptions = "caps:escape";
+
+  networking.firewall = {
+    enable = true;
+    allowPing = true;
+    allowedTCPPorts = [
+      22 # ssh
+      80 # http
+      443 # https
+      8448 # matrix
+    ];
+  };
+
+  # postgresql: just used by matrix for now
+
+  services.postgresql = {
+    enable = true;
+    # package = pkgs.postgresql_14;
+    enableTCPIP = true;
+    authentication = pkgs.lib.mkOverride 10 ''
+      local all all trust
+      host all all 127.0.0.1/32 trust
+      host all all ::1/128 trust
+    '';
+    initialScript = pkgs.writeText "backend-initScript" ''
+      CREATE ROLE dendrite WITH LOGIN PASSWORD 'dendrite' NOCREATEDB;
+      CREATE DATABASE dendrite;
+      GRANT ALL PRIVILEGES ON DATABASE dendrite TO dendrite;
+    '';
+  };
+
+  # dendrite: matrix server
+
+  # services.dendrite = {
+  #   enable = true;
+  #   httpPort = 8008;
+  #   httpsPort = 8448;
+  #   tlsCert = "/var/lib/dendrite/server.crt";
+  #   tlsKey = "/var/lib/dendrite/server.key";
+  # };
+
+  # nginx: reverse proxy for matrix and just a general purpose web server
+
+  security.acme.acceptTerms = true;
+  security.acme.defaults.email = "francesco149@gmail.com";
+
+  services.nginx = {
+    enable = true;
+    recommendedProxySettings = true;
+    clientMaxBodySize = "1000M";
+  };
+
+  services.nginx.virtualHosts."dendrite.animegirls.xyz" = {
+    forceSSL = true;
+    enableACME = true;
+
+    locations."/_matrix" = {
+      proxyPass = "http://localhost:8008";
+    };
+  };
+
+  services.nginx.virtualHosts."matrix-server" = {
+    serverName = "matrix.animegirls.xyz";
+    forceSSL = true;
+    #enableACME = true;
+    listen = [
+      { port =  443; addr="0.0.0.0"; ssl = true; }
+      { port = 8448; addr="0.0.0.0"; ssl = true; }
+    ];
+    sslCertificate = "/var/lib/matrix.animegirls.xyz/fullchain.pem";
+    sslCertificateKey = "/var/lib/matrix.animegirls.xyz/key.pem";
+    sslTrustedCertificate = "/var/lib/matrix.animegirls.xyz/chain.pem";
+    locations."/_matrix".proxyPass = "https://192.168.1.4:8448";
+  };
+
+  # redirect www to non-www
+  services.nginx.virtualHosts."www.animegirls.xyz".locations."/".return =
+    "301 $scheme://animegirls.xyz$request_uri";
+
+  services.nginx.virtualHosts."animegirls.xyz" = {
+    forceSSL = true;
+    enableACME = true;
+
+    locations."/.well-known/matrix/server".return =
+      "200 '{\"m.server\":\"matrix.animegirls.xyz:8448\"}'";
+    locations."/.well-known/matrix/client".return =
+      "200 '{\"m.homeserver\": {\"base_url\": \"https://matrix.animegirls.xyz\"}}'";
+    locations."/maple".root = "/web";
+    locations."/tix".root = "/web";
+  };
+
+  security.acme.certs."animegirls.xyz".extraDomainNames = [
+    "git.animegirls.xyz"
+    "lib.animegirls.xyz"
+    "vid.animegirls.xyz"
+  ];
+
+  services.nginx.virtualHosts."git.animegirls.xyz" = {
+    forceSSL = true;
+    useACMEHost = "animegirls.xyz";
+    locations."/".root = "/web";
+  };
+
+  services.nginx.virtualHosts."lib.animegirls.xyz" = {
+    forceSSL = true;
+    useACMEHost = "animegirls.xyz";
+    locations."/".root = "/web";
+  };
+
+  services.nginx.virtualHosts."vid.animegirls.xyz" = {
+    forceSSL = true;
+    useACMEHost = "animegirls.xyz";
+    locations."/".root = "/web";
+  };
+
   services.openssh = {
     enable = true;
     passwordAuthentication = false;
