@@ -233,6 +233,16 @@
     openRegistration = false;
     client_api.registration_disabled = true;
     client_api.guests_disabled = true;
+
+    media_api.max_file_size_bytes = 1073741824;
+    media_api.dynamic_thumbnails = true;
+    media_api.max_thumbnail_generators = 10;
+    media_api.thumbnail_sizes = [
+      { width = 32; height = 32; method = "crop"; }
+      { width = 96; height = 96; method = "crop"; }
+      { width = 640; height = 480; method = "scale"; }
+    ];
+
   };
 
   # nginx: reverse proxy for matrix and just a general purpose web server
