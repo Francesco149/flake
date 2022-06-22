@@ -190,6 +190,12 @@
     user_api.device_database.connection_string = db;
     mscs.database.connection_string = db;
 
+    # these are experimental features currently being pull requested
+    mscs.mscs = [
+      #"msc2836" # threads (client: https://cerulean.matrix.org/)
+      "msc2946" # space summary
+    ];
+
     openRegistration = false;
   };
 
