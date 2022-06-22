@@ -81,6 +81,7 @@ in with config; {
     screenkey
     pavucontrol
     krita
+    tor-browser-bundle-bin
 
     (pkgs.buildEnv { name = "scripts-${configName}"; paths = [ ./scripts ]; })
   ];
