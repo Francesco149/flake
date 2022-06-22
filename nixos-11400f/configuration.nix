@@ -231,6 +231,8 @@
     ];
 
     openRegistration = false;
+    client_api.registration_disabled = true;
+    client_api.guests_disabled = true;
   };
 
   # nginx: reverse proxy for matrix and just a general purpose web server
