@@ -179,6 +179,40 @@
       "matrix.org"
     ];
 
+    federation_api.key_perspectives = [
+      {
+        server_name = "matrix.org";
+        keys = [
+          {
+            key_id = "ed25519:auto";
+            public_key = "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw";
+          }
+          {
+            key_id = "ed25519:a_RXGa";
+            public_key = "l8Hft5qXKn1vfHrg3p4+W8gELQVo8N13JkluMfmn2sQ";
+          }
+        ];
+      }
+      {
+        server_name = "midov.pl";
+        keys = [
+          {
+            key_id = "ed25519:a_HXVM";
+            public_key = "4FOGNjNLe3LNGHgDGIMVm3Yx9IQZZnn1LDqv5O1xIns";
+          }
+        ];
+      }
+      {
+        server_name = "tchncs.de";
+        keys = [
+          {
+            key_id = "ed25519:a_rOPL";
+            public_key = "HZxh/ZZktCgLcsJgKw2tHS9lPcOo1kNBoEdeVtmkpeg";
+          }
+        ];
+      }
+    ];
+
     # TODO: shorten this with some map loop magic?
     app_service_api.database.connection_string = db;
     federation_api.database.connection_string = db;
