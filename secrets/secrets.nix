@@ -4,6 +4,5 @@ let
 in {
   "gh2md/token.age".publicKeys = users;
   "gist/token.age".publicKeys = users;
-  "dendrite-keys/server.crt.age".publicKeys = users;
-  "dendrite-keys/server.key.age".publicKeys = users;
+  "dendrite-keys/matrix_key.pem.age".publicKeys = users;
 }

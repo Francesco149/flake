@@ -1,4 +1,4 @@
-{ pkgs, user, ... }:
+{ pkgs, user, lib, ... }:
 
 {
   imports = [
@@ -123,6 +123,7 @@
       80 # http
       443 # https
       8448 # matrix
+      8420 # dendrite
     ];
   };
 
@@ -146,13 +147,52 @@
 
   # dendrite: matrix server
 
-  # services.dendrite = {
-  #   enable = true;
-  #   httpPort = 8008;
-  #   httpsPort = 8448;
-  #   tlsCert = "/var/lib/dendrite/server.crt";
-  #   tlsKey = "/var/lib/dendrite/server.key";
-  # };
+  # we don't need to run it in https mode because nginx does the job of handling https requests,
+  # providing the cert and redirecting the connection to the local http port
+
+  services.dendrite = {
+    enable = true;
+    httpPort = 8008;
+  };
+
+  # the dendrite service runs with DynamicUser, meaning systemd creates a user dynamically for it.
+  # this gives that user access to these files that wouldn't have correct ownership otherwise
+
+  systemd.services.dendrite.serviceConfig.PermissionsStartOnly = true;
+
+  systemd.services.dendrite.preStart = lib.mkAfter ''
+
+    install -m 400 /var/lib/dendrite/matrix_key.pem /run/dendrite/matrix_key.pem
+    chown -R $(stat -c %u /run/dendrite) /run/dendrite
+
+  '';
+
+  services.dendrite.settings = let
+    db = "postgres://dendrite@localhost/dendrite?sslmode=disable";
+  in {
+    global.server_name = "animegirls.cc";
+    global.private_key = "/run/dendrite/matrix_key.pem";
+
+    global.trusted_third_party_id_servers = [
+      "midov.pl"
+      "privacytools.io"
+      "tchncs.de"
+      "matrix.org"
+    ];
+
+    # TODO: shorten this with some map loop magic?
+    app_service_api.database.connection_string = db;
+    federation_api.database.connection_string = db;
+    key_server.database.connection_string = db;
+    media_api.database.connection_string = db;
+    room_server.database.connection_string = db;
+    sync_api.database.connection_string = db;
+    user_api.account_database.connection_string = db;
+    user_api.device_database.connection_string = db;
+    mscs.database.connection_string = db;
+
+    openRegistration = false;
+  };
 
   # nginx: reverse proxy for matrix and just a general purpose web server
 
@@ -168,10 +208,29 @@
   services.nginx.virtualHosts."dendrite.animegirls.xyz" = {
     forceSSL = true;
     enableACME = true;
+    locations."/".return = "301 $scheme://animegirls.cc$request_uri";
+  };
 
-    locations."/_matrix" = {
-      proxyPass = "http://localhost:8008";
-    };
+  security.acme.certs."dendrite.animegirls.xyz".extraDomainNames = [
+    "animegirls.cc"
+  ];
+
+  services.nginx.virtualHosts."animegirls.cc" = {
+    forceSSL = true;
+    useACMEHost = "dendrite.animegirls.xyz";
+
+    listen = [
+      { port =  443; addr="0.0.0.0"; ssl = true; }
+      { port = 8420; addr="0.0.0.0"; ssl = true; }
+    ];
+
+    locations."/_matrix".proxyPass = "http://localhost:8008";
+
+    locations."/.well-known/matrix/server".return =
+      "200 '{\"m.server\":\"animegirls.cc:8420\"}'";
+
+    locations."/.well-known/matrix/client".return =
+      "200 '{\"m.homeserver\": {\"base_url\": \"https://animegirls.cc\"}}'";
   };
 
   services.nginx.virtualHosts."matrix-server" = {
@@ -191,6 +250,9 @@
   # redirect www to non-www
   services.nginx.virtualHosts."www.animegirls.xyz".locations."/".return =
     "301 $scheme://animegirls.xyz$request_uri";
+
+  services.nginx.virtualHosts."www.animegirls.cc".locations."/".return =
+    "301 $scheme://animegirls.cc$request_uri";
 
   services.nginx.virtualHosts."animegirls.xyz" = {
     forceSSL = true;
@@ -256,14 +318,9 @@
 
   in {
 
-    dendrite-crt = {
-      file = ../secrets/dendrite-keys/server.crt.age;
-      path = "/var/lib/dendrite/server.crt";
-    };
-
-    dendrite-key = {
-      file = ../secrets/dendrite-keys/server.key.age;
-      path = "/var/lib/dendrite/server.key";
+    dendrite-private-key = {
+      file = ../secrets/dendrite-keys/matrix_key.pem.age;
+      path = "/var/lib/dendrite/matrix_key.pem";
     };
 
     gh2md-token = mkUserSecret {
