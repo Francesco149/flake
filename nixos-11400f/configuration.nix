@@ -175,7 +175,6 @@
 
     global.trusted_third_party_id_servers = [
       "midov.pl"
-      "privacytools.io"
       "tchncs.de"
       "matrix.org"
     ];
