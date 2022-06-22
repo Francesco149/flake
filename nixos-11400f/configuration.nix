@@ -284,20 +284,6 @@
       "200 '{\"m.homeserver\": {\"base_url\": \"https://animegirls.cc\"}}'";
   };
 
-  services.nginx.virtualHosts."matrix-server" = {
-    serverName = "matrix.animegirls.xyz";
-    forceSSL = true;
-    #enableACME = true;
-    listen = [
-      { port =  443; addr="0.0.0.0"; ssl = true; }
-      { port = 8448; addr="0.0.0.0"; ssl = true; }
-    ];
-    sslCertificate = "/var/lib/matrix.animegirls.xyz/fullchain.pem";
-    sslCertificateKey = "/var/lib/matrix.animegirls.xyz/key.pem";
-    sslTrustedCertificate = "/var/lib/matrix.animegirls.xyz/chain.pem";
-    locations."/_matrix".proxyPass = "https://192.168.1.4:8448";
-  };
-
   # redirect www to non-www
   services.nginx.virtualHosts."www.animegirls.xyz".locations."/".return =
     "301 $scheme://animegirls.xyz$request_uri";
@@ -309,12 +295,9 @@
     forceSSL = true;
     enableACME = true;
 
-    locations."/.well-known/matrix/server".return =
-      "200 '{\"m.server\":\"matrix.animegirls.xyz:8448\"}'";
-    locations."/.well-known/matrix/client".return =
-      "200 '{\"m.homeserver\": {\"base_url\": \"https://matrix.animegirls.xyz\"}}'";
+    # TODO:
     locations."/maple".root = "/web";
-    locations."/tix".root = "/web";
+    #locations."/tix".root = "/web"; # TODO: this should be private
   };
 
   security.acme.certs."animegirls.xyz".extraDomainNames = [
@@ -323,6 +306,7 @@
     "vid.animegirls.xyz"
   ];
 
+  # these are TODO. temporary placeholders
   services.nginx.virtualHosts."git.animegirls.xyz" = {
     forceSSL = true;
     useACMEHost = "animegirls.xyz";
