@@ -1,5 +1,18 @@
-{ pkgs, user, lib, ... }:
+{ pkgs, user, lib, config, ... }:
 
+let
+  pgdb = name: "postgres://${name}@localhost/${name}?sslmode=disable";
+
+  appservice-pgdb = name: {
+    engine = "postgres";
+    connString = pgdb name;
+    filename = "";
+  };
+
+  dendriteLocalPort = 8008;
+  dendriteLocalUrl = "http://localhost:${toString dendriteLocalPort}";
+
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -129,20 +142,29 @@
 
   # postgresql: just used by matrix for now
 
-  services.postgresql = {
+  services.postgresql = let
+    db = name: {
+      inherit name;
+      ensurePermissions = {
+        "DATABASE \"${name}\"" = "ALL PRIVILEGES";
+      };
+    };
+    svc = name: lib.optional config.services.${name}.enable name;
+    svcs = (svc "dendrite")
+      ++ (svc "matrix-appservice-discord");
+  in {
     enable = true;
     # package = pkgs.postgresql_14;
     enableTCPIP = true;
+
     authentication = pkgs.lib.mkOverride 10 ''
       local all all trust
       host all all 127.0.0.1/32 trust
       host all all ::1/128 trust
     '';
-    initialScript = pkgs.writeText "backend-initScript" ''
-      CREATE ROLE dendrite WITH LOGIN PASSWORD 'dendrite' NOCREATEDB;
-      CREATE DATABASE dendrite;
-      GRANT ALL PRIVILEGES ON DATABASE dendrite TO dendrite;
-    '';
+
+    ensureDatabases = svcs;
+    ensureUsers = map (x: (db x)) svcs;
   };
 
   # dendrite: matrix server
@@ -152,7 +174,7 @@
 
   services.dendrite = {
     enable = true;
-    httpPort = 8008;
+    httpPort = dendriteLocalPort;
   };
 
   # the dendrite service runs with DynamicUser, meaning systemd creates a user dynamically for it.
@@ -162,13 +184,15 @@
 
   systemd.services.dendrite.preStart = lib.mkAfter ''
 
-    install -m 400 /var/lib/dendrite/matrix_key.pem /run/dendrite/matrix_key.pem
+    install -m 400 "${config.age.secrets.dendrite-private-key.path}" /run/dendrite/matrix_key.pem
+    install -m 400 "${config.age.secrets.matrix-appservice-discord-registration.path}" \
+      /run/dendrite/matrix-appservice-discord-registration.yaml
     chown -R $(stat -c %u /run/dendrite) /run/dendrite
 
   '';
 
   services.dendrite.settings = let
-    db = "postgres://dendrite@localhost/dendrite?sslmode=disable";
+    db = pgdb "dendrite";
   in {
     global.server_name = "animegirls.cc";
     global.private_key = "/run/dendrite/matrix_key.pem";
@@ -235,14 +259,30 @@
     client_api.guests_disabled = true;
 
     media_api.max_file_size_bytes = 1073741824;
-    media_api.dynamic_thumbnails = true;
-    media_api.max_thumbnail_generators = 10;
-    media_api.thumbnail_sizes = [
-      { width = 32; height = 32; method = "crop"; }
-      { width = 96; height = 96; method = "crop"; }
-      { width = 640; height = 480; method = "scale"; }
+
+    # do not enable dynamic thumbnails.
+    # these appears to cause a lot of issues. it slows down the homeserver to a crawl and the log is spammed
+    # with "signalling other goroutines" stuff. most likely misbehaving and holding things up
+    media_api.dynamic_thumbnails = false;
+
+    # TODO: find a way to not hardcode this path?
+    app_service_api.config_files = [
+      "/run/dendrite/matrix-appservice-discord-registration.yaml"
     ];
 
+  };
+
+  services.matrix-appservice-discord = {
+    enable = true;
+    environmentFile = config.age.secrets.matrix-appservice-discord-environment.path;
+
+    settings.bridge = {
+      domain = "animegirls.cc";
+      homeserverUrl = dendriteLocalUrl;
+      enableSelfServiceBridging = true;
+    };
+
+    settings.database = appservice-pgdb "matrix-appservice-discord";
   };
 
   # nginx: reverse proxy for matrix and just a general purpose web server
@@ -275,7 +315,7 @@
       { port = 8420; addr="0.0.0.0"; ssl = true; }
     ];
 
-    locations."/_matrix".proxyPass = "http://localhost:8008";
+    locations."/_matrix".proxyPass = dendriteLocalUrl;
 
     locations."/.well-known/matrix/server".return =
       "200 '{\"m.server\":\"animegirls.cc:8420\"}'";
@@ -290,6 +330,8 @@
 
   services.nginx.virtualHosts."www.animegirls.cc".locations."/".return =
     "301 $scheme://animegirls.cc$request_uri";
+
+  networking.hosts."127.0.0.1" = [ "animegirls.xyz" ];
 
   services.nginx.virtualHosts."animegirls.xyz" = {
     forceSSL = true;
@@ -362,11 +404,29 @@
       symlink = false;
     };
 
+    secretPath = path: "/var/lib/${user}-secrets/${path}";
+
+    mkSecret = { file, path }: {
+      inherit file;
+      path = secretPath path;
+      symlink = false;
+    };
+
   in {
 
-    dendrite-private-key = {
+    dendrite-private-key = mkSecret {
       file = ../secrets/dendrite-keys/matrix_key.pem.age;
-      path = "/var/lib/dendrite/matrix_key.pem";
+      path = "dendrite/matrix_key.pem";
+    };
+
+    matrix-appservice-discord-environment = mkSecret {
+      file = ../secrets/matrix-appservice-discord/environment.sh.age;
+      path = "matrix-appservice-discord/environment.sh";
+    };
+
+    matrix-appservice-discord-registration = mkSecret {
+      file = ../secrets/matrix-appservice-discord/registration.yaml.age;
+      path = "matrix-appservice-discord/registration.yaml";
     };
 
     gh2md-token = mkUserSecret {

@@ -5,4 +5,6 @@ in {
   "gh2md/token.age".publicKeys = users;
   "gist/token.age".publicKeys = users;
   "dendrite-keys/matrix_key.pem.age".publicKeys = users;
+  "matrix-appservice-discord/environment.sh.age".publicKeys = users;
+  "matrix-appservice-discord/registration.yaml.age".publicKeys = users;
 }
