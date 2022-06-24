@@ -295,9 +295,20 @@
     forceSSL = true;
     enableACME = true;
 
-    # TODO:
+    # TODO: somehow sync this with my own fork of the calculator
     locations."/maple".root = "/web";
-    #locations."/tix".root = "/web"; # TODO: this should be private
+
+    locations."/tix" = {
+      root = "/web";
+
+      # TODO: is there a declarative option for this? I couldn't find it
+      extraConfig = ''
+        allow 192.168.1.0/24;
+        allow 127.0.0.1;
+        deny all;
+      '';
+    };
+
   };
 
   security.acme.certs."animegirls.xyz".extraDomainNames = [
