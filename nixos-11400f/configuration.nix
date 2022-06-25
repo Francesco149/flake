@@ -175,6 +175,7 @@ in
     })
 
     (synapseWorker "media-repo1" 9104 {
+       worker_app = "synapse.app.media_repository";
        worker_listeners = [
         {
           type = "http";
