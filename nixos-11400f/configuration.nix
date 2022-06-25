@@ -91,7 +91,7 @@ let
   in {
     # this is so I can't typo the worker name elsewhere
     # since it wouldn't compile
-    synapseWorkers.${name} = { inherit name; };
+    services.matrix-synapse.customWorkers.${name} = { inherit name; };
 
     systemd.services."matrix-synapse-${name}" = {
       enable = true;
@@ -135,6 +135,7 @@ in
       "${config.age.secrets.dendrite-private-key.path}"
     ])
 
+    ({ options.services.matrix-synapse.customWorkers = lib.mkOption { default = {}; }; })
     (synapseWorker "federation-sender1" 9101 { worker_app = "synapse.app.federation_sender"; })
 
   ];
@@ -326,7 +327,7 @@ in
     send_federation = false;
 
     federation_sender_instances = [
-      config.synapseWorkers.federation-sender1.name
+      config.services.matrix-synapse.customWorkers.federation-sender1.name
     ];
 
     # instance_map = {
