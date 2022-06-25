@@ -84,14 +84,12 @@ let
   # generates the systemd service a matrix synapse worker
   synapseWorker = name: port: workerConfig: let
     yamlFormat = pkgs.formats.yaml { };
-    configFile = yamlFormat.generate
-      "${name}.yaml"
-      (synapseWorkerConfig port { worker_name = name; } // workerConfig);
+    configFileObj = (synapseWorkerConfig port { worker_name = name; } // workerConfig);
+    configFile = yamlFormat.generate "${name}.yaml" configFileObj;
     dataDir = config.services.matrix-synapse.dataDir;
   in {
-    # this is so I can't typo the worker name elsewhere
-    # since it wouldn't compile
-    services.matrix-synapse.customWorkers.${name} = { inherit name; };
+    # this is so I can't typo/don't have to repeat the worker name, ports and other stuff elsewhere
+    services.matrix-synapse.customWorkers.${name} = configFileObj;
 
     systemd.services."matrix-synapse-${name}" = {
       enable = true;
@@ -136,7 +134,56 @@ in
     ])
 
     ({ options.services.matrix-synapse.customWorkers = lib.mkOption { default = {}; }; })
+
     (synapseWorker "federation-sender1" 9101 { worker_app = "synapse.app.federation_sender"; })
+
+    (synapseWorker "federation-reader1" 9102 {
+      worker_listeners = [
+        {
+          type = "http";
+          port = 8009;
+          bind_address = "0.0.0.0";
+          tls = false;
+          x_forwarded = true;
+          resources = [
+            { names = [ "federation" ]; compress = false; }
+          ];
+        }
+      ];
+    })
+
+    (synapseWorker "event-persister1" 9103 {
+      worker_listeners = [
+        {
+          type = "http";
+          port = 9091;
+          bind_address = "127.0.0.1";
+          resources = [{ names = [ "replication" ]; }];
+        }
+      ];
+    })
+
+    (synapseWorker "client-worker1" 9104 {
+       worker_listeners = [
+        {
+          type = "http";
+          port = 8010;
+          bind_address = "0.0.0.0";
+          resources = [{ names = [ "client" ]; }];
+        }
+      ];
+    })
+
+    (synapseWorker "media-repo1" 9104 {
+       worker_listeners = [
+        {
+          type = "http";
+          port = 8011;
+          bind_address = "0.0.0.0";
+          resources = [{ names = [ "media" ]; }];
+        }
+      ];
+    })
 
   ];
 
@@ -319,23 +366,27 @@ in
   services.matrix-synapse.settings = let
     db = pgdb "matrix-synapse";
     dataDir = config.services.matrix-synapse.dataDir;
+    wrk = config.services.matrix-synapse.customWorkers;
   in {
     server_name = "animegirls.win";
     max_upload_size = "1000M";
 
     redis.enabled = true;
     send_federation = false;
+    enable_media_repo = false;
 
     federation_sender_instances = [
-      config.services.matrix-synapse.customWorkers.federation-sender1.name
+      wrk.federation-sender1.worker_name
     ];
 
-    # instance_map = {
-    #   event_persister1 = {
-    #     host = "localhost";
-    #     port = 9001;
-    #   };
-    # };
+    instance_map.${wrk.event-persister1.worker_name} = {
+      host = "localhost";
+      port = (builtins.elemAt wrk.event-persister1.worker_listeners 0).port;
+    };
+
+    stream_writers = {
+      events = wrk.event-persister1.worker_name;
+    };
 
     experimental_features = {
       spaces_enabled = true;
@@ -555,7 +606,11 @@ in
     clientMaxBodySize = "1000M";
   };
 
-  services.nginx.virtualHosts."animegirls.win" = {
+  services.nginx.virtualHosts."animegirls.win" = let
+      wrk = config.services.matrix-synapse.customWorkers;
+      synapseListener = workerName:
+        "http://0.0.0.0:${toString (builtins.elemAt wrk.${workerName}.worker_listeners 0).port}";
+  in {
     forceSSL = true;
     enableACME = true;
 
@@ -571,6 +626,14 @@ in
 
     locations."/.well-known/matrix/client".return =
       "200 '{\"m.homeserver\": {\"base_url\": \"https://animegirls.win\"}}'";
+
+    locations."/_matrix/federation/".proxyPass = synapseListener "federation-reader1";
+    locations."~ ^/_matrix/client/.*/(sync|events|initialSync)".proxyPass = synapseListener "client-worker1";
+
+    locations.${builtins.concatStringsSep "" [
+      "~ ^/(_matrix/media|_synapse/admin/v1/"
+      "(purge_media_cache|(room|user)/.*/media.*|media/.*|quarantine_media/.*|users/.*/media))"
+    ]}.proxyPass = synapseListener "media-repo1";
   };
 
   security.acme.certs."animegirls.win".extraDomainNames = [
