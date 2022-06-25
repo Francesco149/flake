@@ -5,6 +5,8 @@ in {
   "gh2md/token.age".publicKeys = users;
   "gist/token.age".publicKeys = users;
   "dendrite-keys/matrix_key.pem.age".publicKeys = users;
+  "synapse/homeserver.signing.key.age".publicKeys = users;
+  "synapse/secrets.yaml.age".publicKeys = users;
   "matrix-appservice-discord/environment.sh.age".publicKeys = users;
   "matrix-appservice-discord/registration.yaml.age".publicKeys = users;
 }
