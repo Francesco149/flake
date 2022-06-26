@@ -194,9 +194,6 @@ let
     };
   };
 
-  matrixHomeserverUrl = domain:
-    config.services.nginx.virtualHosts.${domain}.locations."/_matrix".proxyPass;
-
 in
 {
   imports = [
@@ -486,7 +483,7 @@ in
     ];
 
     app_service_config_files = [
-      #"${dataDir}/matrix-appservice-discord-registration.yaml"
+      "${dataDir}/matrix-appservice-discord-registration.yaml"
     ];
 
     database = {
@@ -550,7 +547,7 @@ in
 
     settings.bridge = {
       domain = synapseDomain;
-      homeserverUrl = matrixHomeserverUrl synapseDomain;
+      homeserverUrl = "https://${synapseDomain}";
       enableSelfServiceBridging = true;
     };
 
