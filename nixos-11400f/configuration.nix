@@ -355,8 +355,8 @@ in
       22 # ssh
       80 # http
       443 # https
-      synapsePort # matrix
-      dendritePort # dendrite
+      synapsePort
+      dendritePort
     ];
   };
 
