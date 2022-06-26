@@ -181,11 +181,29 @@ let
     };
   };
 
+  # convert serviceName into a systemd unit called ${serviceName}.unit .
+  # provide extra config such as after= in targetConfig.
+  systemdUnit = serviceName: targetConfig: {
+    systemd.targets.${serviceName} = {
+      description = "${serviceName} processes";
+      wantedBy = [ "multi-user.target" ];
+    } // targetConfig;
+    systemd.services.${serviceName} = {
+      partOf = [ "${serviceName}.target" ];
+      wantedBy = [ "${serviceName}.target" ];
+    };
+  };
+
 in
 {
   imports = [
     ./hardware-configuration.nix
     ../configuration.nix
+
+    # convert the synapse service into a unit so I can add workers and other dependent services to it
+    (systemdUnit "matrix-synapse" {
+      after = [ "network.target" "postgresql.service" ];
+    })
 
     (matrixNginx synapseDomain synapsePort synapseLocalPort)
     (matrixNginx dendriteDomain dendritePort dendriteLocalPort)
@@ -520,15 +538,6 @@ in
     ];
 
   };
-
-  # convert the synapse service into a unit so I can add workers and other dependent services to it
-  systemd.targets.matrix-synapse = {
-    description = "Synapse processes";
-    after = [ "network.target" "postgresql.service" ];
-    wantedBy = [ "multi-user.target" ];
-  };
-  systemd.services.matrix-synapse.partOf = [ "matrix-synapse.target" ];
-  systemd.services.matrix-synapse.wantedBy = [ "matrix-synapse.target" ];
 
   # bridges and other matrix appservices
 
