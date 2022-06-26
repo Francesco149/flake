@@ -138,6 +138,7 @@ in
 
     ({ options.services.matrix-synapse.customWorkers = lib.mkOption { default = {}; }; })
 
+    # NOTE: tls and compression are off by default for workers
     (synapseWorker "federation-sender1" 9101 { worker_app = "synapse.app.federation_sender"; })
 
     (synapseWorker "federation-reader1" 9102 {
@@ -146,7 +147,6 @@ in
           type = "http";
           port = 8009;
           bind_address = "0.0.0.0";
-          tls = false;
           x_forwarded = true;
           resources = [
             { names = [ "federation" ]; compress = false; }
