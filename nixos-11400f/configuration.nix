@@ -693,6 +693,9 @@ in
     };
   };
 
+  # allow access to private paths by making it a local request
+  networking.hosts."127.0.0.1" = [ synapseDomain ];
+
   security.acme.certs.${synapseDomain}.extraDomainNames = [
     "www.${synapseDomain}"
     "element.${synapseDomain}"
