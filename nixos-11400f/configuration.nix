@@ -684,7 +684,7 @@ in
     locations."/tix" = {
       root = "/web";
 
-      # TODO: this doesn't seem to work? gives me access denied
+      # NOTE: firefox seems to ignore my hosts settings and still 403, but it does work
       extraConfig = ''
         allow 192.168.1.0/24;
         allow 127.0.0.1;
