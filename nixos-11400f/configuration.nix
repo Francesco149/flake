@@ -122,6 +122,17 @@ let
     };
   };
 
+  # generater worker_listeners entry for synapseWorker workerConfig
+  synapseWorkerListener = port: resourceNames: {
+    inherit port;
+    type = "http";
+    bind_address = "0.0.0.0";
+    resources = [{ names = resourceNames; }];
+  };
+
+  synapseWorkerListenerConfig = port: resourceNames: workerConfig:
+    (synapseWorkerListener port resourceNames) // workerConfig;
+
   # generates the .well-known server/client endpoints for a nginx service.
 
   # usage:
@@ -189,57 +200,41 @@ in
       "${config.age.secrets.dendrite-private-key.path}"
     ])
 
+    # this option is used to store each worker's config obj so I can reuse its values (ports etc) and not repeat
     ({ options.services.matrix-synapse.customWorkers = lib.mkOption { default = {}; }; })
 
     # NOTE: tls and compression are off by default for workers
-    (synapseWorker "federation-sender1" 9101 { worker_app = "synapse.app.federation_sender"; })
+    (synapseWorker "federation-sender1" 9101 {
+      worker_app = "synapse.app.federation_sender";
+    })
 
     (synapseWorker "federation-reader1" 9102 {
       worker_listeners = [
-        {
-          type = "http";
-          port = 8009;
-          bind_address = "0.0.0.0";
+        (synapseWorkerListenerConfig 8009 [ "federation" ] {
           x_forwarded = true;
-          resources = [
-            { names = [ "federation" ]; compress = false; }
-          ];
-        }
+        })
       ];
     })
 
     (synapseWorker "event-persister1" 9103 {
       worker_listeners = [
-        {
-          type = "http";
-          port = 9091;
+        (synapseWorkerListenerConfig 9091 [ "replication" ] {
           bind_address = "127.0.0.1";
-          resources = [{ names = [ "replication" ]; }];
-        }
+        })
       ];
     })
 
     (synapseWorker "client-worker1" 9104 {
        worker_listeners = [
-        {
-          type = "http";
-          port = 8010;
-          bind_address = "0.0.0.0";
-          resources = [{ names = [ "client" ]; }];
-        }
-      ];
+         (synapseWorkerListener 8010 [ "client" ])
+       ];
     })
 
     (synapseWorker "media-repo1" 9104 {
        worker_app = "synapse.app.media_repository";
        worker_listeners = [
-        {
-          type = "http";
-          port = 8011;
-          bind_address = "0.0.0.0";
-          resources = [{ names = [ "media" ]; }];
-        }
-      ];
+         (synapseWorkerListener 8011 [ "media" ])
+       ];
     })
 
   ];
