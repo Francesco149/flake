@@ -434,11 +434,7 @@ in
         x_forwarded = true;
         resources = [
           {
-            names = [ "client" ];
-            compress = true;
-          }
-          {
-            names = [ "federation" ];
+            names = [ "client" "federation" ];
             compress = false;
           }
         ];
