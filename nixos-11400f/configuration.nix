@@ -59,8 +59,11 @@ let
   serviceFiles = serviceName: files:
     serviceFilesWithDir config.services.${serviceName}.dataDir serviceName files;
 
-  # generate matrix synapse worker config. based on
+  # generate matrix synapse worker config to be written to a synapse yaml file. based on
   # https://github.com/sumnerevans/nixos-configuration/blob/master/modules/services/matrix/synapse/default.nix
+
+  # port is the metrics port for prometheus.
+  # config is extra config to merge into the result
 
   synapseWorkerConfig = port: config: let
     newConfig = {
@@ -81,7 +84,7 @@ let
   in
     newConfig // { worker_listeners = newWorkerListeners; };
 
-  # generates the systemd service a matrix synapse worker
+  # generates the systemd service a matrix synapse worker. see synapseWorkerConfig
   synapseWorker = name: port: workerConfig: let
     yamlFormat = pkgs.formats.yaml { };
     configFileObj = (synapseWorkerConfig port { worker_name = name; } // workerConfig);
