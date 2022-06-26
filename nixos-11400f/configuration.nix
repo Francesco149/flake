@@ -12,12 +12,10 @@ let
   dendriteDomain = "animegirls.cc";
   dendriteLocalPort = 8007;
   dendritePort = 8420;
-  dendriteLocalUrl = "http://localhost:${toString dendriteLocalPort}";
 
   synapseDomain = "animegirls.win";
   synapseLocalPort = 8008;
   synapsePort = 8448;
-  synapseLocalUrl = "http://localhost:${toString synapseLocalPort}";
 
   # can't extract this from dendrite's module it seems. also referencing the systemd service causes inf recursion
   dendriteDataDir = "/var/lib/dendrite";
@@ -140,14 +138,46 @@ let
     };
   };
 
+  # generates the basic nginx config for a matrix server listening on local http port localPort
+
+  # includes:
+  # - main /_matrix endpoint
+  # - .well-known server/client endpoints for a nginx service
+  # - ssl listeners on 443 and port
+  # - automatic acme certificate
+
+  # usage:
+  # imports = [
+  #   (matrixNginx "example.com" 8448 8008)
+  # # ...
+  # ]
+
+  matrixNginx = domain: port: localPort: {
+    imports = [
+      (matrixNginxWellKnown domain port)
+    ];
+
+    services.nginx.virtualHosts.${domain} = {
+      forceSSL = true;
+      enableACME = true;
+
+      listen = [
+        { port =  443; addr="0.0.0.0"; ssl = true; }
+        { port = port; addr="0.0.0.0"; ssl = true; }
+      ];
+
+      locations."/_matrix".proxyPass = "http://localhost:${toString localPort}";
+    };
+  };
+
 in
 {
   imports = [
     ./hardware-configuration.nix
     ../configuration.nix
 
-    (matrixNginxWellKnown synapseDomain synapsePort)
-    (matrixNginxWellKnown dendriteDomain dendritePort)
+    (matrixNginx synapseDomain synapsePort synapseLocalPort)
+    (matrixNginx dendriteDomain dendritePort dendriteLocalPort)
 
     (serviceFiles "matrix-synapse" [
       "${config.age.secrets.synapse-homeserver-signing-key.path}"
@@ -513,7 +543,7 @@ in
 
     settings.bridge = {
       domain = synapseDomain;
-      homeserverUrl = synapseLocalUrl;
+      homeserverUrl = config.services.nginx.virtualHosts.${synapseDomain}.locations."/_matrix".proxyPass;
       enableSelfServiceBridging = true;
     };
 
@@ -626,24 +656,16 @@ in
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
-    clientMaxBodySize = "1000M";
+    clientMaxBodySize = "1000M"; # for big matrix uploads
   };
+
+  # matrixNginx takes care of most things, but we have to configure the worker endpoints here
 
   services.nginx.virtualHosts.${synapseDomain} = let
       wrk = config.services.matrix-synapse.customWorkers;
       synapseListener = workerName:
         "http://0.0.0.0:${toString (builtins.elemAt wrk.${workerName}.worker_listeners 0).port}";
   in {
-    forceSSL = true;
-    enableACME = true;
-
-    listen = [
-      { port =  443; addr="0.0.0.0"; ssl = true; }
-      { port = synapsePort; addr="0.0.0.0"; ssl = true; }
-    ];
-
-    locations."/_matrix".proxyPass = synapseLocalUrl;
-
     locations."/_matrix/federation/".proxyPass = synapseListener "federation-reader1";
     locations."~ ^/_matrix/client/.*/(sync|events|initialSync)".proxyPass = synapseListener "client-worker1";
 
@@ -687,18 +709,6 @@ in
     forceSSL = true;
     useACMEHost = synapseDomain;
     locations."/".root = "${custom-element}";
-  };
-
-  services.nginx.virtualHosts.${dendriteDomain} = {
-    forceSSL = true;
-    enableACME = true;
-
-    listen = [
-      { port = 443; addr="0.0.0.0"; ssl = true; }
-      { port = dendritePort; addr="0.0.0.0"; ssl = true; }
-    ];
-
-    locations."/_matrix".proxyPass = dendriteLocalUrl;
   };
 
   # redirect www to non-www
