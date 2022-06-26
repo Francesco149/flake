@@ -11,10 +11,12 @@ let
 
   dendriteDomain = "animegirls.cc";
   dendriteLocalPort = 8007;
+  dendritePort = 8420;
   dendriteLocalUrl = "http://localhost:${toString dendriteLocalPort}";
 
   synapseDomain = "animegirls.win";
   synapseLocalPort = 8008;
+  synapsePort = 8448;
   synapseLocalUrl = "http://localhost:${toString synapseLocalPort}";
 
   # can't extract this from dendrite's module it seems. also referencing the systemd service causes inf recursion
@@ -122,11 +124,30 @@ let
     };
   };
 
+  # generates the .well-known server/client endpoints for a nginx service.
+
+  # usage:
+  # imports = [
+  #   (matrixNginxWellKnown "example.com" 8448)
+  # # ...
+  # ]
+
+  matrixNginxWellKnown = domain: port: {
+    services.nginx.virtualHosts.${domain} = {
+      locations."/.well-known/matrix/server".return = "200 '{\"m.server\":\"${domain}:${toString port}\"}'";
+      locations."/.well-known/matrix/client".return =
+        "200 '{\"m.homeserver\": {\"base_url\": \"https://${domain}\"}}'";
+    };
+  };
+
 in
 {
   imports = [
     ./hardware-configuration.nix
     ../configuration.nix
+
+    (matrixNginxWellKnown synapseDomain synapsePort)
+    (matrixNginxWellKnown dendriteDomain dendritePort)
 
     (serviceFiles "matrix-synapse" [
       "${config.age.secrets.synapse-homeserver-signing-key.path}"
@@ -618,16 +639,10 @@ in
 
     listen = [
       { port =  443; addr="0.0.0.0"; ssl = true; }
-      { port = 8448; addr="0.0.0.0"; ssl = true; }
+      { port = synapsePort; addr="0.0.0.0"; ssl = true; }
     ];
 
     locations."/_matrix".proxyPass = synapseLocalUrl;
-
-    locations."/.well-known/matrix/server".return =
-      "200 '{\"m.server\":\"${synapseDomain}:8448\"}'";
-
-    locations."/.well-known/matrix/client".return =
-      "200 '{\"m.homeserver\": {\"base_url\": \"https://${synapseDomain}\"}}'";
 
     locations."/_matrix/federation/".proxyPass = synapseListener "federation-reader1";
     locations."~ ^/_matrix/client/.*/(sync|events|initialSync)".proxyPass = synapseListener "client-worker1";
@@ -674,32 +689,16 @@ in
     locations."/".root = "${custom-element}";
   };
 
-  services.nginx.virtualHosts."dendrite.animegirls.xyz" = {
-    forceSSL = true;
-    enableACME = true;
-    locations."/".return = "301 $scheme://${dendriteDomain}$request_uri";
-  };
-
-  security.acme.certs."dendrite.animegirls.xyz".extraDomainNames = [
-    dendriteDomain
-  ];
-
   services.nginx.virtualHosts.${dendriteDomain} = {
     forceSSL = true;
-    useACMEHost = "dendrite.animegirls.xyz";
+    enableACME = true;
 
     listen = [
-      { port =  443; addr="0.0.0.0"; ssl = true; }
-      { port = 8420; addr="0.0.0.0"; ssl = true; }
+      { port = 443; addr="0.0.0.0"; ssl = true; }
+      { port = dendritePort; addr="0.0.0.0"; ssl = true; }
     ];
 
     locations."/_matrix".proxyPass = dendriteLocalUrl;
-
-    locations."/.well-known/matrix/server".return =
-      "200 '{\"m.server\":\"${dendriteDomain}:8420\"}'";
-
-    locations."/.well-known/matrix/client".return =
-      "200 '{\"m.homeserver\": {\"base_url\": \"https://${dendriteDomain}\"}}'";
   };
 
   # redirect www to non-www
