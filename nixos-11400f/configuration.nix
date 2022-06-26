@@ -677,6 +677,20 @@ in
       "~ ^/(_matrix/media|_synapse/admin/v1/"
       "(purge_media_cache|(room|user)/.*/media.*|media/.*|quarantine_media/.*|users/.*/media))"
     ]}.proxyPass = synapseListener "media-repo1";
+
+    # other things hosted at the synapse domain
+    locations."/maple".root = "/web";
+
+    locations."/tix" = {
+      root = "/web";
+
+      # TODO: this doesn't seem to work? gives me access denied
+      extraConfig = ''
+        allow 192.168.1.0/24;
+        allow 127.0.0.1;
+        deny all;
+      '';
+    };
   };
 
   security.acme.certs.${synapseDomain}.extraDomainNames = [
@@ -716,61 +730,11 @@ in
   };
 
   # redirect www to non-www
-  services.nginx.virtualHosts."www.animegirls.xyz".locations."/".return =
-    "301 $scheme://animegirls.xyz$request_uri";
-
   services.nginx.virtualHosts."www.${dendriteDomain}".locations."/".return =
     "301 $scheme://${dendriteDomain}$request_uri";
 
   services.nginx.virtualHosts."www.${synapseDomain}".locations."/".return =
     "301 $scheme://${synapseDomain}$request_uri";
-
-  networking.hosts."127.0.0.1" = [ "animegirls.xyz" ];
-
-  services.nginx.virtualHosts."animegirls.xyz" = {
-    forceSSL = true;
-    enableACME = true;
-
-    # TODO: somehow sync this with my own fork of the calculator
-    locations."/maple".root = "/web";
-
-    locations."/tix" = {
-      root = "/web";
-
-      # TODO: is there a declarative option for this? I couldn't find it
-      extraConfig = ''
-        allow 192.168.1.0/24;
-        allow 127.0.0.1;
-        deny all;
-      '';
-    };
-
-  };
-
-  security.acme.certs."animegirls.xyz".extraDomainNames = [
-    "git.animegirls.xyz"
-    "lib.animegirls.xyz"
-    "vid.animegirls.xyz"
-  ];
-
-  # these are TODO. temporary placeholders
-  services.nginx.virtualHosts."git.animegirls.xyz" = {
-    forceSSL = true;
-    useACMEHost = "animegirls.xyz";
-    locations."/".root = "/web";
-  };
-
-  services.nginx.virtualHosts."lib.animegirls.xyz" = {
-    forceSSL = true;
-    useACMEHost = "animegirls.xyz";
-    locations."/".root = "/web";
-  };
-
-  services.nginx.virtualHosts."vid.animegirls.xyz" = {
-    forceSSL = true;
-    useACMEHost = "animegirls.xyz";
-    locations."/".root = "/web";
-  };
 
   services.openssh = {
     enable = true;
