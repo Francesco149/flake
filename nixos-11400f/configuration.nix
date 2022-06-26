@@ -9,9 +9,11 @@ let
     filename = "";
   };
 
+  dendriteDomain = "animegirls.cc";
   dendriteLocalPort = 8007;
   dendriteLocalUrl = "http://localhost:${toString dendriteLocalPort}";
 
+  synapseDomain = "animegirls.win";
   synapseLocalPort = 8008;
   synapseLocalUrl = "http://localhost:${toString synapseLocalPort}";
 
@@ -372,7 +374,7 @@ in
     dataDir = config.services.matrix-synapse.dataDir;
     wrk = config.services.matrix-synapse.customWorkers;
   in {
-    server_name = "animegirls.win";
+    server_name = synapseDomain;
     max_upload_size = "1000M";
 
     redis.enabled = true;
@@ -489,7 +491,7 @@ in
     environmentFile = config.age.secrets.matrix-appservice-discord-environment.path;
 
     settings.bridge = {
-      domain = "animegirls.win";
+      domain = synapseDomain;
       homeserverUrl = synapseLocalUrl;
       enableSelfServiceBridging = true;
     };
@@ -518,7 +520,7 @@ in
     db = pgdb "dendrite";
     dataDir = dendriteDataDir;
   in {
-    global.server_name = "animegirls.cc";
+    global.server_name = dendriteDomain;
     global.private_key = "${dataDir}/matrix_key.pem";
 
     global.trusted_third_party_id_servers = [
@@ -606,7 +608,7 @@ in
     clientMaxBodySize = "1000M";
   };
 
-  services.nginx.virtualHosts."animegirls.win" = let
+  services.nginx.virtualHosts.${synapseDomain} = let
       wrk = config.services.matrix-synapse.customWorkers;
       synapseListener = workerName:
         "http://0.0.0.0:${toString (builtins.elemAt wrk.${workerName}.worker_listeners 0).port}";
@@ -619,13 +621,13 @@ in
       { port = 8448; addr="0.0.0.0"; ssl = true; }
     ];
 
-    locations."/_matrix".proxyPass = "${synapseLocalUrl}";
+    locations."/_matrix".proxyPass = synapseLocalUrl;
 
     locations."/.well-known/matrix/server".return =
-      "200 '{\"m.server\":\"animegirls.win:8448\"}'";
+      "200 '{\"m.server\":\"${synapseDomain}:8448\"}'";
 
     locations."/.well-known/matrix/client".return =
-      "200 '{\"m.homeserver\": {\"base_url\": \"https://animegirls.win\"}}'";
+      "200 '{\"m.homeserver\": {\"base_url\": \"https://${synapseDomain}\"}}'";
 
     locations."/_matrix/federation/".proxyPass = synapseListener "federation-reader1";
     locations."~ ^/_matrix/client/.*/(sync|events|initialSync)".proxyPass = synapseListener "client-worker1";
@@ -636,18 +638,18 @@ in
     ]}.proxyPass = synapseListener "media-repo1";
   };
 
-  security.acme.certs."animegirls.win".extraDomainNames = [
-    "www.animegirls.win"
-    "element.animegirls.win"
+  security.acme.certs.${synapseDomain}.extraDomainNames = [
+    "www.${synapseDomain}"
+    "element.${synapseDomain}"
   ];
 
-  services.nginx.virtualHosts."element.animegirls.win" = let
+  services.nginx.virtualHosts."element.${synapseDomain}" = let
     custom-element = pkgs.element-web.override {
       conf = {
         default_server_config = {
           "m.homeserver" = {
-            base_url = "https://animegirls.win";
-            server_name = "animegirls.win";
+            base_url = "https://${synapseDomain}";
+            server_name = synapseDomain;
           };
         };
         brand = "Anime Girls";
@@ -656,7 +658,7 @@ in
         default_theme = "dark";
         room_directory = {
           servers = [
-            "animegirls.win"
+            synapseDomain
             "opensuse.org"
             "tchncs.de"
             "libera.chat"
@@ -668,21 +670,21 @@ in
     };
   in {
     forceSSL = true;
-    useACMEHost = "animegirls.win";
+    useACMEHost = synapseDomain;
     locations."/".root = "${custom-element}";
   };
 
   services.nginx.virtualHosts."dendrite.animegirls.xyz" = {
     forceSSL = true;
     enableACME = true;
-    locations."/".return = "301 $scheme://animegirls.cc$request_uri";
+    locations."/".return = "301 $scheme://${dendriteDomain}$request_uri";
   };
 
   security.acme.certs."dendrite.animegirls.xyz".extraDomainNames = [
-    "animegirls.cc"
+    dendriteDomain
   ];
 
-  services.nginx.virtualHosts."animegirls.cc" = {
+  services.nginx.virtualHosts.${dendriteDomain} = {
     forceSSL = true;
     useACMEHost = "dendrite.animegirls.xyz";
 
@@ -694,21 +696,21 @@ in
     locations."/_matrix".proxyPass = dendriteLocalUrl;
 
     locations."/.well-known/matrix/server".return =
-      "200 '{\"m.server\":\"animegirls.cc:8420\"}'";
+      "200 '{\"m.server\":\"${dendriteDomain}:8420\"}'";
 
     locations."/.well-known/matrix/client".return =
-      "200 '{\"m.homeserver\": {\"base_url\": \"https://animegirls.cc\"}}'";
+      "200 '{\"m.homeserver\": {\"base_url\": \"https://${dendriteDomain}\"}}'";
   };
 
   # redirect www to non-www
   services.nginx.virtualHosts."www.animegirls.xyz".locations."/".return =
     "301 $scheme://animegirls.xyz$request_uri";
 
-  services.nginx.virtualHosts."www.animegirls.cc".locations."/".return =
-    "301 $scheme://animegirls.cc$request_uri";
+  services.nginx.virtualHosts."www.${dendriteDomain}".locations."/".return =
+    "301 $scheme://${dendriteDomain}$request_uri";
 
-  services.nginx.virtualHosts."www.animegirls.win".locations."/".return =
-    "301 $scheme://animegirls.win$request_uri";
+  services.nginx.virtualHosts."www.${synapseDomain}".locations."/".return =
+    "301 $scheme://${synapseDomain}$request_uri";
 
   networking.hosts."127.0.0.1" = [ "animegirls.xyz" ];
 
