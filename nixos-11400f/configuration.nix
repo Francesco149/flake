@@ -194,6 +194,9 @@ let
     };
   };
 
+  matrixHomeserverUrl = domain:
+    config.services.nginx.virtualHosts.${domain}.locations."/_matrix".proxyPass;
+
 in
 {
   imports = [
@@ -427,7 +430,7 @@ in
   };
 
   # redis: just used by matrix now. used for inter-process communication
-  services.redis.enable = true;
+  services.redis.servers."".enable = true;
 
   # synapse: matrix server
   # nginx is expected to handle https and proxy to the local http
@@ -542,12 +545,12 @@ in
   # bridges and other matrix appservices
 
   services.matrix-appservice-discord = {
-    enable = false;
+    enable = true;
     environmentFile = config.age.secrets.matrix-appservice-discord-environment.path;
 
     settings.bridge = {
       domain = synapseDomain;
-      homeserverUrl = config.services.nginx.virtualHosts.${synapseDomain}.locations."/_matrix".proxyPass;
+      homeserverUrl = matrixHomeserverUrl synapseDomain;
       enableSelfServiceBridging = true;
     };
 
