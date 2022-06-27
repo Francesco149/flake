@@ -90,7 +90,7 @@ let
   # generates the systemd service a matrix synapse worker. see synapseWorkerConfig
   synapseWorker = name: port: workerConfig: let
     yamlFormat = pkgs.formats.yaml { };
-    configFileObj = (synapseWorkerConfig port { worker_name = name; } // workerConfig);
+    configFileObj = (synapseWorkerConfig port ({ worker_name = name; } // workerConfig));
     configFile = yamlFormat.generate "${name}.yaml" configFileObj;
     dataDir = config.services.matrix-synapse.dataDir;
   in {
