@@ -249,7 +249,7 @@ in
        ];
     })
 
-    (synapseWorker "media-repo1" 9104 {
+    (synapseWorker "media-repo1" 9105 {
        worker_app = "synapse.app.media_repository";
        worker_listeners = [
          (synapseWorkerListener 8011 [ "media" ])
