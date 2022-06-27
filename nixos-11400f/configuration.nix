@@ -112,6 +112,7 @@ let
         ExecReload = "${pkgs.util-linux}/bin/kill -HUP $MAINPID";
         Restart = "on-failure";
         UMask = "0077";
+        LimitNOFILE = 65535;
         ExecStart = ''
           ${pkgs.matrix-synapse}/bin/synapse_worker \
             ${ lib.concatMapStringsSep "\n  " (x: "--config-path ${x} \\")
@@ -457,6 +458,7 @@ in
   # nginx is expected to handle https and proxy to the local http
 
   services.matrix-synapse.enable = true;
+  systemd.services.matrix-synapse.serviceConfig.LimitNOFILE = 65535;
   services.matrix-synapse.settings = let
     db = pgdb "matrix-synapse";
     dataDir = config.services.matrix-synapse.dataDir;
