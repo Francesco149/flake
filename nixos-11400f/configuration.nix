@@ -123,16 +123,28 @@ let
     };
   };
 
-  # generater worker_listeners entry for synapseWorker workerConfig
-  synapseWorkerListener = port: resourceNames: {
+  baseListener = port: resourceNames: extraConfig: {
     inherit port;
     type = "http";
+    resources = [{ names = resourceNames; compress = false; }];
+  } // extraConfig;
+
+  # generate worker_listeners entry for synapseWorker workerConfig
+  synapseWorkerListener = port: resourceNames: baseListener port resourceNames {
     bind_address = "0.0.0.0";
-    resources = [{ names = resourceNames; }];
   };
 
   synapseWorkerListenerConfig = port: resourceNames: workerConfig:
     (synapseWorkerListener port resourceNames) // workerConfig;
+
+  # generate listeners entry for the matrix-synapse service
+  synapseListener = port: resourceNames: baseListener port resourceNames {
+    bind_addresses = [ "0.0.0.0" ];
+    tls = false;
+  };
+
+  synapseListenerConfig = port: resourceNames: extraConfig:
+    (synapseListener port resourceNames) // extraConfig;
 
   # generates the .well-known server/client endpoints for a nginx service.
 
@@ -219,10 +231,20 @@ in
       "${config.age.secrets.dendrite-private-key.path}"
     ])
 
+    (serviceFiles "grafana" [
+      config.age.secrets.grafana-password.path
+      config.age.secrets.grafana-secret-key.path
+    ])
+
     # this option is used to store each worker's config obj so I can reuse its values (ports etc) and not repeat
     ({ options.services.matrix-synapse.customWorkers = lib.mkOption { default = {}; }; })
 
     # NOTE: tls and compression are off by default for workers
+
+    # NOTE: there are things that reference customWorkers that rely on only having 2 worker_listeners
+    #       and the metrics worker_listener being the last one in the list.
+    #       if I ever need a different setup, I need to change all of those references
+
     (synapseWorker "federation-sender1" 9101 {
       worker_app = "synapse.app.federation_sender";
     })
@@ -411,7 +433,8 @@ in
     svc = name: lib.optional config.services.${name}.enable name;
     svcs = (svc "dendrite")
       ++ (svc "matrix-synapse")
-      ++ (svc "matrix-appservice-discord");
+      ++ (svc "matrix-appservice-discord")
+      ++ (svc "grafana");
   in {
     enable = true;
     # package = pkgs.postgresql_14;
@@ -445,6 +468,7 @@ in
     redis.enabled = true;
     send_federation = false;
     enable_media_repo = false;
+    enable_metrics = true;
 
     federation_sender_instances = [
       wrk.federation-sender1.worker_name
@@ -475,7 +499,6 @@ in
     enable_registration = false;
     registration_shared_secret = null;
     macaroon_secret_key = null;
-    enable_metrics = false;
     report_stats = false;
     presence.enabled = false;
 
@@ -518,6 +541,9 @@ in
           }
         ];
       }
+      (synapseListenerConfig 9009 [ "metrics" ] {
+        type = "metrics";
+      })
     ];
 
     trusted_key_servers = [
@@ -733,6 +759,91 @@ in
     locations."/".root = "${custom-element}";
   };
 
+  # prometheus: monitoring tool, only used for matrix for now
+  services.prometheus = let
+    wrk = config.services.matrix-synapse.customWorkers // {
+      master.worker_listeners = config.services.matrix-synapse.settings.listeners;
+    };
+    rules = pkgs.fetchurl {
+      url = "https://raw.githubusercontent.com/matrix-org/synapse/0fed46ebe5abc524f10708ce1d5849e53dbab8af/contrib/prometheus/synapse-v2.rules";
+      sha256 = "0d8jvlrp3f3y6wkrw6qvdvmd6k8zj46cg7qiz44gr1hs4s00grg9";
+    };
+  in {
+    enable = true;
+    globalConfig.scrape_interval = "5s";
+    scrapeConfigs = [
+      {
+        job_name = "synapse";
+        metrics_path = "/_synapse/metrics";
+
+        static_configs = lib.mapAttrsToList (name: value: {
+
+          targets = with builtins; let
+            metricsListeners = filter (x: x.type == "metrics") value.worker_listeners;
+            port = if length metricsListeners > 0 then (elemAt metricsListeners 0).port else -1;
+          in [ "0.0.0.0:${toString port}" ];
+
+          labels = { instance = synapseDomain; job = name; index = "1"; };
+
+        }) wrk;
+
+      }
+    ];
+
+    ruleFiles = [ "${rules}" ];
+  };
+
+  # grafana: fancy interface for the prometheus synapse metrics
+  services.grafana = {
+    enable = true;
+
+    security = let
+      dataDir = config.services.grafana.dataDir;
+    in {
+      adminPasswordFile = "${dataDir}/password";
+      secretKeyFile = "${dataDir}/secret-key";
+    };
+
+    # use postgresql
+    database = {
+      type = "postgres";
+      host = "127.0.0.1";
+      user = "grafana";
+    };
+
+    provision = let
+      synapse-dash = pkgs.fetchurl {
+        url = "https://github.com/matrix-org/synapse/blob/77258b67257983d67f90270d3d8e04594fd512ba/contrib/grafana/synapse.json";
+        sha256 = "19r9vpvg7x29agnnj4wsfizvl0s7famzfspypibalygq1mdc2pn2";
+      };
+    in {
+      enable = true;
+
+      dashboards = [
+        {
+          name = "synapse";
+          type = "file";
+          folder = "Server";
+          options.path = synapse-dash;
+        }
+      ];
+
+      datasources = [
+        {
+          name = "Prometheus";
+          type = "prometheus";
+          url = "http://127.0.0.1:${toString config.services.prometheus.port}";
+          access = "proxy";
+          isDefault = true;
+          jsonData = {
+            timeInterval = config.services.prometheus.globalConfig.scrape_interval;
+          };
+        }
+      ];
+
+    };
+  };
+
   # redirect www to non-www
   services.nginx.virtualHosts."www.${dendriteDomain}".locations."/".return =
     "301 $scheme://${dendriteDomain}$request_uri";
@@ -799,6 +910,16 @@ in
     matrix-appservice-discord-registration = mkSecret {
       file = ../secrets/matrix-appservice-discord/registration.yaml.age;
       path = "matrix-appservice-discord/matrix-appservice-discord-registration.yaml";
+    };
+
+    grafana-secret-key = mkSecret {
+      file = ../secrets/grafana/secret-key.age;
+      path = "grafana/secret-key";
+    };
+
+    grafana-password = mkSecret {
+      file = ../secrets/grafana/password.age;
+      path = "grafana/password";
     };
 
     gh2md-token = mkUserSecret {

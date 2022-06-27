@@ -9,4 +9,6 @@ in {
   "synapse/secrets.yaml.age".publicKeys = users;
   "matrix-appservice-discord/environment.sh.age".publicKeys = users;
   "matrix-appservice-discord/registration.yaml.age".publicKeys = users;
+  "grafana/password.age".publicKeys = users;
+  "grafana/secret-key.age".publicKeys = users;
 }
