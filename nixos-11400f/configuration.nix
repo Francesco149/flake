@@ -34,9 +34,10 @@ let
   # };
 
   serviceFilesWithDir = dataDir: serviceName: files: {
-    systemd.services."${serviceName}".after = [ "${serviceName}-serviceFiles.service" ];
+    systemd.services."${serviceName}".after =
+      lib.optional config.services.${serviceName}.enable "${serviceName}-serviceFiles.service";
     systemd.services."${serviceName}-serviceFiles" = {
-      enable = true;
+      enable = config.services.${serviceName}.enable;
       restartIfChanged = true;
       description = "Install files to ${serviceName}'s dataDir";
       before = [ "${serviceName}.service" ];
