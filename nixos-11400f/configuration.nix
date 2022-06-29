@@ -221,22 +221,26 @@ in
 
     (matrixNginx synapseDomain synapsePort synapseLocalPort)
     (matrixNginx dendriteDomain dendritePort dendriteLocalPort)
+  ]
 
+  ++ (with config.age.secrets; [
     (serviceFiles "matrix-synapse" [
-      "${config.age.secrets.synapse-homeserver-signing-key.path}"
-      "${config.age.secrets.synapse-secrets.path}"
-      "${config.age.secrets.matrix-appservice-discord-registration.path}"
+      synapse-homeserver-signing-key.path
+      synapse-secrets.path
+      matrix-appservice-discord-registration.path
     ])
 
     (serviceFilesWithDir dendriteDataDir "dendrite" [
-      "${config.age.secrets.dendrite-private-key.path}"
+      dendrite-private-key.path
     ])
 
     (serviceFiles "grafana" [
-      config.age.secrets.grafana-password.path
-      config.age.secrets.grafana-secret-key.path
+      grafana-password.path
+      grafana-secret-key.path
     ])
+  ])
 
+  ++ [
     # this option is used to store each worker's config obj so I can reuse its values (ports etc) and not repeat
     ({ options.services.matrix-synapse.customWorkers = lib.mkOption { default = {}; }; })
 
