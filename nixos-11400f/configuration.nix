@@ -758,10 +758,6 @@ in
     wrk = config.services.matrix-synapse.customWorkers // {
       master.worker_listeners = config.services.matrix-synapse.settings.listeners;
     };
-    rules = pkgs.fetchurl {
-      url = "https://raw.githubusercontent.com/matrix-org/synapse/0fed46ebe5abc524f10708ce1d5849e53dbab8af/contrib/prometheus/synapse-v2.rules";
-      sha256 = "0d8jvlrp3f3y6wkrw6qvdvmd6k8zj46cg7qiz44gr1hs4s00grg9";
-    };
   in {
     enable = true;
     globalConfig.scrape_interval = "5s";
@@ -795,7 +791,12 @@ in
       }
     ];
 
-    ruleFiles = [ "${rules}" ];
+    ruleFiles = [
+      (pkgs.fetchurl {
+        url = "https://raw.githubusercontent.com/matrix-org/synapse/0fed46ebe5abc524f10708ce1d5849e53dbab8af/contrib/prometheus/synapse-v2.rules";
+        sha256 = "0d8jvlrp3f3y6wkrw6qvdvmd6k8zj46cg7qiz44gr1hs4s00grg9";
+      })
+    ];
   };
 
   # grafana: fancy interface for the prometheus synapse metrics
