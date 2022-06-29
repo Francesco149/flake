@@ -64,4 +64,8 @@ self: super: with super; {
     };
   };
 
+  # temporary modified pkg that pulls the latest git version that fixes metrics
+  matrix-appservice-discord = (import ./pkgs/servers/matrix-appservice-discord {
+    inherit lib mkYarnPackage fetchFromGitHub runCommand makeWrapper python3 nodejs;
+  });
 }

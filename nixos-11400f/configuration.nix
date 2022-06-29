@@ -578,6 +578,15 @@ in
       domain = synapseDomain;
       homeserverUrl = "https://${synapseDomain}";
       enableSelfServiceBridging = true;
+      disableJoinLeaveNotifications = true;
+      disableInviteNotifications = true;
+    };
+
+    # crashes the bridge for some reason, so disabled
+    settings.metrics = {
+      enable = false;
+      port = 9201;
+      host = "0.0.0.0";
     };
 
     settings.database = appservice-pgdb "matrix-appservice-discord";
@@ -788,7 +797,18 @@ in
           labels = { instance = synapseDomain; job = name; index = "1"; };
 
         }) wrk;
-
+      }
+      {
+        job_name = "matrix-appservice";
+        metrics_path = "/metrics";
+        static_configs = let
+          svc = x: lib.optionals config.services.${x}.enable x;
+        in map (job: {
+          targets = [ "0.0.0.0:${toString config.services.${job}.settings.metrics.port}" ];
+          labels = { instance = synapseDomain; inherit job; };
+        }) [
+          (svc "matrix-appservice-discord")
+        ];
       }
     ];
 
@@ -813,21 +833,30 @@ in
       user = "grafana";
     };
 
-    provision = let
-      synapse-dash = pkgs.fetchurl {
-        url = "https://github.com/matrix-org/synapse/blob/77258b67257983d67f90270d3d8e04594fd512ba/contrib/grafana/synapse.json";
-        sha256 = "19r9vpvg7x29agnnj4wsfizvl0s7famzfspypibalygq1mdc2pn2";
-      };
-    in {
+    provision = {
       enable = true;
 
-      dashboards = [
+      dashboards = let
+        d = name: path: { inherit name path; };
+      in map (x:
         {
-          name = "synapse";
+          name = x.name;
           type = "file";
           folder = "Server";
-          options.path = synapse-dash;
+          options.path = x.path;
         }
+      ) [
+        (d "synapse"
+          (pkgs.fetchurl {
+            url = "https://github.com/matrix-org/synapse/blob/77258b67257983d67f90270d3d8e04594fd512ba/contrib/grafana/synapse.json";
+            sha256 = "19r9vpvg7x29agnnj4wsfizvl0s7famzfspypibalygq1mdc2pn2";
+          }))
+
+        (d "appservice"
+          (pkgs.fetchurl {
+            url = "https://raw.githubusercontent.com/matrix-org/matrix-appservice-irc/9ada0c2477d63f040d7c49d16d12b7ac3a044f72/contrib/grafana.json";
+            sha256 = "0vg7g1slqp0hhkk0bq6vkvmlbbkgjh44qwj5kwyqc84lpkmgjilv";
+          }))
       ];
 
       datasources = [
