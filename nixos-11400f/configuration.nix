@@ -822,25 +822,22 @@ in
 
       dashboards = let
         d = name: path: { inherit name path; };
-      in map (x:
-        {
-          name = x.name;
-          type = "file";
-          folder = "Server";
-          options.path = x.path;
-        }
-      ) [
-        (d "synapse"
-          (pkgs.fetchurl {
-            url = "https://github.com/matrix-org/synapse/blob/77258b67257983d67f90270d3d8e04594fd512ba/contrib/grafana/synapse.json";
-            sha256 = "19r9vpvg7x29agnnj4wsfizvl0s7famzfspypibalygq1mdc2pn2";
-          }))
+        f = name: url: sha256: d name (pkgs.fetchurl { inherit url sha256; });
+      in map (x: {
+        name = x.name;
+        type = "file";
+        folder = "Server";
+        options.path = x.path;
+      }) [
 
-        (d "appservice"
-          (pkgs.fetchurl {
-            url = "https://raw.githubusercontent.com/matrix-org/matrix-appservice-irc/9ada0c2477d63f040d7c49d16d12b7ac3a044f72/contrib/grafana.json";
-            sha256 = "0vg7g1slqp0hhkk0bq6vkvmlbbkgjh44qwj5kwyqc84lpkmgjilv";
-          }))
+        (f "synapse"
+          "https://github.com/matrix-org/synapse/blob/77258b67257983d67f90270d3d8e04594fd512ba/contrib/grafana/synapse.json"
+          "19r9vpvg7x29agnnj4wsfizvl0s7famzfspypibalygq1mdc2pn2")
+
+        (f "appservice"
+          "https://raw.githubusercontent.com/matrix-org/matrix-appservice-irc/9ada0c2477d63f040d7c49d16d12b7ac3a044f72/contrib/grafana.json"
+          "0vg7g1slqp0hhkk0bq6vkvmlbbkgjh44qwj5kwyqc84lpkmgjilv")
+
       ];
 
       datasources = [
