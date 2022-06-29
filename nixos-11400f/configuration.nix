@@ -132,7 +132,7 @@ let
 
   # generate worker_listeners entry for synapseWorker workerConfig
   synapseWorkerListener = port: resourceNames: baseListener port resourceNames {
-    bind_address = "0.0.0.0";
+    bind_address = "127.0.0.1";
   };
 
   synapseWorkerListenerConfig = port: resourceNames: workerConfig:
@@ -140,7 +140,7 @@ let
 
   # generate listeners entry for the matrix-synapse service
   synapseListener = port: resourceNames: baseListener port resourceNames {
-    bind_addresses = [ "0.0.0.0" ];
+    bind_addresses = [ "127.0.0.1" ];
     tls = false;
   };
 
@@ -260,9 +260,7 @@ in
 
     (synapseWorker "event-persister1" 9103 {
       worker_listeners = [
-        (synapseWorkerListenerConfig 9091 [ "replication" ] {
-          bind_address = "127.0.0.1";
-        })
+        (synapseWorkerListener 9091 [ "replication" ])
       ];
     })
 
@@ -517,33 +515,15 @@ in
       args.host = "localhost";
     };
 
-    listeners = [
-      {
-        port = synapseLocalPort;
-        bind_addresses = [ "127.0.0.1" ];
-        type = "http";
-        tls = false;
+    listeners = let
+      s = synapseListener;
+      c = synapseListenerConfig;
+    in [
+      (c synapseLocalPort [ "client" "federation" ] {
         x_forwarded = true;
-        resources = [
-          {
-            names = [ "client" "federation" ];
-            compress = false;
-          }
-        ];
-      }
-      {
-        port = 9093;
-        bind_addresses = [ "127.0.0.1" ];
-        type = "http";
-        tls = false;
-        resources = [
-          {
-            names = [ "replication" ];
-            compress = false;
-          }
-        ];
-      }
-      (synapseListenerConfig 9009 [ "metrics" ] {
+      })
+      (s 9093 [ "replication" ])
+      (c 9009 [ "metrics" ] {
         type = "metrics";
       })
     ];
@@ -586,7 +566,7 @@ in
     settings.metrics = {
       enable = false;
       port = 9201;
-      host = "0.0.0.0";
+      host = "127.0.0.1";
     };
 
     settings.database = appservice-pgdb "matrix-appservice-discord";
@@ -706,7 +686,7 @@ in
   services.nginx.virtualHosts.${synapseDomain} = let
       wrk = config.services.matrix-synapse.customWorkers;
       synapseListener = workerName:
-        "http://0.0.0.0:${toString (builtins.elemAt wrk.${workerName}.worker_listeners 0).port}";
+        "http://127.0.0.1:${toString (builtins.elemAt wrk.${workerName}.worker_listeners 0).port}";
   in {
     locations."/_matrix/federation/".proxyPass = synapseListener "federation-reader1";
     locations."~ ^/_matrix/client/.*/(sync|events|initialSync)".proxyPass = synapseListener "client-worker1";
@@ -792,7 +772,7 @@ in
           targets = with builtins; let
             metricsListeners = filter (x: x.type == "metrics") value.worker_listeners;
             port = if length metricsListeners > 0 then (elemAt metricsListeners 0).port else -1;
-          in [ "0.0.0.0:${toString port}" ];
+          in [ "127.0.0.1:${toString port}" ];
 
           labels = { instance = synapseDomain; job = name; index = "1"; };
 
@@ -804,7 +784,7 @@ in
         static_configs = let
           svc = x: lib.optionals config.services.${x}.enable x;
         in map (job: {
-          targets = [ "0.0.0.0:${toString config.services.${job}.settings.metrics.port}" ];
+          targets = [ "127.0.0.1:${toString config.services.${job}.settings.metrics.port}" ];
           labels = { instance = synapseDomain; inherit job; };
         }) [
           (svc "matrix-appservice-discord")
