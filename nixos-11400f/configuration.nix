@@ -429,11 +429,14 @@ in
       ALTER database template1 is_template=true;
     '';
 
-    svc = name: lib.optional config.services.${name}.enable name;
-    svcs = (svc "dendrite")
-      ++ (svc "matrix-synapse")
-      ++ (svc "matrix-appservice-discord")
-      ++ (svc "grafana");
+    svcs = let
+      s = name: lib.optionals config.services.${name}.enable name;
+    in [
+      (s "dendrite")
+      (s "matrix-synapse")
+      (s "matrix-appservice-discord")
+      (s "grafana")
+    ];
   in {
     enable = true;
     # package = pkgs.postgresql_14;
