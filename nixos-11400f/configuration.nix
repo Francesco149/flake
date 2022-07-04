@@ -463,6 +463,9 @@ in
   # nginx is expected to handle https and proxy to the local http
 
   services.matrix-synapse.enable = true;
+  services.matrix-synapse.extraConfigFiles = [
+    "${config.services.matrix-synapse.dataDir}/secrets.yaml"
+  ];
   systemd.services.matrix-synapse.serviceConfig.LimitNOFILE = 65535;
   services.matrix-synapse.settings = let
     db = pgdb "matrix-synapse";
@@ -508,10 +511,6 @@ in
     macaroon_secret_key = null;
     report_stats = false;
     presence.enabled = false;
-
-    extraConfigFiles = [
-      "${dataDir}/secrets.yaml"
-    ];
 
     app_service_config_files = [
       "${dataDir}/matrix-appservice-discord-registration.yaml"
