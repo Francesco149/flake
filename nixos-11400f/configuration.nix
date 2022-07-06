@@ -890,8 +890,8 @@ in
     passwordFile = "${ddclientDataDir}/password";
 
     domains = [
-      "animegirls.cc"
-      "animegirls.win"
+      dendriteDomain
+      synapseDomain
     ];
   };
 
