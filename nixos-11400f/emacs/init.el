@@ -185,13 +185,17 @@ requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)
 
 (add-hook 'exwm-manage-finish-hook #'loli/exwm-manage-finish)
 
+(defun loli/exwm-side-layout ()
+  "set up 2nd monitor layout. only call when 2nd monitor only has 1 window"
+  (interactive)
+  (exwm-workspace-switch-create 5)
+  (setq loli/browser-web-window (selected-window))
+  (setq loli/chatterino-window (split-window-horizontally (- (window-width) 45))))
+
 (defun loli/exwm-layout ()
   "set up personal exwm workspace layout. only run this once at startup"
 
-  ;; set up 2nd screen layout
-  (exwm-workspace-switch-create 5)
-  (setq loli/browser-web-window (selected-window))
-  (setq loli/chatterino-window (split-window-horizontally (- (window-width) 45)))
+  (loli/exwm-side-layout)
 
   ;; I map workspaces to the same number key as their index to make it less confusing
   ;; when I move windows with C-c RET.
