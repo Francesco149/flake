@@ -885,9 +885,11 @@ in
 
   services.ddclient = rec {
     enable = true;
-    server = "cloudflare.com";
+    protocol = "cloudflare";
+    interval = "1min";
     username = "francesco149@gmail.com";
     passwordFile = "${ddclientDataDir}/password";
+    zone = synapseDomain; # how to have both zones?
 
     domains = [
       dendriteDomain
