@@ -11,4 +11,5 @@ in {
   "matrix-appservice-discord/registration.yaml.age".publicKeys = users;
   "grafana/password.age".publicKeys = users;
   "grafana/secret-key.age".publicKeys = users;
+  "cloudflare/password.age".publicKeys = users;
 }

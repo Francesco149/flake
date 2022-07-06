@@ -19,6 +19,7 @@ let
 
   # can't extract this from dendrite's module it seems. also referencing the systemd service causes inf recursion
   dendriteDataDir = "/var/lib/dendrite";
+  ddclientDataDir = "/var/lib/ddclient";
 
   # generates a service that runs as root and installs files into the service's data directory
   # with correct ownership for a DynamicUser service. they will be read-only for the user.
@@ -32,6 +33,11 @@ let
   # services.myService = {
   #   # ... yourother settings
   # };
+
+  # TODO:
+  # if the service has never been started and the data dir does not exist or isn't chowned to the systemd user,
+  # this will fail and you will have to chmod manually. I don't have a good solution for that yet. maybe there's
+  # a way to put the 2 services into an unit and have that unit run as the same dynamic user?
 
   serviceFilesWithDir = dataDir: serviceName: files: {
     systemd.services."${serviceName}".after =
@@ -237,6 +243,10 @@ in
     (serviceFiles "grafana" [
       grafana-password.path
       grafana-secret-key.path
+    ])
+
+    (serviceFilesWithDir ddclientDataDir "ddclient" [
+      cloudflare-password.path
     ])
   ])
 
@@ -873,6 +883,18 @@ in
     kbdInteractiveAuthentication = false;
   };
 
+  services.ddclient = rec {
+    enable = true;
+    server = "cloudflare.com";
+    username = "francesco149@gmail.com";
+    passwordFile = "${ddclientDataDir}/password";
+
+    domains = [
+      "animegirls.cc"
+      "animegirls.win"
+    ];
+  };
+
   # NOTE: private config files. comment out or provide your own
 
   # by default, agenix does not look in your home dir for keys
@@ -945,6 +967,11 @@ in
     gist-token = mkUserSecret {
       file = ../secrets/gist/token.age;
       path = "/home/${user}/.gist";
+    };
+
+    cloudflare-password = mkSecret {
+      file = ../secrets/cloudflare/password.age;
+      path = "cloudflare/password";
     };
 
   };
