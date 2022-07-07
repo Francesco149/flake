@@ -883,7 +883,7 @@ in
     kbdInteractiveAuthentication = false;
   };
 
-  services.ddclient = rec {
+  services.ddclient = {
     enable = true;
     protocol = "cloudflare";
     interval = "5min";
