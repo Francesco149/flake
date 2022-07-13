@@ -927,8 +927,8 @@ in
         "guest ok" = "yes";
         "create mask" = "0644";
         "directory mask" = "0755";
-        "force user" = "username";
-        "force group" = "groupname";
+        "force user" = "loli";
+        "force group" = "users";
       };
       private = {
         path = "/mnt/Shares/Private";
@@ -937,8 +937,8 @@ in
         "guest ok" = "no";
         "create mask" = "0644";
         "directory mask" = "0755";
-        "force user" = "username";
-        "force group" = "groupname";
+        "force user" = "loli";
+        "force group" = "users";
       };
     };
   };
