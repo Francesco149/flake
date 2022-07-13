@@ -374,6 +374,7 @@
 ;; ccls: c/c++ auto complete
 (require 'ccls)
 (delete 'company-clang company-backends)
+(add-to-list 'lsp-enabled-clients 'ccls)
 
 ;; eldoc: display parameters in the echo area as function calls are typed
 (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
