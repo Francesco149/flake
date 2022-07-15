@@ -322,12 +322,19 @@
 ;; if syntax highlighting is not available with tree-sitter, we just don't use it because that
 ;; choppyness is just unacceptable
 
-(global-font-lock-mode nil)
+;; only enable font-lock for languages where it's not super slow.
+;; for languages where it's slow, either tree-sitter handles it or I'd rather have no syntax hl
+(global-font-lock-mode 0)
+(add-hook 'emacs-lisp-mode-hook #'font-lock-mode)
+(add-hook 'c-mode-hook #'font-lock-mode)
+(add-hook 'magit-mode-hook #'font-lock-mode)
+
 (require 'tree-sitter)
 (require 'tree-sitter-langs)
 
-;; global-tree-sitter-mode causes errors with exwm buffers. let's just do prog-mode
-(add-hook 'prog-mode-hook #'turn-on-tree-sitter-mode)
+;; NOTE: for some reason using a prog mode hook rather than global-tree-sitter-mode results in laggy syntax hl.
+;;       seems like it doesn't end up using tree-sitter that way. so I switched to global-tree-sitter-mode
+(global-tree-sitter-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
 ;; lsp: language server
