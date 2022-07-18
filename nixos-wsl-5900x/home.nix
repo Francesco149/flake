@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 with config; {
 
   imports = [../home.nix ];
