@@ -18,4 +18,6 @@
     # docker.enable = true;
   };
 
+  programs.dconf.enable = true; # for home-manager
+
 }
