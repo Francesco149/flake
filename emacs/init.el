@@ -405,6 +405,9 @@
 ;; other keybinds
 (global-set-key (kbd "C-c C-r") #'sudo-edit-find-file)
 (global-set-key (kbd "C-c SPC") #'whitespace-cleanup)
+(global-set-key (kbd "<f5>") (lambda ()
+                               (interactive)
+                               (compile compile-command)))
 
 ;; general: easier way to set up prefixed keybinds
 (require 'general)
