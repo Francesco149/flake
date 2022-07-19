@@ -326,7 +326,7 @@
 ;; for languages where it's slow, either tree-sitter handles it or I'd rather have no syntax hl
 (global-font-lock-mode 0)
 (add-hook 'emacs-lisp-mode-hook #'font-lock-mode)
-(add-hook 'c-mode-hook #'font-lock-mode)
+;;(add-hook 'c-mode-hook #'font-lock-mode)
 (add-hook 'magit-mode-hook #'font-lock-mode)
 
 (require 'tree-sitter)
@@ -340,8 +340,8 @@
 ;; lsp: language server
 (require 'lsp-mode)
 (lsp-enable-which-key-integration t)
-(add-hook 'c-mode-hook #'lsp-deferred)
-(add-hook 'c++-mode-hook #'lsp-deferred)
+;;(add-hook 'c-mode-hook #'lsp-deferred)
+;;(add-hook 'c++-mode-hook #'lsp-deferred)
 (add-hook 'python-mode-hook #'lsp-deferred)
 (add-hook 'go-mode-hook #'lsp-deferred)
 (add-hook 'nix-mode-hook #'lsp-deferred)
