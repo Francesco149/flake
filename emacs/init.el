@@ -379,6 +379,7 @@
 (setq company-idle-delay 0)
 (setq company-minimum-prefix-length 1)
 (global-company-mode 0)
+(flymake-mode-off)
 
 ;; ccls: c/c++ auto complete
 (require 'ccls)
