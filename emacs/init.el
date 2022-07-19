@@ -373,10 +373,12 @@
 (setq direnv-use-faces-in-summary nil)
 
 ;; company: fancy auto complete
+;; I only enable this manually when I am looking through someone else's code. for writing my own code, it just
+;; ends up slowing me down
 (require 'company)
 (setq company-idle-delay 0)
 (setq company-minimum-prefix-length 1)
-(global-company-mode)
+(global-company-mode 0)
 
 ;; ccls: c/c++ auto complete
 (require 'ccls)
