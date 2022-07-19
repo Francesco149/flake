@@ -207,8 +207,8 @@ requires (setq exwm-layout-show-all-buffers t exwm-workspace-show-all-buffers t)
   ;; the browser without --no-remote is the one that opens links I click in programs
   (mapc #'loli/shell
         `( ,loli/polkit-agent-command
-           loli/chatterino-command
-           loli/telegram-command
+           ,loli/chatterino-command
+           ,loli/telegram-command
            ,(loli/make-browser-command "web") ))
 
   ;; there's some update focus nil window errors on startup.
