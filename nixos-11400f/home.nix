@@ -151,7 +151,7 @@ in with config; {
     };
 
     "bar/top" = {
-      #monitor = "HDMI-A-0";
+      monitor = "HDMI-A-0";
       width = "100%";
       height = "32px";
       radius = 0;
