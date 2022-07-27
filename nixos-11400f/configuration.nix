@@ -19,7 +19,6 @@ let
 
   # can't extract this from dendrite's module it seems. also referencing the systemd service causes inf recursion
   dendriteDataDir = "/var/lib/dendrite";
-  ddclientDataDir = "/var/lib/ddclient";
 
   # generates a service that runs as root and installs files into the service's data directory
   # with correct ownership for a DynamicUser service. they will be read-only for the user.
@@ -243,10 +242,6 @@ in
     (serviceFiles "grafana" [
       grafana-password.path
       grafana-secret-key.path
-    ])
-
-    (serviceFilesWithDir ddclientDataDir "ddclient" [
-      cloudflare-password.path
     ])
   ])
 
@@ -887,14 +882,9 @@ in
     kbdInteractiveAuthentication = false;
   };
 
-  services.ddclient = {
+  services.cloudflare-dyndns = {
     enable = true;
-    protocol = "cloudflare";
-    interval = "5min";
-    username = "francesco149@gmail.com";
-    passwordFile = "${ddclientDataDir}/password";
-    zone = synapseDomain; # how to have both zones?
-
+    apiTokenFile = config.age.secrets.cloudflare-password.path;
     domains = [
       dendriteDomain
       synapseDomain
