@@ -66,6 +66,9 @@ in with config; {
     mpv
     libnotify # notify-send
 
+    man-pages
+    man-pages-posix
+
     pxplus-ibm-vga8-bin
     unifont
     noto-fonts
