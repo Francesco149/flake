@@ -41,3 +41,7 @@ add your own machine configuration to `flake.nix` in nixosConfigurations
 ```
 
 edit `secrets/secrets.nix` to have your own ssh key and secrets
+
+# known issues
+cachix will not apply until after the first rebuild-switch. this means that nix will attempt to build emacs from scratch for example.
+the workaround is to temporarily set the emacs package to just emacs in `home.nix` and then change it back

@@ -5,11 +5,7 @@ let
 
   emacs-custom = (
     let
-      emacsBuild = (pkgs.emacs.override {
-        withGTK3 = true;
-        withGTK2 = false;
-      });
-      emacsCustom = (pkgs.emacsPackagesFor emacsBuild).emacsWithPackages;
+      emacsCustom = (pkgs.emacsPackagesFor pkgs.emacsPgtkNativeComp).emacsWithPackages;
     in
       emacsCustom (epkgs: with epkgs; [
         org org-superstar
@@ -41,6 +37,10 @@ let
   );
 
 in with config; {
+
+  caches.cachix = [
+    { name = "nix-community"; sha256 = "1955r436fs102ny80wfzy99d4253bh2i1vv1x4d4sh0zx2ssmhrk"; }
+  ];
 
   home.username = "${user}";
   home.homeDirectory = "/home/${user}";

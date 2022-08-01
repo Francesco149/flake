@@ -24,10 +24,18 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    emacs-overlay = {
+      url = "github:nix-community/emacs-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+      #inputs.flake-utils.follows = "utils";
+    };
+
+    declarative-cachix.url = "github:jonascarpay/declarative-cachix/master";
   };
 
   # TODO: I could do inherit inputs and just have { ... } here, but I don't want to inherit nixpkgs
-  outputs = { self, nixpkgs, home-manager, nixos-wsl, agenix }:
+  outputs = { self, nixpkgs, home-manager, nixos-wsl, agenix, emacs-overlay, declarative-cachix }:
   let
     user = "loli";
     system = "x86_64-linux";
@@ -38,6 +46,7 @@
       overlays = [
         (import ./custom-packages.nix)
         (final: prev: { agenix = agenix.defaultPackage.x86_64-linux; })
+        emacs-overlay.overlay
       ];
     };
 
@@ -53,7 +62,11 @@
               inherit user; # pass user to modules in conf (home.nix or whatever)
               configName = conf.configName;
             };
-            home-manager.users.${user} = { imports = conf.homeImports; };
+            home-manager.users.${user} = {
+              imports = [
+                declarative-cachix.homeManagerModules.declarative-cachix
+              ] ++ conf.homeImports;
+            };
           }
         ];
       }

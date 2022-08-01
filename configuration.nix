@@ -8,6 +8,7 @@
       keep-outputs = true
       keep-derivations = true
     '';
+    settings.trusted-users = [ "root" user ];
   };
 
   networking = {
