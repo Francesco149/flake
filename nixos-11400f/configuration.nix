@@ -882,6 +882,17 @@ in
     kbdInteractiveAuthentication = false;
   };
 
+  users.users.git = {
+    isNormalUser = true;
+    description = "git user";
+    createHome = false;
+    home = "/home/git";
+    shell = "${pkgs.git}/bin/git-shell";
+    openssh.authorizedKeys.keys = [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKYu/ycmbsv3o7QHrWhEjXI/JH68iT/CnnCp8qQOB5zMhQPeggbRz6VqLde38m57eLWJ/OBoYFYQtXCHqqhNe0GCJUJIJSf+9q60XVHKDRUmyy+4XNaw4dxCO80kX3Az/OiApECaaAOitYQvPniIs4ebb/nni3HHDBWPzGWPmmuBF2VLbYxvGKpsHQo2SmRuLJQGSBkHF5IO+NbUWHg0Whdij/9SytXVjDsH9TKdRvnACWpoJC1AVwKTFj3at7Cv9CbQxKlOqjoZA3rN2TISBxImzEWVe7mf1lG5KJ/bHBPtheFoxSdfNEX2DGMSq9ffa9QorHcFcbFf2RWutMyWdIjxL+qa4Kutq4+v6apFtbPvg2P+Ik3riSPROOeIFxY8SpcerwjEfs0J2M5NkD6xyzq8gXEEPk2f1VgWfRSLXlEtOl95Z7AiigRXpV6N77k+juJmbHe8uMducBtip/0mr37EfPZzNzlSCsm/4dt2QrzE3If9fYiSoRNBWIdyGxo/8= loli@microshaft"
+    ];
+  };
+
   services.cloudflare-dyndns = {
     enable = true;
     apiTokenFile = config.age.secrets.cloudflare-password.path;
