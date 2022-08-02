@@ -321,4 +321,14 @@ in with config; {
 
   home.sessionVariables.DEFAULT_BROWSER = "${firefox-custom}/bin/firefox";
 
+  programs.bash.shellAliases = {
+    git-su = "sudo su -s '${pkgs.bash}/bin/bash' - git";
+  };
+
+  programs.bash.bashrcExtra = ''
+    git-init() {
+      sudo -u git sh -c "mkdir \$HOME/$1.git && git -C \$HOME/$1.git init --bare"
+    }
+  '';
+
 }
