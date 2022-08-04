@@ -890,6 +890,7 @@ in
     shell = "${pkgs.git}/bin/git-shell";
     openssh.authorizedKeys.keys = [
       "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDKYu/ycmbsv3o7QHrWhEjXI/JH68iT/CnnCp8qQOB5zMhQPeggbRz6VqLde38m57eLWJ/OBoYFYQtXCHqqhNe0GCJUJIJSf+9q60XVHKDRUmyy+4XNaw4dxCO80kX3Az/OiApECaaAOitYQvPniIs4ebb/nni3HHDBWPzGWPmmuBF2VLbYxvGKpsHQo2SmRuLJQGSBkHF5IO+NbUWHg0Whdij/9SytXVjDsH9TKdRvnACWpoJC1AVwKTFj3at7Cv9CbQxKlOqjoZA3rN2TISBxImzEWVe7mf1lG5KJ/bHBPtheFoxSdfNEX2DGMSq9ffa9QorHcFcbFf2RWutMyWdIjxL+qa4Kutq4+v6apFtbPvg2P+Ik3riSPROOeIFxY8SpcerwjEfs0J2M5NkD6xyzq8gXEEPk2f1VgWfRSLXlEtOl95Z7AiigRXpV6N77k+juJmbHe8uMducBtip/0mr37EfPZzNzlSCsm/4dt2QrzE3If9fYiSoRNBWIdyGxo/8= loli@microshaft"
+      "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCpNgs8JFiW2okM8bWoQXkXD6y3x1LONA3hNQbUmvJhMK8BP7Ajkd5avC0dhyOnHee1WCoiQfCfqN/2SVgHMDmRv2QNluciZ4scFr1IwXRxrUqRPpDid6bBIc/e7PYcFBfA2r1nfOdZTePiQcQAcb0yhblqtsg9aOgl+JwqK4GvoQgwriB3Hp6PrezRYBcQjjLbcrU8U1vqKCljhL/cYy5qj5ybJ4hRYcsuZoiQxjtomlrsmibVcTJZVnwPL3DVhCcNrPYABstVgLZfLSttCQCdB2VvGJOx5r6gaB8bkgHsqgERyZza4hBYsMPLSuzxrxgEH+AZzTBGIZiWD0WgY+81 loli@void"
     ];
   };
 
