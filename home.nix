@@ -188,6 +188,9 @@ in with config; {
   gtk.theme.name = "Adwaita-dark";
   gtk.theme.package = pkgs.gnome.gnome-themes-extra;
 
-  xdg.configFile."yt-dlp/config".source = ./yt-dlp/config;
+  xdg.configFile = {
+    "yt-dlp/config".source = ./yt-dlp/config;
+    "mpv/scripts/copyTime.lua".source = ./mpv/scripts/copyTime.lua;
+  };
 
 }
