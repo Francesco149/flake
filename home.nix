@@ -63,6 +63,7 @@ in with config; {
     youtube-dl
     aria
     nnn
+    picotts
 
     xclip # required for pass show -c, also useful in general
     mpv
@@ -83,6 +84,25 @@ in with config; {
     gopls
     ccls
     rnix-lsp
+
+    (pkgs.writeShellScriptBin "speak" ''
+      file=$(mktemp /tmp/XXXXXXXXXX.wav)
+      pico2wave -w "$file" "$@"
+      mpv --no-config "$file"
+      rm "$file"
+    '')
+
+    (pkgs.writeShellScriptBin "countdown" ''
+      start="$(( $(date '+%s') + $1))"
+      while [ $start -ge $(date +%s) ]; do
+          time="$(( $start - $(date +%s) ))"
+          printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)"
+          sleep 0.1
+      done
+      msg="''${2:-countdown finished}"
+      notify-send "$msg"
+      speak "$msg"
+    '')
 
   ]) ++ (with pythonPackages; [
 
