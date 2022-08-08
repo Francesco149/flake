@@ -1,0 +1,13 @@
+command firefox firefox
+
+# inherit groups
+sticky yes
+
+# don't manage these windows
+ignore polybar
+
+bind-key CM-Right window-snap-right
+bind-key CM-Left window-snap-left
+bind-key M-d "dmenu_run"
+bind-key MS-u "passmenu"
+bind-key CS-4 "shot"
