@@ -60,7 +60,9 @@ in with config; {
     git
     ffmpeg
     yt-dlp
+    youtube-dl
     aria
+    nnn
 
     xclip # required for pass show -c, also useful in general
     mpv
@@ -190,6 +192,7 @@ in with config; {
 
   xdg.configFile = {
     "yt-dlp/config".source = ./yt-dlp/config;
+    "youtube-dl/config".source = ./yt-dlp/config;
     "mpv/scripts/copyTime.lua".source = ./mpv/scripts/copyTime.lua;
   };
 
