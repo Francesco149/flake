@@ -346,6 +346,7 @@ clear the buffers undo-tree before saving the file."
 (add-hook 'emacs-lisp-mode-hook #'font-lock-mode)
 ;;(add-hook 'c-mode-hook #'font-lock-mode)
 (add-hook 'magit-mode-hook #'font-lock-mode)
+(add-hook 'org-mode-hook #'font-lock-mode)
 
 (require 'tree-sitter)
 (require 'tree-sitter-langs)
