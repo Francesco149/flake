@@ -103,7 +103,6 @@ in with config; {
   xsession = {
     enable = true;
     windowManager.command = ''
-      rerandr
       ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
       chatterino &
       firefox &
@@ -132,6 +131,7 @@ in with config; {
       pulseSupport = true;
     };
     script = ''
+      rerandr
       polybar top --reload &
     '';
   };
