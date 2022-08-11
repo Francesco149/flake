@@ -1,3 +1,5 @@
+let g:python_recommended_style = 0
+filetype plugin indent on
 set smarttab
 set autoindent
 set nowrap
