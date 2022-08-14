@@ -212,7 +212,7 @@ in with config; {
 
   xdg.configFile = {
     "yt-dlp/config".source = ./yt-dlp/config;
-    "youtube-dl/config".source = ./yt-dlp/config;
+    "youtube-dl/config".source = ./youtube-dl/config;
     "mpv/scripts/copyTime.lua".source = ./mpv/scripts/copyTime.lua;
   };
 
