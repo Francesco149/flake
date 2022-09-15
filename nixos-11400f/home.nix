@@ -24,7 +24,7 @@ let
 
       Extensions.Install = [
         "https://addons.mozilla.org/firefox/downloads/file/3933192/ublock_origin-1.42.4.xpi"
-        "https://addons.mozilla.org/firefox/downloads/file/3948477/i_dont_care_about_cookies-3.4.0.xpi"
+        "https://addons.mozilla.org/firefox/downloads/file/3970126/consent_o_matic-1.0.8.xpi"
         "https://addons.mozilla.org/firefox/downloads/file/3941589/return_youtube_dislikes-3.0.0.1.xpi"
         "https://addons.mozilla.org/firefox/downloads/file/3958238/sponsorblock-4.5.1.xpi"
         "https://addons.mozilla.org/firefox/downloads/file/3059971/image_search_options-3.0.12.xpi"
