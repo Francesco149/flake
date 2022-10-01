@@ -52,6 +52,10 @@ let
     '';
   };
 
+  tdesktop-wrapped = pkgs.writeShellScriptBin "telegram-desktop" ''
+    exec env XDG_CURRENT_DESKTOP=gnome ${pkgs.tdesktop}/bin/telegram-desktop "$@"
+  '';
+
 in with config; {
 
   imports = [../home.nix ];
@@ -77,7 +81,7 @@ in with config; {
     cwm
     maim
     firefox-custom
-    tdesktop
+    tdesktop-wrapped
     chatterino7
     obs-studio
     simplescreenrecorder
