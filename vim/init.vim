@@ -1,11 +1,6 @@
 let g:python_recommended_style = 0
-filetype plugin on
-"filetype indent on
-filetype indent off
 set smarttab
-"set autoindent
-set noautoindent
-set nocindent
+set cinoptions=l1
 set nowrap
 set swapfile
 set backup
