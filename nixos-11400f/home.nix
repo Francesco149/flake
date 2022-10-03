@@ -75,7 +75,7 @@ in with config; {
     pinentry-gnome
     gcr # required for pinentry-gnome?
     polkit_gnome
-    gnome3.nautilus
+    gnome.nautilus
 
     dmenu
     cwm
