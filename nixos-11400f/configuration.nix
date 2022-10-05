@@ -410,6 +410,7 @@ in
     ];
     allowedUDPPorts = [
       3702 # wsdd, for samba win10 discovery
+      53 # local dns
     ];
   };
 
@@ -724,6 +725,26 @@ in
         deny all;
       '';
     };
+
+    locations."/test" = {
+      proxyPass = "http://0.0.0.0:6969";
+
+      # NOTE: firefox seems to ignore my hosts settings and still 403, but it does work
+      extraConfig = ''
+        allow 192.168.1.0/24;
+        allow 127.0.0.1;
+        deny all;
+      '';
+    };
+  };
+
+  services.nginx.virtualHosts."test.local".locations."/" = {
+    proxyPass = "http://0.0.0.0:6969";
+    extraConfig = ''
+      allow 192.168.1.0/24;
+      allow 127.0.0.1;
+      deny all;
+    '';
   };
 
   # allow access to private paths by making it a local request
@@ -902,6 +923,24 @@ in
       synapseDomain
     ];
   };
+
+  services.coredns.enable = true;
+  services.coredns.config =
+  ''
+    . {
+      forward . 8.8.8.8 8.8.4.4
+      log
+      errors
+    }
+
+    animegirls.win {
+      hosts {
+        192.168.1.9 animegirls.win
+      }
+      log
+      errors
+    }
+  '';
 
   services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
   services.samba = {
