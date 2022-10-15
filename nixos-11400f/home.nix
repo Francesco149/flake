@@ -76,6 +76,7 @@ in with config; {
     gcr # required for pinentry-gnome?
     polkit_gnome
     gnome.nautilus
+    transmission-gtk
 
     dmenu
     cwm
