@@ -30,6 +30,7 @@ let
         "https://addons.mozilla.org/firefox/downloads/file/3059971/image_search_options-3.0.12.xpi"
         "https://cdn.frankerfacez.com/script/frankerfacez-4.0-an+fx.xpi"
         "https://addons.mozilla.org/firefox/downloads/file/3945159/7tv-2.2.2.xpi"
+        "https://addons.mozilla.org/firefox/downloads/file/4016524/libredirect-2.3.1.xpi"
       ];
     };
 
