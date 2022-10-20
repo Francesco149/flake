@@ -3,6 +3,12 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
+
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -10,12 +16,15 @@
       # home-manager pins nixpkgs to a specific version in its flake.
       # we want to make sure everything pins to the same version of nixpkgs to be more efficient
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.utils.follows = "flake-utils";
     };
 
     # TODO: separate each config into its own flake to avoid pulling unnecessary deps? or is nix smart enough
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
       inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.flake-compat.follows = "flake-compat";
     };
 
     # agenix allows me to store encrypted secrets in the repo just like git-crypt, except
@@ -28,14 +37,22 @@
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
-      #inputs.flake-utils.follows = "utils";
+      inputs.flake-utils.follows = "flake-utils";
     };
 
     declarative-cachix.url = "github:jonascarpay/declarative-cachix/master";
   };
 
-  # TODO: I could do inherit inputs and just have { ... } here, but I don't want to inherit nixpkgs
-  outputs = { self, nixpkgs, home-manager, nixos-wsl, agenix, emacs-overlay, declarative-cachix }:
+  outputs = {
+    self,
+    nixpkgs,
+    home-manager,
+    nixos-wsl,
+    agenix,
+    emacs-overlay,
+    declarative-cachix,
+    ...
+  }:
   let
     user = "loli";
     system = "x86_64-linux";
