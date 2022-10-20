@@ -753,7 +753,14 @@ in
   security.acme.certs.${synapseDomain}.extraDomainNames = [
     "www.${synapseDomain}"
     "element.${synapseDomain}"
+    "maple.${synapseDomain}"
   ];
+
+  services.nginx.virtualHosts."maple.${synapseDomain}" = {
+    forceSSL = true;
+    useACMEHost = synapseDomain;
+    locations."/cube/".alias = "${pkgs.cubecalc-ui-web}/";
+  };
 
   services.nginx.virtualHosts."element.${synapseDomain}" = let
     custom-element = pkgs.element-web.override {

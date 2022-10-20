@@ -40,6 +40,13 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
+    cubecalc-ui = {
+      url = "github:Francesco149/cubecalc-ui";
+      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.flake-utils.follows = "flake-utils";
+      inputs.flake-compat.follows = "flake-compat";
+    };
+
     declarative-cachix.url = "github:jonascarpay/declarative-cachix/master";
   };
 
@@ -51,6 +58,7 @@
     agenix,
     emacs-overlay,
     declarative-cachix,
+    cubecalc-ui,
     ...
   }:
   let
@@ -64,6 +72,7 @@
         (import ./custom-packages.nix)
         (final: prev: { agenix = agenix.defaultPackage.x86_64-linux; })
         emacs-overlay.overlay
+        cubecalc-ui.overlay
       ];
     };
 
