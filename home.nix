@@ -48,6 +48,9 @@ in with config; {
   home.homeDirectory = "/home/${user}";
   home.stateVersion = "22.05";
 
+  # temp fix until https://github.com/LnL7/nix-darwin/pull/552 is merged
+  manual.manpages.enable = false;
+
   # thanks to nix's import system, the machine-specific config is merged with this base config.
   # so, for example I can define home.packages again in a machine-specific config and it will concatenate
   # it to this list automatically in the import process
