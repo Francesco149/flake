@@ -91,6 +91,7 @@ in with config; {
     pavucontrol
     krita
     tor-browser-bundle-bin
+    quickemu
 
     (pkgs.writeShellScriptBin "cam" ''
       mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)
