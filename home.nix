@@ -41,6 +41,7 @@ in with config; {
   caches.cachix = [
     # nix-prefetch-url 'https://cachix.org/api/v1/cache/${name}'
     { name = "nix-community"; sha256 = "1955r436fs102ny80wfzy99d4253bh2i1vv1x4d4sh0zx2ssmhrk"; }
+    { name = "lolisamurai"; sha256 = "0asqjdliv1jawlz3vwl7jgqv5wmxpkj7m3shhfpfs08mhxp3ax47"; }
   ];
 
   home.username = "${user}";
