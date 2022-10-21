@@ -940,6 +940,14 @@ in
       errors
     }
 
+    maple.animegirls.win {
+      hosts {
+        192.168.1.9 maple.animegirls.win
+      }
+      log
+      errors
+    }
+
     animegirls.win {
       hosts {
         192.168.1.9 animegirls.win
