@@ -5,7 +5,7 @@ let
 
   emacs-custom = (
     let
-      emacsCustom = (pkgs.emacsPackagesFor pkgs.emacsPgtkNativeComp).emacsWithPackages;
+      emacsCustom = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages;
     in
       emacsCustom (epkgs: with epkgs; [
         org org-superstar

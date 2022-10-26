@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05"; # for my mail server
     flake-utils.url = "github:numtide/flake-utils";
 
     flake-compat = {
@@ -34,6 +35,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    agenix-stable = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
+    };
+
     emacs-overlay = {
       url = "github:nix-community/emacs-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -53,9 +59,11 @@
   outputs = {
     self,
     nixpkgs,
+    nixpkgs-stable,
     home-manager,
     nixos-wsl,
     agenix,
+    agenix-stable,
     emacs-overlay,
     declarative-cachix,
     cubecalc-ui,
@@ -114,6 +122,18 @@
         configName = "nixos-wsl-5900x";
         modules = [ ./${configName}/configuration.nix ];
         homeImports = [ ./${configName}/home.nix ];
+      };
+
+      headpats = nixpkgs-stable.lib.nixosSystem rec {
+        inherit system;
+        specialArgs = { inherit user; };
+        pkgs = import nixpkgs-stable {
+          inherit system;
+        };
+        modules = [
+          ./headpats/configuration.nix
+          agenix-stable.nixosModule
+        ];
       };
 
     };
