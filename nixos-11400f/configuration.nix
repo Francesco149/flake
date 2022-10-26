@@ -232,16 +232,10 @@ in
     (serviceFiles "matrix-synapse" [
       synapse-homeserver-signing-key.path
       synapse-secrets.path
-      matrix-appservice-discord-registration.path
     ])
 
     (serviceFilesWithDir dendriteDataDir "dendrite" [
       dendrite-private-key.path
-    ])
-
-    (serviceFiles "grafana" [
-      grafana-password.path
-      grafana-secret-key.path
     ])
   ])
 
@@ -448,7 +442,6 @@ in
     in [
       (s "dendrite")
       (s "matrix-synapse")
-      (s "matrix-appservice-discord")
       (s "grafana")
     ];
   in {
@@ -523,7 +516,7 @@ in
     presence.enabled = false;
 
     app_service_config_files = [
-      "${dataDir}/matrix-appservice-discord-registration.yaml"
+      #"${dataDir}/matrix-appservice-discord-registration.yaml"
     ];
 
     database = {
@@ -566,26 +559,9 @@ in
 
   # bridges and other matrix appservices
 
-  services.matrix-appservice-discord = {
+  services.matterbridge = {
     enable = true;
-    environmentFile = config.age.secrets.matrix-appservice-discord-environment.path;
-
-    settings.bridge = {
-      domain = synapseDomain;
-      homeserverUrl = "https://${synapseDomain}";
-      enableSelfServiceBridging = true;
-      disableJoinLeaveNotifications = true;
-      disableInviteNotifications = true;
-    };
-
-    # crashes the bridge for some reason, so disabled
-    settings.metrics = {
-      enable = false;
-      port = 9201;
-      host = "127.0.0.1";
-    };
-
-    settings.database = appservice-pgdb "matrix-appservice-discord";
+    configPath = config.age.secrets.matterbridge-config.path;
   };
 
   # dendrite: experimental matrix server
@@ -684,6 +660,17 @@ in
       #"${dataDir}/matrix-appservice-discord-registration.yaml"
     ];
 
+  };
+
+  services.pantalaimon-headless = {
+    instances = {
+      animegirls-win = {
+        homeserver = "https://animegirls.win";
+        listenAddress = "127.0.0.1";
+        listenPort = 20662;
+        ssl = false;
+      };
+    };
   };
 
   # nginx: reverse proxy for matrix and just a general purpose web server
@@ -817,18 +804,6 @@ in
 
         }) wrk;
       }
-      {
-        job_name = "matrix-appservice";
-        metrics_path = "/metrics";
-        static_configs = let
-          svc = x: lib.optionals config.services.${x}.enable x;
-        in map (job: {
-          targets = [ "127.0.0.1:${toString config.services.${job}.settings.metrics.port}" ];
-          labels = { instance = synapseDomain; inherit job; };
-        }) [
-          (svc "matrix-appservice-discord")
-        ];
-      }
     ];
 
     ruleFiles = [
@@ -843,11 +818,11 @@ in
   services.grafana = {
     enable = true;
 
-    security = let
+    settings.security = let
       dataDir = config.services.grafana.dataDir;
-    in {
-      adminPasswordFile = "${dataDir}/password";
-      secretKeyFile = "${dataDir}/secret-key";
+    in with config.age.secrets; {
+      admin_password = "$__file{${grafana-password.path}}";
+      secret_key = "$__file{${grafana-secret-key.path}}";
     };
 
     # use postgresql
@@ -1043,24 +1018,19 @@ in
       path = "synapse/secrets.yaml";
     };
 
-    matrix-appservice-discord-environment = mkSecret {
-      file = ../secrets/matrix-appservice-discord/environment.sh.age;
-      path = "matrix-appservice-discord/environment.sh";
-    };
-
-    matrix-appservice-discord-registration = mkSecret {
-      file = ../secrets/matrix-appservice-discord/registration.yaml.age;
-      path = "matrix-appservice-discord/matrix-appservice-discord-registration.yaml";
-    };
-
+    # TODO: do I even need serviceFiles anymore? can't I just use owner like this everywhere?
     grafana-secret-key = mkSecret {
       file = ../secrets/grafana/secret-key.age;
       path = "grafana/secret-key";
+    } // {
+      owner = "grafana";
     };
 
     grafana-password = mkSecret {
       file = ../secrets/grafana/password.age;
       path = "grafana/password";
+    } // {
+      owner = "grafana";
     };
 
     gh2md-token = mkUserSecret {
@@ -1076,6 +1046,13 @@ in
     cloudflare-password = mkSecret {
       file = ../secrets/cloudflare/password.age;
       path = "cloudflare/password";
+    };
+
+    matterbridge-config = mkSecret {
+      file = ../secrets/matterbridge/config.toml.age;
+      path = "matterbridge/config.toml";
+    } // {
+      owner = "matterbridge";
     };
 
   };

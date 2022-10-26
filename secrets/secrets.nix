@@ -9,10 +9,9 @@ in {
   "dendrite-keys/matrix_key.pem.age".publicKeys = users;
   "synapse/homeserver.signing.key.age".publicKeys = users;
   "synapse/secrets.yaml.age".publicKeys = users;
-  "matrix-appservice-discord/environment.sh.age".publicKeys = users;
-  "matrix-appservice-discord/registration.yaml.age".publicKeys = users;
   "grafana/password.age".publicKeys = users;
   "grafana/secret-key.age".publicKeys = users;
   "cloudflare/password.age".publicKeys = users;
+  "matterbridge/config.toml.age".publicKeys = users;
   "headpats/loli-hashed-password.age".publicKeys = headpatUsers;
 }
