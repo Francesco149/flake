@@ -338,6 +338,10 @@ in
   ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="zfs_member", ATTR{../queue/scheduler}="none"
   '';
 
+  # automatically garbage collect nix store to save disk space
+  nix.gc.automatic = true;
+  nix.gc.dates = "03:15";
+
   # bridge + tap setup for qemu
   networking.bridges.br0 = {
     rstp = false;
