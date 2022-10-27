@@ -35,6 +35,8 @@ in {
       };
     };
 
+    enableManageSieve = true; # enables filters using sieve scripts
+
     # Use Let's Encrypt certificates. Note that this needs to set up a stripped
     # down nginx and opens port 80.
     certificateScheme = 3;
@@ -56,6 +58,7 @@ in {
   services.roundcube = {
     enable = true;
     hostName = "cube.${headpatsDomain}"; # nginx vhost for the web mail
+    plugins = [ "managesieve" ];
     extraConfig = ''
       # starttls needed for authentication, so the fqdn required to match
       # the certificate
