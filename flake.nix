@@ -20,10 +20,19 @@
       inputs.utils.follows = "flake-utils";
     };
 
+    home-manager-stable = {
+      url = "github:nix-community/home-manager";
+
+      # home-manager pins nixpkgs to a specific version in its flake.
+      # we want to make sure everything pins to the same version of nixpkgs to be more efficient
+      inputs.nixpkgs.follows = "nixpkgs-stable";
+      inputs.utils.follows = "flake-utils";
+    };
+
     # TODO: separate each config into its own flake to avoid pulling unnecessary deps? or is nix smart enough
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
       inputs.flake-utils.follows = "flake-utils";
       inputs.flake-compat.follows = "flake-compat";
     };
@@ -61,6 +70,7 @@
     nixpkgs,
     nixpkgs-stable,
     home-manager,
+    home-manager-stable,
     nixos-wsl,
     agenix,
     agenix-stable,
@@ -97,7 +107,7 @@
         inherit (conf) pkgs;
         specialArgs = { inherit user; inherit nixos-wsl; }; # pass user to modules (configuration.nix for example)
         modules = conf.modules ++ [
-          home-manager.nixosModules.home-manager {
+          conf.home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = true; # instead of having its own private nixpkgs
             home-manager.useUserPackages = true; # install to /etc/profiles instead of ~/.nix-profile
             home-manager.extraSpecialArgs = {
@@ -117,10 +127,11 @@
       stable = {
         nixpkgs = nixpkgs-stable;
         pkgs = pkgs-stable;
+        home-manager = home-manager-stable;
       };
 
       unstable = {
-        inherit nixpkgs pkgs;
+        inherit nixpkgs pkgs home-manager;
       };
 
   in {
