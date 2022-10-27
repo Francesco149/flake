@@ -282,6 +282,20 @@ in
 
   ];
 
+  system.stateVersion = "22.05";
+
+  nix = {
+    package = pkgs.nixVersions.unstable;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+      keep-outputs = true
+      keep-derivations = true
+    '';
+    settings.trusted-users = [ "root" user ];
+  };
+
+  programs.mtr.enable = true;
+
   networking.hostName = "nixos";
   networking.hostId = "8556b001";
   networking.interfaces.br0.ipv4.addresses = [{

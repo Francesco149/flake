@@ -11,6 +11,7 @@ in {
     })
   ];
 
+  system.stateVersion = "22.05";
   boot.cleanTmpDir = true;
   zramSwap.enable = true;
   networking.hostName = "headpats";

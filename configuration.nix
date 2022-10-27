@@ -1,16 +1,6 @@
 { pkgs, user, ... }:
 
 {
-  nix = {
-    package = pkgs.nixVersions.unstable;
-    extraOptions = ''
-      experimental-features = nix-command flakes
-      keep-outputs = true
-      keep-derivations = true
-    '';
-    settings.trusted-users = [ "root" user ];
-  };
-
   networking = {
     domain = "localhost";
     usePredictableInterfaceNames = false;
@@ -51,9 +41,4 @@
     isNormalUser = true;
     extraGroups = [ "wheel" ];
   };
-
-  programs.mtr.enable = true;
-  services.openssh.enable = true;
-
-  system.stateVersion = "22.05";
 }

@@ -8,6 +8,16 @@
     ../configuration.nix
   ];
 
+  nix = {
+    package = pkgs.nixVersions.nixos-22.05;
+    extraOptions = ''
+      experimental-features = nix-command flakes
+      keep-outputs = true
+      keep-derivations = true
+    '';
+    settings.trusted-users = [ "root" user ];
+  };
+
   wsl = {
     enable = true;
     automountPath = "/mnt";
