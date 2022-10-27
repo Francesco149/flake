@@ -2,8 +2,6 @@
 let
   release = "nixos-22.05";
   headpatsDomain = "headpats.uk";
-  rainloopDataDir = "/var/lib/rainloop";
-  rainloopUser = "rainloop";
 in {
   imports = [
     ./hardware-configuration.nix
@@ -43,61 +41,27 @@ in {
   };
 
   security.acme.certs.${headpatsDomain}.extraDomainNames = [
-    "rain.${headpatsDomain}"
+    "rain.${headpatsDomain}" # used to be rainloop, unused now because fuck running php and shit
+    "cube.${headpatsDomain}"
   ];
 
   services.nginx.enable = true;
+
   services.nginx.virtualHosts."${headpatsDomain}" = {
     # TODO some landing page or some shit
     forceSSL = true;
     enableACME = true;
   };
 
-  # TODO: this requires manually creating /var/lib/rainloop and chmodding it.
-  #       how do I automate that?
-  services.nginx.virtualHosts."rain.${headpatsDomain}" = {
-    forceSSL = true;
-    useACMEHost = headpatsDomain;
-    locations."/" = {
-      root = "${pkgs.rainloop-community}";
-      index = "index.php";
-    };
-    extraConfig = ''client_max_body_size 50m;'';
-    locations."~ \.php$" = {
-      root = "${pkgs.rainloop-community}";
-      extraConfig = ''
-        fastcgi_pass  unix:${config.services.phpfpm.pools.rainloop.socket};
-        fastcgi_index index.php;
-        include       ${pkgs.nginx}/conf/fastcgi.conf;
-      '';
-    };
-  };
-
-  users.users.${rainloopUser} = {
-    isSystemUser = true;
-    description = "Rainloop user";
-    createHome = true;
-    home = rainloopDataDir;
-    group = "rainloop";
-  };
-
-  users.groups.rainloop = {};
-
-  services.phpfpm.pools.rainloop = {
-    user = rainloopUser;
-    settings = {
-      "env[RAINLOOP_DATA_DIR]" = rainloopDataDir;
-      pm = "dynamic";
-      "listen.owner" = config.services.nginx.user;
-      "pm.max_children" = 5;
-      "pm.start_servers" = 2;
-      "pm.min_spare_servers" = 1;
-      "pm.max_spare_servers" = 3;
-      "pm.max_requests" = 500;
-    };
-    phpOptions = ''
-      upload_max_filesize = 40m
-      post_max_size = 49M
+  services.roundcube = {
+    enable = true;
+    hostName = "cube.${headpatsDomain}"; # nginx vhost for the web mail
+    extraConfig = ''
+      # starttls needed for authentication, so the fqdn required to match
+      # the certificate
+      $config['smtp_server'] = "tls://${config.mailserver.fqdn}";
+      $config['smtp_user'] = "%u";
+      $config['smtp_pass'] = "%p";
     '';
   };
 
