@@ -18,6 +18,8 @@
     settings.trusted-users = [ "root" user ];
   };
 
+  system.stateVersion = "22.05";
+
   wsl = {
     enable = true;
     automountPath = "/mnt";
