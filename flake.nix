@@ -98,7 +98,7 @@
             };
             home-manager.users.${user} = {
               imports = [
-                declarative-cachix.homeManagerModules.declarative-cachix
+                declarative-cachix.homeManagerModules.declarative-cachix-experimental
               ] ++ conf.homeImports;
             };
           }
