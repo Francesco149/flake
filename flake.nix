@@ -84,9 +84,17 @@
       ];
     };
 
+    pkgs-stable = import nixpkgs-stable {
+      inherit system;
+      overlays = [
+        emacs-overlay.overlay
+      ];
+    };
+
     mkSystem = conf: (
-      nixpkgs.lib.nixosSystem {
-        inherit system pkgs;
+      conf.nixpkgs.lib.nixosSystem {
+        inherit system;
+        inherit (conf) pkgs;
         specialArgs = { inherit user; inherit nixos-wsl; }; # pass user to modules (configuration.nix for example)
         modules = conf.modules ++ [
           home-manager.nixosModules.home-manager {
@@ -104,32 +112,39 @@
           }
         ];
       }
-    );
+      );
+
+      stable = {
+        nixpkgs = nixpkgs-stable;
+        pkgs = pkgs-stable;
+      };
+
+      unstable = {
+        inherit nixpkgs pkgs;
+      };
 
   in {
     nixosConfigurations = {
 
-      nixos-11400f = mkSystem rec {
+      nixos-11400f = mkSystem (rec {
         configName = "nixos-11400f"; # TODO: any way to avoid this duplication?
         modules = [
           ./${configName}/configuration.nix
           agenix.nixosModule
         ];
         homeImports = [ ./${configName}/home.nix ];
-      };
+      } // unstable);
 
-      nixos-wsl-5900x = mkSystem rec {
+      nixos-wsl-5900x = mkSystem (rec {
         configName = "nixos-wsl-5900x";
         modules = [ ./${configName}/configuration.nix ];
         homeImports = [ ./${configName}/home.nix ];
-      };
+      } // stable);
 
       headpats = nixpkgs-stable.lib.nixosSystem rec {
         inherit system;
         specialArgs = { inherit user; };
-        pkgs = import nixpkgs-stable {
-          inherit system;
-        };
+        pkgs = pkgs-stable;
         modules = [
           ./headpats/configuration.nix
           agenix-stable.nixosModule
