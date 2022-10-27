@@ -19,6 +19,7 @@ let
         dired-hide-dotfiles
         vertico # fancy fuzzy completion everywhere
         embark # quick actions on current completion selection
+        embark-consult
         ace-window # window management utils, also integrates with embark
         marginalia # extra info in vertico
         which-key # display all possible command completions
@@ -34,6 +35,8 @@ let
         consult # fancy buffer switching
         avy # fancy jump to char
       ])
+
+      # TODO: remove a lot of these pkgs since I only use emacs for org mode now
   );
 
 in with config; {
