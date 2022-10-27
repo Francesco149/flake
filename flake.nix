@@ -96,6 +96,7 @@
     pkgs-stable = import nixpkgs-stable {
       inherit system;
       overlays = [
+        (import ./custom-packages.nix)
         emacs-overlay.overlay
       ];
     };
