@@ -41,7 +41,7 @@ in {
   };
 
   security.acme.certs.${headpatsDomain}.extraDomainNames = [
-    "rain.${headpatsDomain}" # used to be rainloop, unused now because fuck running php and shit
+    "rain.${headpatsDomain}" # used to be rainloop, unused now because fuck all that php config
     "cube.${headpatsDomain}"
   ];
 
