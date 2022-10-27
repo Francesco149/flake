@@ -163,21 +163,19 @@
       "inputs": {
         "nixpkgs": [
           "nixpkgs-stable"
-        ],
-        "utils": [
-          "flake-utils"
         ]
       },
       "locked": {
-        "lastModified": 1666649150,
-        "narHash": "sha256-kINnLxC0KFalUk4tVO/H5hUU7FVAOYYcUSWrsBpnl+I=",
+        "lastModified": 1665996265,
+        "narHash": "sha256-/k9og6LDBQwT+f/tJ5ClcWiUl8kCX5m6ognhsAxOiCY=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "7dc4e4ebd71280842b4d30975439980baaac9db8",
+        "rev": "b81e128fc053ab3159d7b464d9b7dedc9d6a6891",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
+        "ref": "release-22.05",
         "repo": "home-manager",
         "type": "github"
       }

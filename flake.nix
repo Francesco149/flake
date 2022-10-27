@@ -21,12 +21,11 @@
     };
 
     home-manager-stable = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-22.05";
 
       # home-manager pins nixpkgs to a specific version in its flake.
       # we want to make sure everything pins to the same version of nixpkgs to be more efficient
       inputs.nixpkgs.follows = "nixpkgs-stable";
-      inputs.utils.follows = "flake-utils";
     };
 
     # TODO: separate each config into its own flake to avoid pulling unnecessary deps? or is nix smart enough
