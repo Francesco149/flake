@@ -9,7 +9,7 @@
   ];
 
   nix = {
-    package = pkgs.nixVersions.nixos-22.05;
+    package = pkgs.nixVersions.stable;
     extraOptions = ''
       experimental-features = nix-command flakes
       keep-outputs = true
