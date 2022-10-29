@@ -6,6 +6,13 @@ sticky yes
 # don't manage these windows
 ignore polybar
 
+unbind-key M-Right
+unbind-key M-Left
+unbind-key CM-Right
+unbind-key CM-Left
+unbind-key M-Return
+unbind-key M-Up
+unbind-key M-Down
 bind-key C4-Right window-snap-right
 bind-key C4-Left window-snap-left
 bind-key 4-d "dmenu_run"
