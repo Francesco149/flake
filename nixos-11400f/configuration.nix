@@ -329,6 +329,31 @@ in
     "zfs.zfs_arc_max=2147483648"
   ];
 
+  # try to optimize power consumption
+  boot.kernel.sysctl = {
+    "kernel.nmi_watchdog" = 0;
+    "vm.dirty_writeback_centisecs" = 6000;
+    "vm.laptop_mode" = 5;
+  };
+
+  powerManagement = {
+     powertop.enable = true;
+     scsiLinkPolicy = "med_power_with_dipm";
+   };
+
+  # spin down disks after 21mins
+  powerManagement.powerUpCommands = ''
+    ${pkgs.hdparm}/sbin/hdparm -S 252 /dev/disk/by-id/ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K3PNERFU
+    ${pkgs.hdparm}/sbin/hdparm -S 252 /dev/disk/by-id/ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K2EJP002
+    ${pkgs.hdparm}/sbin/hdparm -S 252 /dev/disk/by-id/ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K3PNE22D
+    ${pkgs.hdparm}/sbin/hdparm -S 252 /dev/disk/by-id/ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K4ES2R9F
+    ${pkgs.hdparm}/sbin/hdparm -S 252 /dev/disk/by-id/ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K6DV1X2V
+    ${pkgs.hdparm}/sbin/hdparm -S 252 /dev/disk/by-id/ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K0HP5XTS
+    ${pkgs.hdparm}/sbin/hdparm -S 252 /dev/disk/by-id/ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K3ACZK44
+    ${pkgs.hdparm}/sbin/hdparm -S 252 /dev/disk/by-id/ata-WDC_WD40EZRZ-00GXCB0_WD-WCC7K2EJY0NR
+  '';
+
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
