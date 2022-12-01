@@ -353,8 +353,11 @@ in
   '';
 
   # automatically garbage collect nix store to save disk space
-  nix.gc.automatic = true;
-  nix.gc.dates = "03:15";
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
 
   # bridge + tap setup for qemu
   networking.bridges.br0 = {
