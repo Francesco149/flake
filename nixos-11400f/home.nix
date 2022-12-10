@@ -31,6 +31,7 @@ let
         "https://cdn.frankerfacez.com/script/frankerfacez-4.0-an+fx.xpi"
         "https://addons.mozilla.org/firefox/downloads/file/3945159/7tv-2.2.2.xpi"
         "https://addons.mozilla.org/firefox/downloads/file/4016524/libredirect-2.3.1.xpi"
+        "https://addons.mozilla.org/firefox/downloads/file/4013720/purpleadblock-1.5.0.5.xpi"
       ];
     };
 
