@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.05"; # for my mail server
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.11"; # for my mail server
     flake-utils.url = "github:numtide/flake-utils";
 
     flake-compat = {
@@ -21,7 +21,7 @@
     };
 
     home-manager-stable = {
-      url = "github:nix-community/home-manager/release-22.05";
+      url = "github:nix-community/home-manager/release-22.11";
 
       # home-manager pins nixpkgs to a specific version in its flake.
       # we want to make sure everything pins to the same version of nixpkgs to be more efficient
@@ -137,6 +137,7 @@
   in {
     nixosConfigurations = {
 
+      # nixos desktop, mostly used to back up to my zfs array
       nixos-11400f = mkSystem (rec {
         configName = "nixos-11400f"; # TODO: any way to avoid this duplication?
         modules = [
@@ -146,18 +147,32 @@
         homeImports = [ ./${configName}/home.nix ];
       } // unstable);
 
+      # wsl on my windows machine
       nixos-wsl-5900x = mkSystem (rec {
         configName = "nixos-wsl-5900x";
         modules = [ ./${configName}/configuration.nix ];
         homeImports = [ ./${configName}/home.nix ];
       } // stable);
 
+      # TODO: other 
+
+      # mail server
       headpats = nixpkgs-stable.lib.nixosSystem rec {
         inherit system;
-        specialArgs = { inherit user; };
         pkgs = pkgs-stable;
         modules = [
           ./headpats/configuration.nix
+          agenix-stable.nixosModule
+        ];
+      };
+
+      # home server (matrix and other stuff)
+      # this is a low power x86_64 mini-pc (fujitsu esprimo). draws 7-10w idle
+      meido = nixpkgs-stable.lib.nixosSystem rec {
+        inherit system;
+        pkgs = pkgs-stable;
+        modules = [
+          ./meido/configuration.nix
           agenix-stable.nixosModule
         ];
       };

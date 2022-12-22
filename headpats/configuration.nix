@@ -1,13 +1,13 @@
-{ pkgs, config, user, ... }:
+{ pkgs, config, ... }:
 let
-  release = "nixos-22.05";
+  release = "nixos-22.11";
   headpatsDomain = "headpats.uk";
 in {
   imports = [
     ./hardware-configuration.nix
     (builtins.fetchTarball {
       url = "https://gitlab.com/simple-nixos-mailserver/nixos-mailserver/-/archive/${release}/nixos-mailserver-${release}.tar.gz";
-      sha256 = "sha256:0csx2i8p7gbis0n5aqpm57z5f9cd8n9yabq04bg1h4mkfcf7mpl6";
+      sha256 = "sha256:1h1r4x2ffqwyk0ql6kjvcpg1bdiimyzhrsvn49702fsgzpx57fhd";
     })
   ];
 
