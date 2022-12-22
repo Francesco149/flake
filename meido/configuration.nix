@@ -840,7 +840,7 @@ in {
   services.openssh = {
     enable = true;
     passwordAuthentication = false;
-    permitRootLogin = "no";
+    permitRootLogin = "yes";
     kbdInteractiveAuthentication = false;
   };
 
