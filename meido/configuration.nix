@@ -914,6 +914,7 @@ in {
       22 # ssh
       80 # http
       443 # https
+      synapsePort
       dendritePort
       5357 # wsdd, for samba win10 discovery
       3000 # grafana
