@@ -93,7 +93,7 @@ in with config; {
     krita
     tor-browser-bundle-bin
     quickemu
-    olive-editor
+    #olive-editor
 
     (pkgs.writeShellScriptBin "cam" ''
       mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)

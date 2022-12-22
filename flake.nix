@@ -89,15 +89,13 @@
         (import ./custom-packages.nix)
         (final: prev: { agenix = agenix.defaultPackage.x86_64-linux; })
         emacs-overlay.overlay
-        cubecalc-ui.overlay
       ];
     };
 
     pkgs-stable = import nixpkgs-stable {
       inherit system;
       overlays = [
-        (import ./custom-packages.nix)
-        emacs-overlay.overlay
+        cubecalc-ui.overlay
       ];
     };
 
@@ -170,6 +168,7 @@
       # this is a low power x86_64 mini-pc (fujitsu esprimo). draws 7-10w idle
       meido = nixpkgs-stable.lib.nixosSystem rec {
         inherit system;
+        specialArgs = { inherit user; };
         pkgs = pkgs-stable;
         modules = [
           ./meido/configuration.nix

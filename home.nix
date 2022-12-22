@@ -5,7 +5,7 @@ let
 
   emacs-custom = (
     let
-      emacsCustom = (pkgs.emacsPackagesFor pkgs.emacsPgtkNativeComp).emacsWithPackages;
+      emacsCustom = (pkgs.emacsPackagesFor pkgs.emacsPgtk).emacsWithPackages;
     in
       emacsCustom (epkgs: with epkgs; [
         org org-superstar
@@ -43,8 +43,8 @@ in with config; {
 
   caches.cachix = [
     # nix-prefetch-url 'https://cachix.org/api/v1/cache/${name}'
-    { name = "nix-community"; sha256 = "1955r436fs102ny80wfzy99d4253bh2i1vv1x4d4sh0zx2ssmhrk"; }
-    { name = "lolisamurai"; sha256 = "0asqjdliv1jawlz3vwl7jgqv5wmxpkj7m3shhfpfs08mhxp3ax47"; }
+    { name = "nix-community"; sha256 = "1rgbl9hzmpi5x2xx9777sf6jamz5b9qg72hkdn1vnhyqcy008xwg"; }
+    { name = "lolisamurai"; sha256 = "0manvwxjwvv3mk32jwfpbail5lc0h3v2q9c998r21z1vhcjdgb8i"; }
   ];
 
   home.username = "${user}";
