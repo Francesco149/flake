@@ -312,8 +312,10 @@ in {
   users.users.${user} = {
     isNormalUser = true;
     extraGroups = [ "wheel" ];
-    #openssh.authorizedKeys.keys = authorizedKeys;
+    openssh.authorizedKeys.keys = authorizedKeys;
   };
+
+  users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
 
   networking = {
     hostName = "meido";
