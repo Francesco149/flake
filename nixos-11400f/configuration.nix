@@ -1,73 +1,5 @@
 { pkgs, user, lib, config, ... }:
 
-let
-  pgdb = name: "postgres://${name}@localhost/${name}?sslmode=disable";
-
-  appservice-pgdb = name: {
-    engine = "postgres";
-    connString = pgdb name;
-    filename = "";
-  };
-
-  dendriteDomain = "animegirls.cc";
-  dendriteLocalPort = 8007;
-  dendritePort = 8420;
-
-  synapseDomain = "animegirls.win";
-  synapseLocalPort = 8008;
-  synapsePort = 8448;
-
-  # can't extract this from dendrite's module it seems. also referencing the systemd service causes inf recursion
-  dendriteDataDir = "/var/lib/dendrite";
-
-  # generates a service that runs as root and installs files into the service's data directory
-  # with correct ownership for a DynamicUser service. they will be read-only for the user.
-  # this is meant for secrets.
-
-  # usage:
-  # imports = [
-  #   (serviceFiles "myService" [ "/path/to/file.ext" ])
-  #   #... your other imports
-  # ];
-  # services.myService = {
-  #   # ... yourother settings
-  # };
-
-  # TODO:
-  # if the service has never been started and the data dir does not exist or isn't chowned to the systemd user,
-  # this will fail and you will have to chmod manually. I don't have a good solution for that yet. maybe there's
-  # a way to put the 2 services into an unit and have that unit run as the same dynamic user?
-
-  serviceFilesWithDir = dataDir: serviceName: files: {
-    systemd.services."${serviceName}".after =
-      lib.optional config.services.${serviceName}.enable "${serviceName}-serviceFiles.service";
-    systemd.services."${serviceName}-serviceFiles" = {
-      enable = config.services.${serviceName}.enable;
-      restartIfChanged = true;
-      description = "Install files to ${serviceName}'s dataDir";
-      before = [ "${serviceName}.service" ];
-      wantedBy = [ "multi-user.target" ];
-      serviceConfig = {
-        Type = "oneshot";
-        ExecStart = (pkgs.writeShellScript "${serviceName}-serviceFiles-ExecStart" ''
-          install \
-            --verbose \
-            --mode 400 \
-            --owner $(stat -c %u "${dataDir}") \
-            --group $(stat -c %g "${dataDir}") \
-            ${builtins.concatStringsSep " " files} \
-            "${dataDir}"
-        '');
-        RemainAfterExit = true;
-      };
-    };
-  };
-
-  # simplified version for services that provide dataDir at config.services.${serviceName}.dataDir
-  serviceFiles = serviceName: files:
-    serviceFilesWithDir config.services.${serviceName}.dataDir serviceName files;
-
-in
 {
   imports = [
     ./hardware-configuration.nix
@@ -234,63 +166,7 @@ in
     allowPing = true;
     allowedTCPPorts = [
       22 # ssh
-      80 # http
-      443 # https
-      synapsePort
-      dendritePort
-      5357 # wsdd, for samba win10 discovery
     ];
-    allowedUDPPorts = [
-      3702 # wsdd, for samba win10 discovery
-      53 # local dns
-    ];
-  };
-
-  # postgresql: just used by matrix for now
-
-  services.postgresql = let
-    db = name: {
-      inherit name;
-      ensurePermissions = {
-        "DATABASE \"${name}\"" = "ALL PRIVILEGES";
-      };
-    };
-
-    # using collation other than C can cause subtle corruption in your indices if libc/icu changes stuff.
-    # this script recreates template1, the default database template, to have collation C
-    # https://www.citusdata.com/blog/2020/12/12/dont-let-collation-versions-corrupt-your-postgresql-indexes/
-    initialScript = ''
-      ALTER database template1 is_template=false;
-      DROP database template1;
-
-      CREATE DATABASE template1
-      WITH OWNER = postgres
-        ENCODING = 'UTF8'
-        TABLESPACE = pg_default
-        LC_COLLATE = 'C'
-        LC_CTYPE = 'C'
-        CONNECTION LIMIT = -1
-        TEMPLATE template0;
-
-      ALTER database template1 is_template=true;
-    '';
-
-    svcs =  [
-      "matrix-synapse"
-    ];
-  in {
-    enable = true;
-    # package = pkgs.postgresql_14;
-    enableTCPIP = true;
-
-    authentication = pkgs.lib.mkOverride 10 ''
-      local all all trust
-      host all all 127.0.0.1/32 trust
-      host all all ::1/128 trust
-    '';
-
-    ensureDatabases = svcs;
-    ensureUsers = map (x: (db x)) svcs;
   };
 
   # NOTE: private config files. comment out or provide your own
