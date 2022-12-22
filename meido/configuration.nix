@@ -801,12 +801,8 @@ in {
         }) [
 
           (f "synapse"
-            "https://raw.githubusercontent.com/matrix-org/synapse/v${pkgs.matrix-synapse.version}/contrib/grafana/synapse.json"
-            "19r9vpvg7x29agnnj4wsfizvl0s7famzfspypibalygq1mdc2pn2")
-
-          (f "appservice"
-            "https://raw.githubusercontent.com/matrix-org/synapse/v${pkgs.matrix-synapse.version}/contrib/grafana.json"
-            "0vg7g1slqp0hhkk0bq6vkvmlbbkgjh44qwj5kwyqc84lpkmgjilv")
+            "https://raw.githubusercontent.com/matrix-org/synapse/develop/contrib/grafana/synapse.json"
+            "sha256-cA+ZP5snYGhNZ70Fk+cJ0PBmenjpiglx1OOrNOe5HlI=")
 
         ];
       };
