@@ -355,9 +355,6 @@ in {
     prefixLength = 24;
   }];
 
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
-
   services.postgresql = let
     db = name: {
       inherit name;
