@@ -12,7 +12,7 @@ in {
 
   imports = [
     ../locale/configuration.nix
-  ]
+  ];
 
   users.users.${user} = {
     isNormalUser = true;
