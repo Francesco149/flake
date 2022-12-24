@@ -4,6 +4,7 @@
   imports = [
     "${modulesPath}/profiles/minimal.nix"
     nixos-wsl.nixosModules.wsl
+    ../common/locale/configuration.nix
   ];
 
   users.users.${user} = {
