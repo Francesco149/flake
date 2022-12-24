@@ -92,8 +92,10 @@ let
     '';
   };
 
-  tdesktop-wrapped = pkgs.writeShellScriptBin "telegram-desktop" ''
-    exec env XDG_CURRENT_DESKTOP=gnome ${pkgs.tdesktop}/bin/telegram-desktop "$@"
+  # some programs don't use the gtk file picker by default.
+  # tricking them into thinking I'm running gnome seems to work
+  fix-file-picker = binary: pkgs.writeShellScriptBin (baseNameOf binary) ''
+    exec env XDG_CURRENT_DESKTOP=gnome ${binary} "$@"
   '';
 
 in with config; {
@@ -190,7 +192,7 @@ in with config; {
     dmenu
     maim
     firefox-custom
-    tdesktop-wrapped
+    (fix-file-picker "${pkgs.tdesktop}/bin/telegram-desktop")
     chatterino7
     obs-studio
     simplescreenrecorder
