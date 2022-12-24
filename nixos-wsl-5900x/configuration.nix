@@ -1,7 +1,5 @@
 { pkgs, user, nixos-wsl, modulesPath, ... }:
 
-# BROKEN, TODO: FIX
-
 {
   imports = [
     "${modulesPath}/profiles/minimal.nix"
@@ -23,8 +21,11 @@
   wsl = {
     enable = true;
     automountPath = "/mnt";
-    defaultUser = "loli";
+    defaultUser = user;
     startMenuLaunchers = true;
+
+    # Enable native Docker support
+    # docker-native.enable = true;
 
     # Enable integration with Docker Desktop (needs to be installed)
     # docker.enable = true;

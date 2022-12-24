@@ -107,6 +107,10 @@ let
 
 in with config; {
 
+  imports = [
+    ../vim/home.nix
+  ];
+
   caches.cachix = [
     # nix-prefetch-url 'https://cachix.org/api/v1/cache/${name}'
     { name = "nix-community"; sha256 = "1rgbl9hzmpi5x2xx9777sf6jamz5b9qg72hkdn1vnhyqcy008xwg"; }
@@ -231,9 +235,6 @@ in with config; {
 
   ]);
 
-  home.sessionVariables = {
-    EDITOR="vim";
-  };
 
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
@@ -274,9 +275,6 @@ in with config; {
   programs.alacritty.enable = true; # backup terminal just in case
 
   xdg.dataFile = {
-    "vim/swap/.keep".text = "";
-    "vim/backup/.keep".text = "";
-    "vim/undo/.keep".text = "";
     "emacs/backup/.keep".text = "";
     "emacs/undo/.keep".text = "";
     "barrier/SSL/Fingerprints/TrustedServers.txt".source = ./barrier/TrustedServers.txt;
@@ -331,21 +329,6 @@ in with config; {
       fullscreen = "show";
     };
 
-  };
-
-  programs.vim = {
-    enable = true;
-    plugins = with pkgs.vimPlugins; [ vim-nix ];
-    settings = {
-      directory = [ "${xdg.dataHome}/vim/swap//" ];
-      backupdir = [ "${xdg.dataHome}/vim/backup//" ];
-      undofile = true;
-      undodir = [ "${xdg.dataHome}/vim/undo//" ];
-      shiftwidth = 2;
-      tabstop = 2;
-      relativenumber = true;
-    };
-    extraConfig = builtins.readFile ./vim/init.vim;
   };
 
   gtk.enable = true;
