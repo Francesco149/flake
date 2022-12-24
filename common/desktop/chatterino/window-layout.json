@@ -1,0 +1,97 @@
+{
+    "windows": [
+        {
+            "emotePopup": {
+                "x": 1608,
+                "y": 417
+            },
+            "height": 950,
+            "tabs": [
+                {
+                    "highlightsEnabled": true,
+                    "selected": true,
+                    "splits2": {
+                        "flexh": 1,
+                        "flexv": 1,
+                        "items": [
+                            {
+                                "data": {
+                                    "name": "lolisamurai",
+                                    "type": "twitch"
+                                },
+                                "filters": [
+                                ],
+                                "flexh": 1,
+                                "flexv": 1,
+                                "moderationMode": false,
+                                "type": "split"
+                            },
+                            {
+                                "data": {
+                                    "name": "sakurafrost225",
+                                    "type": "twitch"
+                                },
+                                "filters": [
+                                ],
+                                "flexh": 1,
+                                "flexv": 1,
+                                "moderationMode": false,
+                                "type": "split"
+                            }
+                        ],
+                        "type": "vertical"
+                    }
+                },
+                {
+                    "highlightsEnabled": true,
+                    "splits2": {
+                        "data": {
+                            "name": "shigetora",
+                            "type": "twitch"
+                        },
+                        "filters": [
+                        ],
+                        "flexh": 1,
+                        "flexv": 1,
+                        "moderationMode": false,
+                        "type": "split"
+                    }
+                },
+                {
+                    "highlightsEnabled": true,
+                    "splits2": {
+                        "data": {
+                            "name": "lqsknight",
+                            "type": "twitch"
+                        },
+                        "filters": [
+                        ],
+                        "flexh": 1,
+                        "flexv": 1,
+                        "moderationMode": false,
+                        "type": "split"
+                    }
+                },
+                {
+                    "highlightsEnabled": true,
+                    "splits2": {
+                        "data": {
+                            "name": "lolisamurai",
+                            "type": "twitch"
+                        },
+                        "filters": [
+                        ],
+                        "flexh": 1,
+                        "flexv": 1,
+                        "moderationMode": false,
+                        "type": "split"
+                    }
+                }
+            ],
+            "type": "main",
+            "width": 377,
+            "x": 1542,
+            "y": 128
+        }
+    ]
+}

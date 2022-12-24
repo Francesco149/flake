@@ -1,4 +1,4 @@
-{ config, pkgs, lib, user, ... }:
+{ config, pkgs, lib, user, meidoLocalIp, ... }:
 
 let
 
@@ -351,7 +351,7 @@ in {
   };
 
   networking.interfaces.eth0.ipv4.addresses = [{
-    address = "192.168.1.11";
+    address = meidoLocalIp;
     prefixLength = 24;
   }];
 

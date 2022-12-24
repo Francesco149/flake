@@ -1,7 +1,8 @@
 { config, pkgs, ... }:
-with config; {
 
-  imports = [../home.nix ];
+# BROKEN, TODO: FIX
+
+with config; {
 
   home.packages = with pkgs; [
     wslu

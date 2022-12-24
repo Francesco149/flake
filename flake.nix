@@ -99,11 +99,16 @@
       ];
     };
 
+    # only used on machines that use home-manager to avoid some duplication
+
     mkSystem = conf: (
       conf.nixpkgs.lib.nixosSystem {
         inherit system;
         inherit (conf) pkgs;
-        specialArgs = { inherit user; inherit nixos-wsl; }; # pass user to modules (configuration.nix for example)
+
+        # pass user to modules (configuration.nix for example)
+        specialArgs = { inherit user nixos-wsl meidoLocalIp; };
+
         modules = conf.modules ++ [
           conf.home-manager.nixosModules.home-manager {
             home-manager.useGlobalPkgs = true; # instead of having its own private nixpkgs
@@ -120,24 +125,36 @@
           }
         ];
       }
-      );
+    );
 
-      stable = {
-        nixpkgs = nixpkgs-stable;
-        pkgs = pkgs-stable;
-        home-manager = home-manager-stable;
-      };
+    stable = {
+      nixpkgs = nixpkgs-stable;
+      pkgs = pkgs-stable;
+      home-manager = home-manager-stable;
+    };
 
-      unstable = {
-        inherit nixpkgs pkgs home-manager;
-      };
+    unstable = {
+      inherit nixpkgs pkgs home-manager;
+    };
+
+    meidoLocalIp = "192.168.1.11";
 
   in {
     nixosConfigurations = {
 
-      # nixos desktop, mostly used to back up to my zfs array
+      # main desktop machine. low power draw
+      tanuki = mkSystem (rec {
+        configName = "tanuki"; # TODO: any way to avoid this duplication?
+        modules = [
+          ./${configName}/configuration.nix
+          agenix.nixosModule
+        ];
+        homeImports = [ ./${configName}/home.nix ];
+      } // unstable);
+
+      # beefier desktop, mostly used to back up to my zfs array
       nixos-11400f = mkSystem (rec {
-        configName = "nixos-11400f"; # TODO: any way to avoid this duplication?
+        configName = "nixos-11400f";
         modules = [
           ./${configName}/configuration.nix
           agenix.nixosModule
@@ -151,8 +168,6 @@
         modules = [ ./${configName}/configuration.nix ];
         homeImports = [ ./${configName}/home.nix ];
       } // stable);
-
-      # TODO: other 
 
       # mail server
       headpats = nixpkgs-stable.lib.nixosSystem rec {
@@ -168,7 +183,7 @@
       # this is a low power x86_64 mini-pc (fujitsu esprimo). draws 7-10w idle
       meido = nixpkgs-stable.lib.nixosSystem rec {
         inherit system;
-        specialArgs = { inherit user; };
+        specialArgs = { inherit user meidoLocalIp; };
         pkgs = pkgs-stable;
         modules = [
           ./meido/configuration.nix

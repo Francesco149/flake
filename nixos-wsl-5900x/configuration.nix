@@ -1,11 +1,11 @@
 { pkgs, user, nixos-wsl, modulesPath, ... }:
 
+# BROKEN, TODO: FIX
+
 {
   imports = [
     "${modulesPath}/profiles/minimal.nix"
     nixos-wsl.nixosModules.wsl
-
-    ../configuration.nix
   ];
 
   nix = {
