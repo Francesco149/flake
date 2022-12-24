@@ -119,7 +119,6 @@ in with config; {
 
   home.username = "${user}";
   home.homeDirectory = "/home/${user}";
-  home.stateVersion = "22.05";
 
   # temp fix until https://github.com/LnL7/nix-darwin/pull/552 is merged
   manual.manpages.enable = false;

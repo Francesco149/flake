@@ -19,4 +19,6 @@ with config; {
     "youtube-dl/config".source = ./youtube-dl/config;
   };
 
+  home.stateVersion = "22.05";
+
 }

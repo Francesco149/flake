@@ -7,4 +7,6 @@ in with config; {
     ../common/desktop/home.nix
   ];
 
+  home.stateVersion = "22.05";
+
 }
