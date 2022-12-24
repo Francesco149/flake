@@ -1,4 +1,4 @@
-{ config, pkgs, user, configName, ... }:
+{ config, pkgs, user, configName, lib, ... }:
 
 let
   pythonPackages = pkgs.python39Packages; # adjust python version here as needed
@@ -556,7 +556,7 @@ in with config; {
       config.HDMI-A-0 = {
         enable = true;
         mode = "1920x1080";
-        rate = "144.0";
+        rate = lib.mkDefault "144.0";
         position = "0x0";
         gamma="1.08:1.08:1.08";
       };
