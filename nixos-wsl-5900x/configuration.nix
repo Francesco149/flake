@@ -6,6 +6,11 @@
     nixos-wsl.nixosModules.wsl
   ];
 
+  users.users.${user} = {
+    isNormalUser = true;
+    extraGroups = [ "wheel" ];
+  };
+
   nix = {
     package = pkgs.nixVersions.stable;
     extraOptions = ''
