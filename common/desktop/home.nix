@@ -209,7 +209,7 @@ in with config; {
     tor-browser-bundle-bin
     quickemu
     qemu_kvm
-    shotcut
+    (fix-file-picker "${pkgs.shotcut}/bin/shotcut")
     libreoffice
 
     (pkgs.writeShellScriptBin "cam" ''
