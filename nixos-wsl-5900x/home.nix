@@ -19,6 +19,9 @@ with config; {
     "youtube-dl/config".source = ./youtube-dl/config;
   };
 
+  home.username = "${user}";
+  home.homeDirectory = "/home/${user}";
+
   home.stateVersion = "22.05";
 
 }
