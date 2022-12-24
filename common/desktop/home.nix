@@ -3,6 +3,8 @@
 let
   pythonPackages = pkgs.python39Packages; # adjust python version here as needed
 
+  themeName = "Adwaita-dark";
+
   emacs-custom = (
     let
       emacsCustom = (pkgs.emacsPackagesFor pkgs.emacsPgtk).emacsWithPackages;
@@ -98,6 +100,11 @@ let
     exec env XDG_CURRENT_DESKTOP=gnome ${binary} "$@"
   '';
 
+  # some gnome applications don't follow gtk theme by default
+  fix-theme = binary: pkgs.writeShellScriptBin (baseNameOf binary) ''
+    exec env GTK_THEME=${themeName} ${binary} "$@"
+  '';
+
 in with config; {
 
   caches.cachix = [
@@ -186,7 +193,7 @@ in with config; {
     pinentry-gnome
     gcr # required for pinentry-gnome?
     polkit_gnome
-    gnome.nautilus
+    (fix-theme "${pkgs.gnome.nautilus}/bin/nautilus")
     transmission-gtk
 
     dmenu
@@ -342,8 +349,10 @@ in with config; {
   };
 
   gtk.enable = true;
-  gtk.theme.name = "Adwaita-dark";
+  gtk.theme.name = themeName;
   gtk.theme.package = pkgs.gnome.gnome-themes-extra;
+  gtk.iconTheme.name = "Paper";
+  gtk.iconTheme.package = pkgs.paper-icon-theme;
 
   xdg.configFile = {
     "yt-dlp/config".source = ./yt-dlp/config;
