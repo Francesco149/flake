@@ -376,7 +376,6 @@ in with config; {
     };
 
     "bar/top" = {
-      monitor = "HDMI-A-0";
       width = "100%";
       height = "32px";
       radius = 0;
@@ -480,7 +479,7 @@ in with config; {
 
     "module/filesystem" = {
       type = "internal/fs";
-      mount-0 = "/home";
+      mount-0 = "/";
       interval = 10;
       fixed-values = true;
       spacing = 4;
