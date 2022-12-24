@@ -203,6 +203,7 @@ in with config; {
     quickemu
     qemu_kvm
     shotcut
+    libreoffice
 
     (pkgs.writeShellScriptBin "cam" ''
       mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)
