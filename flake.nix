@@ -3,7 +3,12 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.11"; # for my mail server
+
+    # NOTE: remember to update home-manager versions
+
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.11"; # for servers
+    nixpkgs-wsl.url = "github:nixos/nixpkgs/nixos-22.05"; # nixos-wsl lags behind
+
     flake-utils.url = "github:numtide/flake-utils";
 
     flake-compat = {
@@ -22,16 +27,17 @@
 
     home-manager-stable = {
       url = "github:nix-community/home-manager/release-22.11";
-
-      # home-manager pins nixpkgs to a specific version in its flake.
-      # we want to make sure everything pins to the same version of nixpkgs to be more efficient
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    # TODO: separate each config into its own flake to avoid pulling unnecessary deps? or is nix smart enough
+    home-manager-wsl = {
+      url = "github:nix-community/home-manager/release-22.05";
+      inputs.nixpkgs.follows = "nixpkgs-wsl";
+    };
+
     nixos-wsl = {
       url = "github:nix-community/NixOS-WSL";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
+      inputs.nixpkgs.follows = "nixpkgs-wsl";
       inputs.flake-utils.follows = "flake-utils";
       inputs.flake-compat.follows = "flake-compat";
     };
@@ -54,13 +60,6 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
-    cubecalc-ui = {
-      url = "github:Francesco149/cubecalc-ui";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-      inputs.flake-compat.follows = "flake-compat";
-    };
-
     declarative-cachix.url = "github:jonascarpay/declarative-cachix/master";
   };
 
@@ -68,14 +67,15 @@
     self,
     nixpkgs,
     nixpkgs-stable,
+    nixpkgs-wsl,
     home-manager,
     home-manager-stable,
+    home-manager-wsl,
     nixos-wsl,
     agenix,
     agenix-stable,
     emacs-overlay,
     declarative-cachix,
-    cubecalc-ui,
     ...
   }:
   let
@@ -94,9 +94,10 @@
 
     pkgs-stable = import nixpkgs-stable {
       inherit system;
-      overlays = [
-        cubecalc-ui.overlay
-      ];
+    };
+
+    pkgs-wsl = import nixpkgs-wsl {
+      inherit system;
     };
 
     # only used on machines that use home-manager to avoid some duplication
@@ -127,10 +128,18 @@
       }
     );
 
+    # these are to be used with mkSystem
+
     stable = {
       nixpkgs = nixpkgs-stable;
       pkgs = pkgs-stable;
       home-manager = home-manager-stable;
+    };
+
+    wsl = {
+      nixpkgs = nixpkgs-wsl;
+      pkgs = pkgs-wsl;
+      home-manager = home-manager-wsl;
     };
 
     unstable = {
@@ -167,7 +176,13 @@
         configName = "nixos-wsl-5900x";
         modules = [ ./${configName}/configuration.nix ];
         homeImports = [ ./${configName}/home.nix ];
-      } // stable);
+      } // wsl);
+
+      #
+      # servers
+      # NOTE: avoid having complex dependencies in these. a bit of code duplication is fine.
+      #       we don't want to randomly break stuff changing some other machine's config.
+      #
 
       # mail server
       headpats = nixpkgs-stable.lib.nixosSystem rec {
