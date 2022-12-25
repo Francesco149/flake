@@ -21,7 +21,7 @@
 
   wsl = {
     enable = true;
-    automountPath = "/mnt";
+    wslConf.automount.root = "/mnt";
     defaultUser = user;
     startMenuLaunchers = true;
 
