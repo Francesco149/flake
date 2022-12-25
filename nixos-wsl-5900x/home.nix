@@ -2,6 +2,10 @@
 
 with config; {
 
+  # TODO: why is this needed? I already have it in configuration.nix
+  # without it, I get 'A corresponding Nix package must be specified via `nix.package`'
+  nix.package = pkgs.nixFlakes;
+
   imports = [
     ../common/vim/home.nix
   ];
@@ -15,8 +19,8 @@ with config; {
   ];
 
   xdg.configFile = {
-    "yt-dlp/config".source = ./yt-dlp/config;
-    "youtube-dl/config".source = ./youtube-dl/config;
+    "yt-dlp/config".source = ../common/desktop/yt-dlp/config;
+    "youtube-dl/config".source = ../common/desktop/youtube-dl/config;
   };
 
   home.username = "${user}";
