@@ -16,6 +16,7 @@ with config; {
     youtube-dl
     yt-dlp
     aria2
+    ffmpeg
   ];
 
   xdg.configFile = {
