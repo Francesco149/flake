@@ -8,7 +8,7 @@
   ];
 
   nix = {
-    package = pkgs.nixVersions.unstable;
+    package = pkgs.nixFlakes;
     extraOptions = ''
       experimental-features = nix-command flakes
       keep-outputs = true
@@ -31,7 +31,5 @@
     # Enable integration with Docker Desktop (needs to be installed)
     # docker.enable = true;
   };
-
-  programs.dconf.enable = true; # for home-manager
 
 }
