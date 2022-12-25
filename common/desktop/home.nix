@@ -87,8 +87,8 @@ let
       })
       (addon {
         name = "purpleadblock";
-        url = "https://addons.mozilla.org/firefox/downloads/file/4013720/purpleadblock-1.5.0.5.xpi";
-        sha256 = "08bf5c52qc3k6ycqissklah2mgcx1var59pp9clb7376z6njn8g4";
+        url = "https://github.com/arthurbolsoni/Purple-adblock/releases/download/2.5.0.10/purple-adblock-2.5.0.10-unsigned-firefox.xpi";
+        sha256 = "10x64l3079wx70s5f5wn2cysdzagp1sgkx23yv7dnyy17b898i40";
       })
     ];
 
