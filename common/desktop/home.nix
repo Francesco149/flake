@@ -285,6 +285,7 @@ in with config; {
       xub="xu && xb";
       xq="nix search nixpkgs";
       eq="nix-env -f '<nixpkgs>' -qaP -A pkgs.emacsPackages | grep";
+      yt-date="yt-dlp --skip-download --get-filename --output '%(upload_date)s'";
     };
     bashrcExtra = ''
       set -o vi
