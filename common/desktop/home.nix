@@ -129,6 +129,8 @@ let
       // fuck off with this sponsored shit
       lockPref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsored", false);
       lockPref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsoredTopSites", false);
+
+      lockPref("media.ffmpeg.vaapi.enabled", true);
     '';
   };
 
@@ -141,6 +143,10 @@ let
   # some gnome applications don't follow gtk theme by default
   fix-theme = binary: pkgs.writeShellScriptBin (baseNameOf binary) ''
     exec env GTK_THEME=${themeName} ${binary} "$@"
+  '';
+
+  fix-rdd-sandbox = binary: pkgs.writeShellScriptBin (baseNameOf binary) ''
+    exec env MOZ_DISABLE_RDD_SANDBOX=1 ${binary} "$@"
   '';
 
 in with config; {
@@ -239,7 +245,7 @@ in with config; {
 
     dmenu
     maim
-    firefox-custom
+    (fix-rdd-sandbox "${firefox-custom}/bin/firefox")
     (fix-file-picker "${pkgs.tdesktop}/bin/telegram-desktop")
     chatterino7
     obs-studio
