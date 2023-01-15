@@ -300,6 +300,12 @@ in with config; {
 
   xsession = {
     enable = true;
+
+    # I don't think I need these, leaving here just in case
+    # export GTK_IM_MODULE=ibus
+    # export XMODIFIERS=@im=ibus
+    # export QT_IM_MODULE=ibus
+
     windowManager.command = ''
       ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
       nitrogen --set-auto ${xdg.dataHome}/wallpaper.jpg

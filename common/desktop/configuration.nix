@@ -123,6 +123,11 @@ in {
     }
   ];
 
+  i18n.inputMethod = {
+    enabled = "ibus";
+    ibus.engines = with pkgs.ibus-engines; [ hangul mozc ];
+  };
+
   networking.firewall = {
     enable = true;
     allowPing = true;
