@@ -254,7 +254,8 @@ in with config; {
     quickemu
     qemu_kvm
     (fix-file-picker "${pkgs.shotcut}/bin/shotcut")
-    libreoffice
+    gnumeric
+    abiword
     sxiv
 
     (pkgs.writeShellScriptBin "cam" ''
