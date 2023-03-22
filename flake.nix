@@ -87,7 +87,6 @@
       config.allowUnfree = true;
       overlays = [
         (import ./custom-packages.nix)
-        (final: prev: { agenix = agenix.defaultPackage.x86_64-linux; })
         emacs-overlay.overlay
       ];
     };
@@ -156,7 +155,7 @@
         configName = "tanuki"; # TODO: any way to avoid this duplication?
         modules = [
           ./${configName}/configuration.nix
-          agenix.nixosModule
+          agenix.nixosModules.default
         ];
         homeImports = [ ./${configName}/home.nix ];
       } // unstable);
@@ -166,7 +165,7 @@
         configName = "nixos-11400f";
         modules = [
           ./${configName}/configuration.nix
-          agenix.nixosModule
+          agenix.nixosModules.default
         ];
         homeImports = [ ./${configName}/home.nix ];
       } // unstable);
@@ -190,7 +189,7 @@
         pkgs = pkgs-stable;
         modules = [
           ./headpats/configuration.nix
-          agenix-stable.nixosModule
+          agenix-stable.nixosModules.default
         ];
       };
 
@@ -202,7 +201,7 @@
         pkgs = pkgs-stable;
         modules = [
           ./meido/configuration.nix
-          agenix-stable.nixosModule
+          agenix-stable.nixosModules.default
         ];
       };
 
@@ -212,7 +211,6 @@
     devShell.x86_64-linux = pkgs.mkShell {
       packages = [
         pkgs.nixpkgs-fmt
-        pkgs.agenix
       ];
     };
   };
