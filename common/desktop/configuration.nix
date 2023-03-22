@@ -62,6 +62,15 @@ in {
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
+  # TODO: not functional at the moment
+  #services.openvpn.servers = {
+  #  protonVPN = {
+  #    config = '' config /home/${user}/.local/share/protonvpn/config.ovpn '';
+  #    updateResolvConf = true;
+  #    autoStart = true;
+  #  };
+  #};
+
   hardware.bluetooth = {
     enable = true;
 
@@ -172,6 +181,16 @@ in {
     chatterino-settings = mkUserSecret {
       file = ../../secrets/chatterino/settings.json.age;
       path = "/home/${user}/.local/share/chatterino/Settings/settings.json";
+    };
+
+    protonvpn-creds = mkUserSecret {
+      file = ../../secrets/protonvpn/creds.txt.age;
+      path = "/home/${user}/.local/share/protonvpn/creds.txt";
+    };
+
+    protonvpn-conf = mkUserSecret {
+      file = ../../secrets/protonvpn/config.ovpn.age;
+      path = "/home/${user}/.local/share/protonvpn/config.ovpn";
     };
 
   };
