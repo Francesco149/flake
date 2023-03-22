@@ -157,8 +157,8 @@ in with config; {
 
   caches.cachix = [
     # nix-prefetch-url 'https://cachix.org/api/v1/cache/${name}'
-    { name = "nix-community"; sha256 = "1rgbl9hzmpi5x2xx9777sf6jamz5b9qg72hkdn1vnhyqcy008xwg"; }
-    { name = "lolisamurai"; sha256 = "0manvwxjwvv3mk32jwfpbail5lc0h3v2q9c998r21z1vhcjdgb8i"; }
+    { name = "nix-community"; sha256 = "0m6kb0a0m3pr6bbzqz54x37h5ri121sraj1idfmsrr6prknc7q3x"; }
+    { name = "lolisamurai"; sha256 = "0x21yf2bnvxbcd36fyny8xkkbvbd0wh3m79kk3zbwwkq30y987zw"; }
   ];
 
   home.username = "${user}";
