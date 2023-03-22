@@ -39,9 +39,13 @@ let
       ])
 
       # TODO: remove a lot of these pkgs since I only use emacs for org mode now
-      );
+  );
 
-  firefox-custom = pkgs.wrapFirefox pkgs.firefox-esr-unwrapped {
+  firefox-custom = let
+    firefoxNoSigning = pkgs.firefox-unwrapped.overrideAttrs (lib.const {
+      MOZ_REQUIRE_SIGNING = false;
+    });
+  in pkgs.wrapFirefox firefoxNoSigning {
     nixExtensions = let
       addon = pkgs.fetchFirefoxAddon;
     in [
