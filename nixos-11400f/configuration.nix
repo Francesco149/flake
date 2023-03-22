@@ -6,6 +6,12 @@
     ../common/desktop/configuration.nix
   ];
 
+  nixpkgs.config.allowUnfree = true;
+  services.xserver.videoDrivers = [ "nvidia" ];
+  hardware.opengl.enable = true;
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+  hardware.nvidia.modesetting.enable = true;
+
   networking = {
     hostName = "nixos";
     hostId = "8556b001";
