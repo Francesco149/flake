@@ -42,59 +42,14 @@ let
   );
 
   firefox-custom = let
-    firefoxNoSigning = pkgs.firefox-unwrapped.overrideAttrs (lib.const {
+    firefoxNoSigning = pkgs.firefox-bin-unwrapped.overrideAttrs (lib.const {
       MOZ_REQUIRE_SIGNING = false;
+
+      # TODO: find way to disable sign requirement without building from source
+      #       this does nothing at the moment.
+
     });
   in pkgs.wrapFirefox firefoxNoSigning {
-    nixExtensions = let
-      addon = pkgs.fetchFirefoxAddon;
-    in [
-      (addon {
-        name = "ublock";
-        url = "https://addons.mozilla.org/firefox/downloads/file/3933192/ublock_origin-1.42.4.xpi";
-        sha256 = "1kirlfp5x10rdkgzpj6drbpllryqs241fm8ivm0cns8jjrf36g5w";
-      })
-      (addon {
-        name = "consent-o-matic";
-        url = "https://addons.mozilla.org/firefox/downloads/file/3970126/consent_o_matic-1.0.8.xpi";
-        sha256 = "1gpd37w75wfn5rn4py3p7bpnz25iw7pp14gvjww2pcic3zscqx8a";
-      })
-      (addon {
-        name = "return-youtube-dislike";
-        url = "https://addons.mozilla.org/firefox/downloads/file/3941589/return_youtube_dislikes-3.0.0.1.xpi";
-        sha256 = "00kx306pf8zxy8bpar03b226a5vmz298xaf98vzyffwfbnj89h0k";
-      })
-      (addon {
-        name = "sponsorblock";
-        url = "https://addons.mozilla.org/firefox/downloads/file/3958238/sponsorblock-4.5.1.xpi";
-        sha256 = "017lqljl18i7qhpd1q1qix6cb9s2x9k4zzaighfdmr3d0rhwfqwc";
-      })
-      (addon {
-        name = "image-search-options";
-        url = "https://addons.mozilla.org/firefox/downloads/file/3059971/image_search_options-3.0.12.xpi";
-        sha256 = "0s6hdy6cbcipjqljqhzbrzni1c527gm5ia822ghinay3gxcxig8z";
-      })
-      (addon {
-        name = "frankerfacez";
-        url = "https://cdn.frankerfacez.com/script/frankerfacez-4.0-an+fx.xpi";
-        sha256 = "0kx0dax1cv4h7hkbisw96sh2qxpmfgq1sbd49531kycwmnnq1z2k";
-      })
-      (addon {
-        name = "7tv";
-        url = "https://addons.mozilla.org/firefox/downloads/file/3945159/7tv-2.2.2.xpi";
-        sha256 = "01bl3mqd875647fcm1sbssf0p88yid4fw8ia0makq9qlcincdpjr";
-      })
-      (addon {
-        name = "libredirect";
-        url = "https://addons.mozilla.org/firefox/downloads/file/4016524/libredirect-2.3.1.xpi";
-        sha256 = "1a9zq9ag0iqfzxkjbkl8dfpi1aa7sw32cylqrqiacgyf733dqfdk";
-      })
-      (addon {
-        name = "purpleadblock";
-        url = "https://github.com/arthurbolsoni/Purple-adblock/releases/download/2.5.0.10/purple-adblock-2.5.0.10-unsigned-firefox.xpi";
-        sha256 = "10x64l3079wx70s5f5wn2cysdzagp1sgkx23yv7dnyy17b898i40";
-      })
-    ];
 
     extraPolicies = {
       CaptivePortal = false;
