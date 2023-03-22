@@ -11,25 +11,6 @@ self: super: with super; {
     };
   };
 
-  chatterino7 = chatterino2.overrideAttrs (old: rec {
-    pname = "chatterino7";
-    version = "7.3.5";
-    src = fetchFromGitHub {
-      owner = "SevenTV";
-      repo = pname;
-      rev = "v${version}";
-      sha256 = "sha256-lFzwKaq44vvkbVNHIe0Tu9ZFXUUDlWVlNXI40kb1GEM=";
-      fetchSubmodules = true;
-    };
-    # required for 7tv emotes to be visible
-    # TODO: is this robust? in an actual package definition we wouldn't have qt5,
-    #       but just self.qtimageformats doesn't work. what if qt version changes
-    buildInputs = old.buildInputs ++ [ self.qt5.qtimageformats ];
-    meta.description = old.meta.description + ", with 7tv emotes";
-    meta.homepage = "https://github.com/SevenTV/chatterino7";
-    meta.changelog = "https://github.com/SevenTV/chatterino7/releases";
-  });
-
   pxplus-ibm-vga8-bin = let
     pname = "pxplus-ibm-vga8-bin";
     bname = "PxPlus_IBM_VGA8";

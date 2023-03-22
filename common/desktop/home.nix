@@ -244,7 +244,7 @@ in with config; {
     maim
     (fix-rdd-sandbox "${firefox-custom}/bin/firefox")
     (fix-file-picker "${pkgs.tdesktop}/bin/telegram-desktop")
-    chatterino7
+    chatterino2
     obs-studio
     simplescreenrecorder
     screenkey
