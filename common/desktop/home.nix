@@ -249,7 +249,7 @@ in with config; {
     simplescreenrecorder
     screenkey
     pavucontrol
-    krita
+    gimp
     tor-browser-bundle-bin
     quickemu
     qemu_kvm
