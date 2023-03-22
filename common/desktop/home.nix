@@ -176,7 +176,7 @@ in with config; {
     curl
     wget
     htop
-    bpytop
+    btop
     tokei
     git
     ffmpeg
