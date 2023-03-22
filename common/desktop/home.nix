@@ -255,6 +255,7 @@ in with config; {
     qemu_kvm
     (fix-file-picker "${pkgs.shotcut}/bin/shotcut")
     libreoffice
+    sxiv
 
     (pkgs.writeShellScriptBin "cam" ''
       mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)
