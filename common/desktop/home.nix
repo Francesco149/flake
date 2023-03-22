@@ -202,9 +202,6 @@ in with config; {
 
     #emacs-custom
     emacs-all-the-icons-fonts
-    gopls
-    ccls
-    rnix-lsp
 
     (pkgs.writeShellScriptBin "speak" ''
       file=$(mktemp /tmp/XXXXXXXXXX.wav)
@@ -271,10 +268,6 @@ in with config; {
     (pkgs.writeShellScriptBin "shot" ''
       maim -s --format png /dev/stdout | xclip -selection clipboard -t image/png -i
     '')
-
-  ]) ++ (with pythonPackages; [
-
-    jedi-language-server
 
   ]);
 
