@@ -375,7 +375,6 @@ in with config; {
     };
 
     "bar/top" = {
-      monitor = "DVI-D-0"; # TODO: this only works because only one config has multi mons
       width = "100%";
       height = "32px";
       radius = 0;
