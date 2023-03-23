@@ -200,6 +200,7 @@ in with config; {
     pavucontrol
     gimp
     blender
+    tenacity
     tor-browser-bundle-bin
     quickemu
     qemu_kvm
