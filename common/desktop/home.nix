@@ -555,10 +555,12 @@ in with config; {
       mode = "1920x1080";
       rate = lib.mkDefault "144.0";
       gamma = "1.08:1.08:1.08";
+      dpi = 96;
     };
     touchMonConfig = monConfig // {
       mode = "1366x768";
       rate = "59.79";
+      dpi = 100;
     };
     disabled = {
       enable = false;
