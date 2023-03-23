@@ -262,7 +262,7 @@ in with config; {
 
     windowManager.command = ''
       ${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1 &
-      nitrogen --set-auto ${xdg.dataHome}/wallpaper.jpg
+      nitrogen --set-tiled ${xdg.dataHome}/wallpaper.png
       chatterino &
       firefox &
       telegram-desktop &
@@ -282,7 +282,7 @@ in with config; {
     "emacs/backup/.keep".text = "";
     "emacs/undo/.keep".text = "";
     "barrier/SSL/Fingerprints/TrustedServers.txt".source = ./barrier/TrustedServers.txt;
-    "wallpaper.jpg".source = ./wallpaper.jpg;
+    "wallpaper.png".source = ./wallpaper.png;
     "chatterino/Settings/window-layout.json".source = ./chatterino/window-layout.json;
   };
 
