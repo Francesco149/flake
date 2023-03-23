@@ -209,6 +209,7 @@ in with config; {
     screenkey
     pavucontrol
     gimp
+    blender
     tor-browser-bundle-bin
     quickemu
     qemu_kvm
