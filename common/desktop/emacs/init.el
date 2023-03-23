@@ -180,15 +180,6 @@ clear the buffers undo-tree before saving the file."
           (message "Cancelled clearing undo-tree of buffer: %s" (buffer-name buff)))
       (error "Buffer %s has no local binding of `buffer-undo-tree'" (buffer-name buff)))))
 
-;; dired settings (file browser)
-(setq dired-listing-switches "-agho --group-directories-first")
-(require 'dired-single) ; single buffer for dired
-(require 'all-the-icons-dired)
-(add-hook 'dired-mode-hook #'all-the-icons-dired-mode)
-
-(require 'dired-hide-dotfiles)
-(add-hook 'dired-mode-hook #'dired-hide-dotfiles-mode)
-
 ;; disable annoying elements
 (tool-bar-mode -1)
 (menu-bar-mode -1)
@@ -293,33 +284,12 @@ clear the buffers undo-tree before saving the file."
 (setq marginalia-annotators '(marginalia-annotators-heavy marginalia-annotators-light nil))
 (marginalia-mode)
 
-;; embark: provides a hotkey to perform actions everywhere
-(require 'embark)
-(global-set-key (kbd "C->") #'embark-act)
-(global-set-key (kbd "C-;") #'embark-dwim)
-(global-set-key (kbd "C-h B") #'embark-bindings)
-
 ;; ace window: window manage utilities, also provides actions to create windows with embark
 (require 'ace-window)
 (setq aw-dispatch-always t)
 (setq aw-scope 'frame) ; only choose windows within this frame
 (setq aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
 (global-set-key (kbd "M-o") #'ace-window)
-
-(eval-when-compile
-  (defmacro loli/embark-ace-action (fn)
-    "ace-window prompt for embark"
-    `(defun ,(intern (concat "loli/embark-ace-" (symbol-name fn))) ()
-       (interactive)
-       (with-demoted-errors "%s"
-         (require 'ace-window)
-         (let ((aw-dispatch-always t))
-           (aw-switch-to-window (aw-select nil))
-           (call-interactively (symbol-function ',fn)))))))
-
-(define-key embark-file-map (kbd "o") (loli/embark-ace-action find-file))
-(define-key embark-buffer-map (kbd "o") (loli/embark-ace-action switch-to-buffer))
-(define-key embark-bookmark-map (kbd "o") (loli/embark-ace-action bookmark-jump))
 
 ;; avy: qutebrowser-like movement hints
 (require 'avy)
@@ -356,54 +326,11 @@ clear the buffers undo-tree before saving the file."
 (global-tree-sitter-mode)
 (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode)
 
-;; lsp: language server
-(require 'lsp-mode)
-(lsp-enable-which-key-integration t)
-;;(add-hook 'c-mode-hook #'lsp-deferred)
-;;(add-hook 'c++-mode-hook #'lsp-deferred)
-(add-hook 'python-mode-hook #'lsp-deferred)
-(add-hook 'go-mode-hook #'lsp-deferred)
-(add-hook 'nix-mode-hook #'lsp-deferred)
-
-;; go
-(require 'go-mode)
-(add-hook 'before-save-hook #'gofmt-before-save)
-
-;; nix
-(require 'nix-mode)
-(add-to-list 'auto-mode-alist '("\\.nix\\'" . nix-mode))
-(add-to-list 'lsp-language-id-configuration '(nix-mode . "nix"))
-
-(lsp-register-client
- (make-lsp-client :new-connection (lsp-stdio-connection '("rnix-lsp"))
-                  :activation-fn (lsp-activate-on "nix")
-                  :server-id 'nix))
-(add-to-list 'lsp-enabled-clients 'nix)
-
-;; python
-(require 'lsp-jedi)
-(add-to-list 'lsp-disabled-clients 'pyls)
-(add-to-list 'lsp-enabled-clients 'jedi)
-
 ;; nix-direnv integration
 (require 'direnv)
 (direnv-mode)
 (setq direnv-always-show-summary nil)
 (setq direnv-use-faces-in-summary nil)
-
-;; company: fancy auto complete
-;; I only enable this manually when I am looking through someone else's code. for writing my own code, it just
-;; ends up slowing me down
-(require 'company)
-(setq company-idle-delay 0)
-(setq company-minimum-prefix-length 1)
-(global-company-mode 0)
-(flymake-mode-off)
-
-;; ccls: c/c++ auto complete
-(require 'ccls)
-(delete 'company-clang company-backends)
-(add-to-list 'lsp-enabled-clients 'ccls)
 
 ;; eldoc: display parameters in the echo area as function calls are typed
 (add-hook 'emacs-lisp-mode-hook #'eldoc-mode)
@@ -428,14 +355,6 @@ clear the buffers undo-tree before saving the file."
 (global-set-key (kbd "<f5>") (lambda ()
                                (interactive)
                                (compile compile-command)))
-
-;; general: easier way to set up prefixed keybinds
-(require 'general)
-
-(general-create-definer loli/leader-keys
-  :keymaps '(normal insert visual emacs)
-  :prefix "SPC"
-  :global-prefix "C-SPC")
 
 ;; evil mode: vim keybinds because emacs keybinds are wack
 
@@ -465,16 +384,10 @@ clear the buffers undo-tree before saving the file."
 (require 'evil-collection)
 (evil-collection-init)
 
-(general-evil-setup t)
 (evil-set-undo-system 'undo-tree)
 
 ;; ctrl-h is backspace, saves some hand movement
 (define-key evil-insert-state-map (kbd "C-h") #'evil-delete-backward-char-and-join)
-
-(evil-collection-define-key 'normal 'dired-mode-map
-  "h" 'dired-single-up-directory
-  "l" 'dired-single-buffer
-  "H" 'dired-hide-dotfiles-mode)
 
 ;; visual mode is when lines that are too long are wrapped and they appear as multiple lines.
 ;; a normal next line command would go to the next real line, but next-visual-line goes to the
@@ -489,16 +402,5 @@ clear the buffers undo-tree before saving the file."
 ;; I don't want :q to close emacs entirely, it should just kill the buffer
 (evil-ex-define-cmd "q" 'kill-this-buffer)
 (evil-ex-define-cmd "quit" 'evil-quit)
-
-;; hydra lets you create custom prompts with their own keybinds and a timeout
-(require 'hydra)
-(defhydra loli/text-scale ()
-  "scale text"
-  ("j" text-scale-increase "in")
-  ("k" text-scale-decrease "out"))
-
-(loli/leader-keys
-  "t" '(:ignore t :which-key "toggle prompts")
-  "ts" '(loli/text-scale/body :which-key "scale text"))
 
 (server-start) ; so we can use emacsclient from polybar and such to extract info or launch things

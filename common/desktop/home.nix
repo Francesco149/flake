@@ -7,33 +7,23 @@ let
 
   emacs-custom = (
     let
-      emacsCustom = (pkgs.emacsPackagesFor pkgs.emacsPgtk).emacsWithPackages;
+      # TODO: use emacsPgtk on wsl
+      emacsCustom = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages;
     in
       emacsCustom (epkgs: with epkgs; [
         org org-superstar
         undo-tree
         sudo-edit
-        nix-mode
-        go-mode
         magit
-        dired-single # single buffer for dired
-        all-the-icons-dired
-        dired-hide-dotfiles
         vertico # fancy fuzzy completion everywhere
-        embark # quick actions on current completion selection
-        embark-consult
         ace-window # window management utils, also integrates with embark
         marginalia # extra info in vertico
         which-key # display all possible command completions
         nlinum-relative # relative line number
-        company lsp-mode lsp-jedi ccls # auto complete
         evil # vim-like keybindings
         evil-collection # pre-configured evil keybinds for things not covered by core evil
-        general # makes it easier to customize keybindings
-        hydra # creates a prompt with timeout with its own keybinds
         tree-sitter tree-sitter-langs # way faster syntax gl than emacs' built in
         direnv # integrate nix-direnv into emacs
-        exwm # emacs as a window manager
         consult # fancy buffer switching
         avy # fancy jump to char
       ])
@@ -159,7 +149,7 @@ in with config; {
     noto-fonts-emoji
     noto-fonts-extra
 
-    #emacs-custom
+    emacs-custom
     emacs-all-the-icons-fonts
 
     (pkgs.writeShellScriptBin "speak" ''
