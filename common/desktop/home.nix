@@ -563,14 +563,34 @@ in with config; {
     disabled = {
       enable = false;
     };
+
+    # intel hd 4600's max pixel rate caps out at 120hz
+    hz120 = {
+      rate = "120.0";
+    };
+
+    tanukiOutputs = {
+      VGA-1 = disabled;
+      HDMI-1 = disabled;
+      DP-1 = disabled;
+      HDMI-2 = disabled;
+    };
+
+    intel11400fOutputs = {
+      DVI-D-0 = disabled;
+      HDMI-0 = disabled;
+      DP-0 = disabled;
+      DP-1 = disabled;
+    };
+
   in {
     "tanuki-left" = {
       fingerprint = { HDMI-2 = miniMonLeft; };
-      config.HDMI-2 = miniMonConfig;
+      config.HDMI-2 = miniMonConfig // hz120;
     };
     "tanuki-mid" = {
       fingerprint = { HDMI-2 = miniMonMid; };
-      config.HDMI-2 = miniMonConfig;
+      config.HDMI-2 = miniMonConfig // hz120;
     };
     "11400f-workstation" = {
       fingerprint = {
@@ -578,11 +598,12 @@ in with config; {
         DVI-D-0 = touchMon;
         HDMI-0 = miniMonBack;
       };
-      config.DP-1 = miniMonConfig;
-      config.DVI-D-0 = touchMonConfig // {
-        position = "1920x0";
+      config = intel11400fOutputs // {
+        DP-1 = miniMonConfig;
+        DVI-D-0 = touchMonConfig // {
+          position = "1920x0";
+        };
       };
-      config.HDMI-0 = miniMonConfig // disabled;
     };
     "11400f-stream" = {
       fingerprint = {
@@ -590,7 +611,7 @@ in with config; {
         DVI-D-0 = touchMon;
         HDMI-0 = miniMonBack;
       };
-      config.DP-1 = miniMonConfig // disabled;
+      config.DP-1 = disabled;
       config.DVI-D-0 = touchMonConfig;
       config.HDMI-0 = miniMonConfig // {
         position = "1366x0";
