@@ -375,6 +375,7 @@ in with config; {
     };
 
     "bar/top" = {
+      monitor = "DVI-D-0"; # TODO: this only works because only one config has multi mons
       width = "100%";
       height = "32px";
       radius = 0;
@@ -545,6 +546,9 @@ in with config; {
   programs.autorandr.hooks.postswitch = {
     "change-dpi" = ''
       echo "Xft.dpi: 95" | ${pkgs.xorg.xrdb}/bin/xrdb -merge
+    '';
+    "refresh-polybar" = ''
+      systemctl --user restart polybar
     '';
   };
   programs.autorandr.profiles = let
