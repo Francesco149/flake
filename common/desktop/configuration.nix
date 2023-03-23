@@ -57,7 +57,10 @@ in {
     usePredictableInterfaceNames = false;
     nameservers = [ meidoLocalIp ];
     resolvconf.enable = false;
+    networkmanager.enable = true;
   };
+
+  programs.nm-applet.enable = true;
 
   sound.enable = true;
   hardware.pulseaudio.enable = true;
