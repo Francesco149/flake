@@ -33,3 +33,9 @@ call NoTabs()
 
 command! NoTabs call NoTabs()
 command! Tabs call Tabs()
+
+nnoremap <C-;> "=strftime("%A %d %B %Y")<CR>P
+inoremap <C-;> <C-R>=strftime("%A %d %B %Y")<CR>
+
+nnoremap <F5> "=strftime("%Y-%m-%d")<CR>P
+inoremap <F5> <C-R>=strftime("%Y-%m-%d")<CR>
