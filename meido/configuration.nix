@@ -767,7 +767,7 @@ in {
     ruleFiles = [
       (pkgs.fetchurl {
         url = "https://raw.githubusercontent.com/matrix-org/synapse/v${pkgs.matrix-synapse.version}/contrib/prometheus/synapse-v2.rules";
-        sha256 = "0d8jvlrp3f3y6wkrw6qvdvmd6k8zj46cg7qiz44gr1hs4s00grg9";
+        sha256 = "00hknrfrsiwgx6vkc7d4arh0q7mg5j9q8ig9yiwfkklcs02namss";
       })
     ];
   };
@@ -803,9 +803,10 @@ in {
           options.path = x.path;
         }) [
 
+          # TODO: pin to certain version
           (f "synapse"
             "https://raw.githubusercontent.com/matrix-org/synapse/develop/contrib/grafana/synapse.json"
-            "sha256-cA+ZP5snYGhNZ70Fk+cJ0PBmenjpiglx1OOrNOe5HlI=")
+            "sha256-R6lbJm85VrDVKz3CWvBcLAyRkboFXIV7imnlz+lWn8o=")
 
         ];
       };
@@ -836,11 +837,11 @@ in {
   services.nginx.virtualHosts."www.${synapseDomain}".locations."/".return =
     "301 $scheme://${synapseDomain}$request_uri";
 
-  services.openssh = {
-    enable = true;
-    passwordAuthentication = false;
-    permitRootLogin = "yes";
-    kbdInteractiveAuthentication = false;
+  services.openssh.enable = true;
+  services.openssh.settings = {
+    PasswordAuthentication = false;
+    PermitRootLogin = "yes";
+    KbdInteractiveAuthentication = false;
   };
 
   users.users.git = {

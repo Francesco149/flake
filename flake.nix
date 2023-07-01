@@ -6,8 +6,8 @@
 
     # NOTE: remember to update home-manager versions
 
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-22.11"; # for servers
-    nixpkgs-wsl.url = "github:nixos/nixpkgs/nixos-22.05"; # nixos-wsl lags behind
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.05"; # for servers
+    nixpkgs-wsl.url = "github:nixos/nixpkgs/nixos-22.11"; # nixos-wsl lags behind
 
     flake-utils.url = "github:numtide/flake-utils";
 
@@ -22,7 +22,6 @@
       # home-manager pins nixpkgs to a specific version in its flake.
       # we want to make sure everything pins to the same version of nixpkgs to be more efficient
       inputs.nixpkgs.follows = "nixpkgs";
-      inputs.utils.follows = "flake-utils";
     };
 
     home-manager-stable = {
