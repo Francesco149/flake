@@ -806,7 +806,7 @@ in {
           # TODO: pin to certain version
           (f "synapse"
             "https://raw.githubusercontent.com/matrix-org/synapse/develop/contrib/grafana/synapse.json"
-            "sha256-R6lbJm85VrDVKz3CWvBcLAyRkboFXIV7imnlz+lWn8o=")
+            "sha256-vO/xQIk9224v4VeXgJK1me77+bkjM5EEWUsQtOPk4pU=")
 
         ];
       };
