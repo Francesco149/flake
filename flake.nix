@@ -204,6 +204,19 @@
         ];
       };
 
+      # streaming beelink minipc
+      # configured with jack for fancy audio routing
+      # draws 7-10w idle
+      # keep this isolated from all other configs, must be as stable as possible
+      streampc = nixpkgs-stable.lib.nixosSystem rec {
+        inherit system;
+        specialArgs = { inherit user; };
+        pkgs = pkgs-stable;
+        modules = [
+          ./streampc/configuration.nix
+        ];
+      };
+
     };
 
     # use nix-shell or nix develop to access this shell
