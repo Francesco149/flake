@@ -59,6 +59,11 @@
       inputs.flake-utils.follows = "flake-utils";
     };
 
+    musnix = {
+      url = "github:musnix/musnix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     declarative-cachix.url = "github:jonascarpay/declarative-cachix/master";
   };
 
@@ -75,6 +80,7 @@
     agenix-stable,
     emacs-overlay,
     declarative-cachix,
+    musnix,
     ...
   }:
   let
@@ -208,11 +214,11 @@
       # configured with jack for fancy audio routing
       # draws 7-10w idle
       # keep this isolated from all other configs, must be as stable as possible
-      streampc = nixpkgs-stable.lib.nixosSystem rec {
+      streampc = nixpkgs.lib.nixosSystem rec {
         inherit system;
-        specialArgs = { inherit user; };
-        pkgs = pkgs-stable;
+        specialArgs = { inherit user system nixpkgs; };
         modules = [
+          musnix.nixosModules.musnix
           ./streampc/configuration.nix
         ];
       };
