@@ -2,18 +2,13 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, nixpkgs, system, user, musnix, ... }:
+{ config, pkgs, user, ... }:
 
 let
   authorizedKeys = [
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCpNgs8JFiW2okM8bWoQXkXD6y3x1LONA3hNQbUmvJhMK8BP7Ajkd5avC0dhyOnHee1WCoiQfCfqN/2SVgHMDmRv2QNluciZ4scFr1IwXRxrUqRPpDid6bBIc/e7PYcFBfA2r1nfOdZTePiQcQAcb0yhblqtsg9aOgl+JwqK4GvoQgwriB3Hp6PrezRYBcQjjLbcrU8U1vqKCljhL/cYy5qj5ybJ4hRYcsuZoiQxjtomlrsmibVcTJZVnwPL3DVhCcNrPYABstVgLZfLSttCQCdB2VvGJOx5r6gaB8bkgHsqgERyZza4hBYsMPLSuzxrxgEH+AZzTBGIZiWD0WgY+81 loli@void"
   ];
 
-  # musnix is based on unstable
-  pkgs = import nixpkgs {
-    inherit system;
-    config.allowUnfree = true;
-  };
 in {
   imports =
     [ # Include the results of the hardware scan.
@@ -75,7 +70,7 @@ in {
     xkbVariant = "";
   };
 
-  sound.enable = true;
+  sound.enable = false;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
@@ -98,29 +93,8 @@ in {
 
   environment.systemPackages = with pkgs; [
     vim
-
-    pavucontrol libjack2 jack2 qjackctl jack2Full jack_capture
+    qpwgraph
   ];
-
-  musnix = {
-    enable = true;
-    soundcardPciId = "00:1f.3"; # lspci | grep -i audio
-    kernel = {
-      realtime = true;
-      #packages = pkgs.linuxPackages_latest_rt;
-      # TODO: this doesn't work. for some reason pkgs doesn't contain
-      #       the overlay packages even though it works within musnix???
-    };
-
-    # TODO: I havent really played around with these settings.
-    #       this config is copypasted from the nixos wiki
-    rtirq = {
-      resetAll = 1;
-      prioLow = 0;
-      enable = true;
-      nameList = "rtc0 snd";
-    };
-  };
 
   system.stateVersion = "23.05";
 
