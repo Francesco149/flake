@@ -30,10 +30,28 @@ in {
     isNormalUser = true;
     description = "${user}";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
+    packages = (with pkgs; [
       firefox
       qpwgraph
-    ];
+
+      # obs sdk version provided by official website changes so we have to rehash it
+      # https://github.com/NixOS/nixpkgs/issues/219578#issuecomment-1586322972
+      (wrapOBS {
+        plugins = with obs-studio-plugins; [ wlrobs obs-gstreamer obs-move-transition ] ++ (lib.optionals pkgs.config.allowUnfree [ (obs-ndi.override {
+          ndi = ndi.overrideAttrs (attrs: rec {
+            version = "5.6.0";
+
+            src = fetchurl {
+              name = "${attrs.pname}-${version}.tar.gz";
+              url = "https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz";
+              hash = "sha256-flxUaT1q7mtvHW1J9I1O/9coGr0hbZ/2Ab4tVa8S9/U=";
+            };
+
+            installPhase = lib.concatStringsSep "\n" (lib.filter (line: !(lib.hasPrefix "mv logos " line)) (lib.splitString "\n" attrs.installPhase));
+          });
+        }) ]);
+      })
+    ]);
     openssh.authorizedKeys.keys = authorizedKeys;
   };
 
