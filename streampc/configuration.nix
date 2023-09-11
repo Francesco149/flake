@@ -32,6 +32,7 @@ in {
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       firefox
+      qpwgraph
     ];
     openssh.authorizedKeys.keys = authorizedKeys;
   };
@@ -87,13 +88,21 @@ in {
   services.xserver.displayManager.autoLogin.enable = true;
   services.xserver.displayManager.autoLogin.user = "${user}";
 
+  # qt theme
+  qt.enable = true;
+  qt.platformTheme = "qt5ct";
+
+  # TODO: this doesn't seem to do anything? I had to open qt5ct and manually set Adwaita-Dark.
+  #       capitalized name also didnt work
+  qt.style = "adwaita-dark";
+
   # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
   environment.systemPackages = with pkgs; [
     vim
-    qpwgraph
+    adwaita-qt
   ];
 
   system.stateVersion = "23.05";
