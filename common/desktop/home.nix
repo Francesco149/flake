@@ -181,6 +181,7 @@ in with config; {
     autorandr # save and detect xrandr configurations automatically
     fusee-launcher
     pass
+    steam-run # used to run non-nixos executables
 
     nitrogen
     pinentry-gnome
