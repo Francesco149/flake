@@ -22,6 +22,11 @@
     hostName = "tanuki";
   };
 
+  zramSwap = {
+    enable = true;
+    algorithm = "zstd";
+  };
+
   system.stateVersion = "22.11";
 
 }
