@@ -152,6 +152,9 @@ in with config; {
     emacs-custom
     emacs-all-the-icons-fonts
 
+    xkcdpass
+    p7zip
+
     (pkgs.writeShellScriptBin "speak" ''
       file=$(mktemp /tmp/XXXXXXXXXX.wav)
       pico2wave -w "$file" "$@"
