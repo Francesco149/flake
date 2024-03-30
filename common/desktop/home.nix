@@ -187,7 +187,6 @@ in with config; {
     steam-run # used to run non-nixos executables
 
     nitrogen
-    pinentry-gnome
     gcr # required for pinentry-gnome?
     polkit_gnome
     (fix-theme "${pkgs.gnome.nautilus}/bin/nautilus")
