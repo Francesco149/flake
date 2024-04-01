@@ -517,6 +517,7 @@ in with config; {
     enable = true;
     defaultCacheTtl = 31536000;
     maxCacheTtl = 31536000;
+    pinentryPackage = pkgs.pinentry-gnome3;
   };
 
   services.gnome-keyring.enable = true;
