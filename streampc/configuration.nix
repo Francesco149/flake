@@ -37,7 +37,12 @@ in {
       # obs sdk version provided by official website changes so we have to rehash it
       # https://github.com/NixOS/nixpkgs/issues/219578#issuecomment-1586322972
       (wrapOBS {
-        plugins = with obs-studio-plugins; [ wlrobs obs-gstreamer obs-move-transition ] ++ (lib.optionals pkgs.config.allowUnfree [ (obs-ndi.override {
+        plugins = with obs-studio-plugins; [
+          wlrobs
+          obs-gstreamer
+          obs-move-transition
+          obs-multi-rtmp
+        ] ++ (lib.optionals pkgs.config.allowUnfree [ (obs-ndi.override {
           ndi = ndi.overrideAttrs (attrs: rec {
             version = "5.6.0";
 
