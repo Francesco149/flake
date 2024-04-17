@@ -2,7 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, user, ... }:
+{ config, pkgs, lib, user, ... }:
 
 let
   authorizedKeys = [
@@ -85,13 +85,15 @@ in {
     LC_TIME = "en_US.UTF-8";
   };
 
-  services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
-
   services.xserver = {
-    layout = "us";
-    xkbVariant = "";
+    enable = true;
+    displayManager.gdm.enable = true;
+    desktopManager.gnome.enable = true;
+    xkb.layout = "us";
+    xkb.variant = "";
+
+    # touchpad support (touchscreen too?)
+    libinput.enable = true;
   };
 
   sound.enable = false;
@@ -105,11 +107,10 @@ in {
     jack.enable = true;
   };
 
-  # touchpad support (touchscreen too?)
-  services.xserver.libinput.enable = true;
-
-  services.xserver.displayManager.autoLogin.enable = true;
-  services.xserver.displayManager.autoLogin.user = "${user}";
+  services.displayManager.autoLogin = {
+    enable = true;
+    user = "${user}";
+  };
 
   # qt theme
   qt.enable = true;
@@ -127,6 +128,26 @@ in {
     vim
     adwaita-qt
   ];
+
+  # workarounds for n100 hw encoding
+  # https://github.com/RyanGibb/nixos/commit/55aca5b360f734f8db8d426c2a6b803e164cf531
+
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver
+      vaapi-intel-hybrid
+      intel-media-sdk
+      oneVPL-intel-gpu
+      intel-compute-runtime
+    ];
+  };
+
+  environment.sessionVariables = {
+    INTEL_MEDIA_RUNTIME= "ONEVPL";
+    LIBVA_DRIVER_NAME = "iHD";
+    ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [oneVPL-intel-gpu]);
+  };
 
   system.stateVersion = "23.05";
 
