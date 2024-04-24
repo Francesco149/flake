@@ -157,6 +157,19 @@ in {
     "barrier.conf".source = ../barrier/barrier.conf;
   };
 
+  # services
+
+  systemd.user.services.barriers = {
+    enable = true;
+    description = "Barrier Server daemon";
+    after = [ "graphical-session-pre.target" ];
+    partOf = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    # TODO: don't repeat barrier dir, make it a let
+    serviceConfig.ExecStart =
+      toString ([ "${pkgs.barrier}/bin/barriers" "-f" "--profile-dir" "/var/lib/secrets/barrier/" ]);
+  };
+
   # secrets
 
   # by default, agenix does not look in your home dir for keys
@@ -181,6 +194,8 @@ in {
     barriers-private-key = mkSecret {
       file = ../secrets/barrier/Barrier.pem.age;
       path = "barrier/SSL/Barrier.pem";
+    } // {
+      owner = "loli"; # TODO: barrier user?
     };
 
   };
