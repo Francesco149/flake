@@ -25,4 +25,5 @@ in {
   "headpats/loli-hashed-password.age".publicKeys = headpatUsers;
 
   "barrier/Barrier.pem.age".publicKeys = streampcUsers;
+  "chatterino/overlay.json.age".publicKeys = streampcUsers;
 }
