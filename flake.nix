@@ -213,6 +213,7 @@
         specialArgs = { inherit user; };
         modules = [
           ./streampc/configuration.nix
+          agenix-stable.nixosModules.default
         ];
       };
 

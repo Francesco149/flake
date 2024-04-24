@@ -68,6 +68,7 @@ in {
     allowPing = true;
     allowedTCPPorts = [
       22 # ssh
+      24800 # barriers
     ];
   };
 
@@ -148,6 +149,40 @@ in {
     INTEL_MEDIA_RUNTIME= "ONEVPL";
     LIBVA_DRIVER_NAME = "iHD";
     ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [oneVPL-intel-gpu]);
+  };
+
+  # config files
+
+  environment.etc = {
+    "barrier.conf".source = ../barrier/barrier.conf;
+  };
+
+  # secrets
+
+  # by default, agenix does not look in your home dir for keys
+  age.identityPaths = [
+    "/root/.ssh/id_ed25519"
+  ];
+
+  # agenix secrets are owned by root and symlinked from /run/agenix.d .
+  # so to have user-owned secrets I have to disable symlinking and make sure the ownership is correct
+  age.secrets = let
+
+    secretPath = path: "/var/lib/secrets/${path}";
+
+    mkSecret = { file, path }: {
+      inherit file;
+      path = secretPath path;
+      symlink = false;
+    };
+
+  in {
+
+    barriers-private-key = mkSecret {
+      file = ../secrets/barrier/Barrier.pem.age;
+      path = "barrier/SSL/Barrier.pem";
+    };
+
   };
 
   system.stateVersion = "23.05";
