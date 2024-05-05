@@ -29,7 +29,7 @@ in {
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
 
-  services.xserver.libinput = {
+  services.libinput = {
     enable = true;
     mouse.accelProfile = "flat";
     touchpad.accelProfile = "flat";
@@ -43,7 +43,7 @@ in {
   };
 
   nix = {
-    package = pkgs.nixVersions.unstable;
+    package = pkgs.nixVersions.git;
     extraOptions = ''
       experimental-features = nix-command flakes
       keep-outputs = true
@@ -117,12 +117,15 @@ in {
 
   services.xserver = {
     enable = true;
-    layout = "us";
-    xkbVariant = "";
+    xkb.layout = "us";
+    xkb.variant = "";
     displayManager.gdm.enable = true;
     displayManager.gdm.wayland = false;
-    displayManager.autoLogin.enable = true;
-    displayManager.autoLogin.user = "${user}";
+  };
+
+  services.displayManager = {
+    autoLogin.enable = true;
+    autoLogin.user = "${user}";
   };
 
   services.xserver.desktopManager.session = [
