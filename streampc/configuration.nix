@@ -78,6 +78,7 @@ in {
   services.xserver = {
     enable = true;
     displayManager.gdm.enable = true;
+    displayManager.gdm.wayland = false; # barrier doesn't fully support wayland
     desktopManager.gnome.enable = true;
     xkb.layout = "us";
     xkb.variant = "";
