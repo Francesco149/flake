@@ -27,6 +27,27 @@
     algorithm = "zstd";
   };
 
+  # secrets
+
+  # by default, agenix does not look in your home dir for keys
+  age.identityPaths = [
+    "/root/.ssh/id_rsa"
+  ];
+
+  # agenix secrets are owned by root and symlinked from /run/agenix.d .
+  # to have user-owned secrets I have to disable symlinking and make sure the ownership is correct
+  # TODO: don't hardcode barrier folder
+  age.secrets = {
+
+    barrierc-private-key = {
+      file = ../secrets/barrier/BarrierTanuki.pem.age;
+      path = "/home/${user}/.local/share/barrier/SSL/Barrier.pem";
+      symlink = false;
+      owner = "loli";
+    };
+
+  };
+
   system.stateVersion = "22.11";
 
 }

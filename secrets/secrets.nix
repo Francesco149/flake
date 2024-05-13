@@ -13,6 +13,7 @@ in {
   "chatterino/settings.json.age".publicKeys = desktopUsers;
   "protonvpn/creds.txt.age".publicKeys = desktopUsers;
   "protonvpn/config.ovpn.age".publicKeys = desktopUsers;
+  "barrier/BarrierTanuki.pem.age".publicKeys = desktopUsers;
 
   "dendrite-keys/matrix_key.pem.age".publicKeys = meidoUsers;
   "synapse/homeserver.signing.key.age".publicKeys = meidoUsers;

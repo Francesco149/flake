@@ -155,6 +155,7 @@ in {
 
   environment.etc = {
     "barrier.conf".source = ../barrier/barrier.conf;
+    "secrets/barrier/SSL/Fingerprints/TrustedClients.txt".source = ../barrier/TrustedClients.txt;
   };
 
   # services
@@ -162,12 +163,12 @@ in {
   systemd.user.services.barriers = {
     enable = true;
     description = "Barrier Server daemon";
-    after = [ "graphical-session-pre.target" ];
+    after = [ "graphical-session.target" ];
     partOf = [ "graphical-session.target" ];
     wantedBy = [ "graphical-session.target" ];
     # TODO: don't repeat barrier dir, make it a let
     serviceConfig.ExecStart =
-      toString ([ "${pkgs.barrier}/bin/barriers" "-f" "--profile-dir" "/var/lib/secrets/barrier/" ]);
+      toString ([ "${pkgs.barrier}/bin/barriers" "-f" "--profile-dir" "/etc/secrets/barrier/" ]);
   };
 
   # secrets
@@ -179,9 +180,10 @@ in {
 
   # agenix secrets are owned by root and symlinked from /run/agenix.d .
   # so to have user-owned secrets I have to disable symlinking and make sure the ownership is correct
+  # TODO: don't copypaste these helpers everywhere
   age.secrets = let
 
-    secretPath = path: "/var/lib/secrets/${path}";
+    secretPath = path: "/etc/secrets/${path}";
 
     mkSecret = { file, path }: {
       inherit file;
