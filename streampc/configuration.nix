@@ -43,19 +43,7 @@ in {
           obs-gstreamer
           obs-move-transition
           obs-multi-rtmp
-        ] ++ (lib.optionals pkgs.config.allowUnfree [ (obs-ndi.override {
-          ndi = ndi.overrideAttrs (attrs: rec {
-            version = "5.6.0";
-
-            src = fetchurl {
-              name = "${attrs.pname}-${version}.tar.gz";
-              url = "https://downloads.ndi.tv/SDK/NDI_SDK_Linux/Install_NDI_SDK_v5_Linux.tar.gz";
-              hash = "sha256-flxUaT1q7mtvHW1J9I1O/9coGr0hbZ/2Ab4tVa8S9/U=";
-            };
-
-            installPhase = lib.concatStringsSep "\n" (lib.filter (line: !(lib.hasPrefix "mv logos " line)) (lib.splitString "\n" attrs.installPhase));
-          });
-        }) ]);
+        ] ++ (lib.optionals pkgs.config.allowUnfree [ obs-ndi ]);
       })
     ]);
     openssh.authorizedKeys.keys = authorizedKeys;
