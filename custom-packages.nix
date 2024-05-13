@@ -44,6 +44,4 @@ self: super: with super; {
       maintainers = with maintainers; [ lolisamurai ];
     };
   };
-
-  oneVPL-intel-gpu = callPackage ./pkgs/onevpl-intel-gpu.nix { };
 }

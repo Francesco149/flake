@@ -121,6 +121,7 @@ in {
   ];
 
   # workarounds for n100 hw encoding
+  # TODO: check if all of these things are necessary
   # https://github.com/RyanGibb/nixos/commit/55aca5b360f734f8db8d426c2a6b803e164cf531
 
   hardware.opengl = {
@@ -129,7 +130,7 @@ in {
       intel-media-driver
       vaapi-intel-hybrid
       intel-media-sdk
-      oneVPL-intel-gpu
+      onevpl-intel-gpu
       intel-compute-runtime
     ];
   };
@@ -137,7 +138,7 @@ in {
   environment.sessionVariables = {
     INTEL_MEDIA_RUNTIME= "ONEVPL";
     LIBVA_DRIVER_NAME = "iHD";
-    ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [oneVPL-intel-gpu]);
+    ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [onevpl-intel-gpu]);
   };
 
   # config files
