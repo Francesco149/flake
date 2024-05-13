@@ -81,10 +81,10 @@ in {
     desktopManager.gnome.enable = true;
     xkb.layout = "us";
     xkb.variant = "";
-
-    # touchpad support (touchscreen too?)
-    libinput.enable = true;
   };
+
+  # touchpad support (touchscreen too?)
+  services.libinput.enable = true;
 
   sound.enable = false;
   hardware.pulseaudio.enable = false;
