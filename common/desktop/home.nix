@@ -154,6 +154,7 @@ in with config; {
 
     xkcdpass
     p7zip
+    internetarchive
 
     (pkgs.writeShellScriptBin "speak" ''
       file=$(mktemp /tmp/XXXXXXXXXX.wav)
