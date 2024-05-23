@@ -7,6 +7,10 @@
   ];
 
   boot.loader.systemd-boot.enable = true;
+
+  # the hdmi switch freaks out if I boot at low res and then switch res
+  boot.loader.systemd-boot.consoleMode = "max";
+
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
