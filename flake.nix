@@ -88,6 +88,11 @@
         (import ./custom-packages.nix)
         emacs-overlay.overlay
       ];
+
+      # only used by archivebox, not actually exposed to the internet
+      config.permittedInsecurePackages = [
+        "python3.11-django-3.1.14"
+      ];
     };
 
     pkgs-stable = import nixpkgs-stable {
@@ -214,6 +219,15 @@
         modules = [
           ./streampc/configuration.nix
           agenix-stable.nixosModules.default
+        ];
+      };
+
+      # new home server with my zfs array
+      dekai = nixpkgs.lib.nixosSystem rec {
+        inherit system pkgs;
+        specialArgs = { inherit user; };
+        modules = [
+          ./dekai/configuration.nix
         ];
       };
 

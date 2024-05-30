@@ -27,6 +27,20 @@ cd my-machine
 nixos-generate-config --dir .
 ```
 
+note: if you're doing this on a remote machine you could simply enable
+ssh on its stock `/etc/nixos/configuration.nix` and work on your local
+computer by doing:
+
+```
+mkdir my-machine
+cd my-machine
+ssh remotemachine sudo -S nixos-generate-config --show-hardware-config > hardware-configuration.nix
+dst='root@remotemachine'
+# edit configuration.nix, home.nix, flake.nix etc
+nixos-rebuild --flake .#my-machine --target-host $dst --build-host $dst switch
+# can also change build-host to localhost if the target is a slow machine
+```
+
 edit `configuration.nix` to your liking, you might want to import `../configuration.nix` like my other
 configs (see nixos-11400f for an example)
 
