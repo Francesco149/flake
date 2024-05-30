@@ -115,7 +115,6 @@ in {
     ];
   };
 
-  services.getty.autologinUser = "loli";
   services.openssh.enable = true;
 
   services.openssh.settings = {
