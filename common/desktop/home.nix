@@ -212,6 +212,7 @@ in with config; {
     gnumeric
     abiword
     sxiv
+    komikku
 
     (pkgs.writeShellScriptBin "cam" ''
       mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)
