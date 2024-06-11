@@ -212,7 +212,7 @@ in with config; {
     gnumeric
     abiword
     sxiv
-    komikku python311Packages.pillow-heif
+    komikku python3Packages.pillow-heif
 
     (pkgs.writeShellScriptBin "cam" ''
       mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)

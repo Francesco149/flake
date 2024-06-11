@@ -16,7 +16,7 @@ in {
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.luks.devices."luks-901be401-55e0-4047-a286-bb53898060de".device = "/dev/disk/by-uuid/901be401-55e0-4047-a286-bb53898060de";
-  networking.hostName = "nixos"; # Define your hostname.
+  networking.hostName = "dekai"; # Define your hostname.
   networking.networkmanager.enable = true;
 
   time.timeZone = "Europe/Rome";
