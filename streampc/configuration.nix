@@ -57,6 +57,7 @@ in {
     allowedTCPPorts = [
       22 # ssh
       24800 # barriers
+      5353 # ndi
     ];
   };
 
