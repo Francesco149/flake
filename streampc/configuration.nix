@@ -57,6 +57,8 @@ in {
     allowedTCPPorts = [
       22 # ssh
       24800 # barriers
+    ];
+    allowedUDPPorts = [
       5353 # ndi
     ];
   };
