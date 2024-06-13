@@ -9,19 +9,9 @@ let
 in {
   imports =
     [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+    ./hardware-configuration.nix
+    ../common/nix.nix
     ];
-
-  # TODO: consider making a commong nix file with this nix config
-  nix = {
-    package = pkgs.nixVersions.git;
-    extraOptions = ''
-      experimental-features = nix-command flakes
-      keep-outputs = true
-      keep-derivations = true
-    '';
-    settings.trusted-users = [ "root" user ];
-  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
