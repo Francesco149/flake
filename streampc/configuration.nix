@@ -40,6 +40,7 @@ in {
           obs-gstreamer
           obs-move-transition
           obs-multi-rtmp
+          obs-source-switcher
         ] ++ (lib.optionals pkgs.config.allowUnfree [ obs-ndi ]);
       })
     ]);
