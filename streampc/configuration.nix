@@ -34,8 +34,6 @@ in {
       qpwgraph
       barrier
 
-      # obs sdk version provided by official website changes so we have to rehash it
-      # https://github.com/NixOS/nixpkgs/issues/219578#issuecomment-1586322972
       (wrapOBS {
         plugins = with obs-studio-plugins; [
           wlrobs
