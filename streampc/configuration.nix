@@ -41,7 +41,8 @@ in {
           obs-move-transition
           obs-multi-rtmp
           obs-source-switcher
-        ] ++ (lib.optionals pkgs.config.allowUnfree [ obs-ndi ]);
+          obs-teleport
+        ];
       })
     ]);
     openssh.authorizedKeys.keys = authorizedKeys;
