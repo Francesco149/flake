@@ -83,7 +83,11 @@
 
     pkgs = import nixpkgs {
       inherit system;
-      config.allowUnfree = true;
+
+      # ideally never enable this
+      # find open alternatives to any proprietary software
+      #config.allowUnfree = true;
+
       overlays = [
         (import ./custom-packages.nix)
         emacs-overlay.overlay
