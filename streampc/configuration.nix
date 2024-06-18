@@ -175,7 +175,7 @@ in {
     script = ''
       "${custom-obs}/bin/obs" &
       "${pkgs.carla}/bin/carla" "/home/${user}/stream-linux.carxp" &
-      "${pkgs.carla}/bin/firefox" &
+      "${pkgs.firefox}/bin/firefox" &
     '';
   };
 
