@@ -32,10 +32,6 @@ in {
     packages = (with pkgs; [
       firefox
       carla
-      pipewire.jack
-      # https://github.com/NixOS/nixpkgs/issues/265128
-      # something is unsetting LD_PRELOAD which should be set by `pipewire.jack.enable`
-      # so we run carla with `pw-jack carla`.
       barrier
 
       (wrapOBS {
