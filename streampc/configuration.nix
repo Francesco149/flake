@@ -126,7 +126,7 @@ in {
       intel-media-driver
       vaapi-intel-hybrid
       intel-media-sdk
-      onevpl-intel-gpu
+      vpl-gpu-rt
       intel-compute-runtime
     ];
   };
