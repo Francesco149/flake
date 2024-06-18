@@ -5,6 +5,17 @@ let
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCpNgs8JFiW2okM8bWoQXkXD6y3x1LONA3hNQbUmvJhMK8BP7Ajkd5avC0dhyOnHee1WCoiQfCfqN/2SVgHMDmRv2QNluciZ4scFr1IwXRxrUqRPpDid6bBIc/e7PYcFBfA2r1nfOdZTePiQcQAcb0yhblqtsg9aOgl+JwqK4GvoQgwriB3Hp6PrezRYBcQjjLbcrU8U1vqKCljhL/cYy5qj5ybJ4hRYcsuZoiQxjtomlrsmibVcTJZVnwPL3DVhCcNrPYABstVgLZfLSttCQCdB2VvGJOx5r6gaB8bkgHsqgERyZza4hBYsMPLSuzxrxgEH+AZzTBGIZiWD0WgY+81 loli@void"
   ];
 
+  custom-obs = with pkgs;
+    (wrapOBS {
+      plugins = with obs-studio-plugins; [
+        obs-gstreamer
+        obs-move-transition
+        obs-multi-rtmp
+        obs-source-switcher
+        obs-teleport
+      ];
+    });
+
 in {
   imports = [
     ./hardware-configuration.nix
@@ -29,16 +40,7 @@ in {
       firefox
       carla
       barrier
-
-      (wrapOBS {
-        plugins = with obs-studio-plugins; [
-          obs-gstreamer
-          obs-move-transition
-          obs-multi-rtmp
-          obs-source-switcher
-          obs-teleport
-        ];
-      })
+      custom-obs
     ]);
     openssh.authorizedKeys.keys = authorizedKeys;
   };
@@ -155,6 +157,24 @@ in {
     # TODO: don't repeat barrier dir, make it a let
     serviceConfig.ExecStart =
       toString ([ "${pkgs.barrier}/bin/barriers" "-f" "--profile-dir" "/etc/secrets/barrier/" ]);
+  };
+
+  systemd.user.services.startup-apps = {
+    enable = true;
+    description = "Various custom start-up apps";
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      RemainAfterExit = "yes";
+      Type = "oneshot";
+    };
+
+    script = ''
+      "${custom-obs}/bin/obs" &
+      "${pkgs.carla}/bin/carla" "/home/${user}/stream-linux.carxp" &
+      "${pkgs.carla}/bin/firefox" &
+    '';
   };
 
   # secrets
