@@ -40,7 +40,6 @@ in {
 
       (wrapOBS {
         plugins = with obs-studio-plugins; [
-          wlrobs
           obs-gstreamer
           obs-move-transition
           obs-multi-rtmp
