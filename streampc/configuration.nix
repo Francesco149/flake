@@ -41,6 +41,8 @@ in {
       carla
       barrier
       custom-obs
+    ]) ++ (with pkgs.gnomeExtensions; [
+      astra-monitor
     ]);
     openssh.authorizedKeys.keys = authorizedKeys;
   };
