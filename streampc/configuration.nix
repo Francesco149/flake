@@ -1,7 +1,3 @@
-# Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
-# and in the NixOS manual (accessible by running ‘nixos-help’).
-
 { config, pkgs, lib, user, ... }:
 
 let
@@ -121,9 +117,8 @@ in {
     adwaita-qt
   ];
 
-  # workarounds for n100 hw encoding
+  # enables n100 hw encoding
   # TODO: check if all of these things are necessary
-  # https://github.com/RyanGibb/nixos/commit/55aca5b360f734f8db8d426c2a6b803e164cf531
 
   hardware.opengl = {
     enable = true;
