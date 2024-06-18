@@ -134,7 +134,7 @@ in {
   environment.sessionVariables = {
     INTEL_MEDIA_RUNTIME= "ONEVPL";
     LIBVA_DRIVER_NAME = "iHD";
-    ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [onevpl-intel-gpu]);
+    ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [vpl-gpu-rt]);
   };
 
   # config files
