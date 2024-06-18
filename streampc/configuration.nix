@@ -41,6 +41,7 @@ in {
       carla
       barrier
       custom-obs
+      armcord
 
       # for astra-monitor
       pciutils
