@@ -41,6 +41,9 @@ in {
       carla
       barrier
       custom-obs
+
+      # for astra-monitor
+      pciutils
     ]) ++ (with pkgs.gnomeExtensions; [
       astra-monitor
     ]);
