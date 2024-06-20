@@ -17,10 +17,11 @@ in {
 
   users.users.${user} = {
     isNormalUser = true;
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "adbusers" ];
     openssh.authorizedKeys.keys = authorizedKeys;
   };
 
+  programs.adb.enable = true;
   services.getty.autologinUser = user;
 
   users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
