@@ -185,7 +185,8 @@ in with config; {
     autorandr # save and detect xrandr configurations automatically
     fusee-launcher
     pass
-    steam-run # used to run non-nixos executables
+    #steam-run # used to run non-nixos executables
+    # TODO: find non-proprietary alternative
 
     nitrogen
     gcr # required for pinentry-gnome?
