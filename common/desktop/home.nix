@@ -214,7 +214,7 @@ in with config; {
     gnumeric
     abiword
     sxiv
-    komikku python3Packages.pillow-heif
+    komikku
     scrcpy
 
     (pkgs.writeShellScriptBin "cam" ''
