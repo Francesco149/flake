@@ -216,6 +216,7 @@ in with config; {
     sxiv
     komikku
     scrcpy
+    armcord
 
     (pkgs.writeShellScriptBin "cam" ''
       mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)
