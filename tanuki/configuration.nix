@@ -21,14 +21,8 @@
   boot.initrd.luks.devices."luks-d654e001-13da-4c87-8a5d-28597e1a9199".device = "/dev/disk/by-uuid/d654e001-13da-4c87-8a5d-28597e1a9199";
   boot.initrd.luks.devices."luks-d654e001-13da-4c87-8a5d-28597e1a9199".keyFile = "/crypto_keyfile.bin";
 
-
   networking = {
     hostName = "tanuki";
-  };
-
-  zramSwap = {
-    enable = true;
-    algorithm = "zstd";
   };
 
   # secrets
