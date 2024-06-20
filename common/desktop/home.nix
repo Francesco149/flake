@@ -214,6 +214,7 @@ in with config; {
     abiword
     sxiv
     komikku python3Packages.pillow-heif
+    scrcpy
 
     (pkgs.writeShellScriptBin "cam" ''
       mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)
