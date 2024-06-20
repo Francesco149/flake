@@ -6,8 +6,8 @@
 
     # NOTE: remember to update home-manager versions
 
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-23.05"; # for servers
-    nixpkgs-wsl.url = "github:nixos/nixpkgs/nixos-22.11"; # nixos-wsl lags behind
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05"; # for servers
+    nixpkgs-wsl.url = "github:nixos/nixpkgs/nixos-23.11"; # nixos-wsl lags behind
 
     flake-utils.url = "github:numtide/flake-utils";
 

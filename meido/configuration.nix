@@ -22,6 +22,10 @@ let
   synapseLocalPort = 8008;
   synapsePort = 8448;
 
+  synapseFederationReceiverPort = 8009;
+  synapseClientWorkerPort = 8010;
+  synapseMediaRepoPort = 8011;
+
   # can't extract this from dendrite's module it seems. also referencing the systemd service causes inf recursion
   dendriteDataDir = "/var/lib/dendrite";
 
@@ -71,89 +75,6 @@ let
   # simplified version for services that provide dataDir at config.services.${serviceName}.dataDir
   serviceFiles = serviceName: files:
     serviceFilesWithDir config.services.${serviceName}.dataDir serviceName files;
-
-  #
-  # generate matrix synapse worker config to be written to a synapse yaml file. based on
-  # https://github.com/sumnerevans/nixos-configuration/blob/master/modules/services/matrix/synapse/default.nix
-  #
-  # port is the metrics port for prometheus.
-  # config is extra config to merge into the result
-  #
-
-  synapseWorkerConfig = port: config: let
-    newConfig = {
-      # Default to generic worker.
-      worker_app = "synapse.app.generic_worker";
-    } // config;
-    newWorkerListeners = (config.worker_listeners or [ ]) ++ [
-      {
-        type = "metrics";
-        bind_address = "";
-        port = port;
-      }
-    ];
-  in
-    newConfig // { worker_listeners = newWorkerListeners; };
-
-  # generates the systemd service a matrix synapse worker. see synapseWorkerConfig
-  synapseWorker = name: port: workerConfig: let
-    yamlFormat = pkgs.formats.yaml { };
-    configFileObj = (synapseWorkerConfig port ({ worker_name = name; } // workerConfig));
-    configFile = yamlFormat.generate "${name}.yaml" configFileObj;
-    dataDir = config.services.matrix-synapse.dataDir;
-  in {
-    # this is so I can't typo/don't have to repeat the worker name, ports and other stuff elsewhere
-    services.matrix-synapse.customWorkers.${name} = configFileObj;
-
-    systemd.services."matrix-synapse-${name}" = {
-      enable = true;
-      restartIfChanged = true;
-      description = "Synapse Matrix worker: ${name}";
-      after = [ "matrix-synapse.service" ];
-      partOf = [ "matrix-synapse.target" ];
-      wantedBy = [ "matrix-synapse.target" ];
-      serviceConfig = {
-        Type = "notify";
-        User = "matrix-synapse";
-        Group = "matrix-synapse";
-        WorkingDirectory = dataDir;
-        ExecReload = "${pkgs.util-linux}/bin/kill -HUP $MAINPID";
-        Restart = "on-failure";
-        UMask = "0077";
-        LimitNOFILE = 65535;
-        ExecStart = ''
-          ${pkgs.matrix-synapse}/bin/synapse_worker \
-            ${ lib.concatMapStringsSep "\n  " (x: "--config-path ${x} \\")
-              ([config.services.matrix-synapse.configFile configFile]
-              ++ config.services.matrix-synapse.extraConfigFiles) }
-            --keys-directory ${dataDir}
-        '';
-      };
-    };
-  };
-
-  baseListener = port: resourceNames: extraConfig: {
-    inherit port;
-    type = "http";
-    resources = [{ names = resourceNames; compress = false; }];
-  } // extraConfig;
-
-  # generate worker_listeners entry for synapseWorker workerConfig
-  synapseWorkerListener = port: resourceNames: baseListener port resourceNames {
-    bind_address = "127.0.0.1";
-  };
-
-  synapseWorkerListenerConfig = port: resourceNames: workerConfig:
-    (synapseWorkerListener port resourceNames) // workerConfig;
-
-  # generate listeners entry for the matrix-synapse service
-  synapseListener = port: resourceNames: baseListener port resourceNames {
-    bind_addresses = [ "127.0.0.1" ];
-    tls = false;
-  };
-
-  synapseListenerConfig = port: resourceNames: extraConfig:
-    (synapseListener port resourceNames) // extraConfig;
 
   # generates the .well-known server/client endpoints for a nginx service.
 
@@ -221,9 +142,9 @@ in {
     ./hardware-configuration.nix
 
     # convert the synapse service into a unit so I can add workers and other dependent services to it
-    (systemdUnit "matrix-synapse" {
-      after = [ "network.target" "postgresql.service" ];
-    })
+    #(systemdUnit "matrix-synapse" {
+    #  after = [ "network.target" "postgresql.service" ];
+    #})
 
     (matrixNginx synapseDomain synapsePort synapseLocalPort)
     (matrixNginx dendriteDomain dendritePort dendriteLocalPort)
@@ -238,50 +159,7 @@ in {
       synapse-homeserver-signing-key.path
       synapse-secrets.path
     ])
-  ])
-
-  ++ [
-    # this option is used to store each worker's config obj so I can reuse its values (ports etc) and not repeat
-    ({ options.services.matrix-synapse.customWorkers = lib.mkOption { default = {}; }; })
-
-    # NOTE: tls and compression are off by default for workers
-
-    # NOTE: there are things that reference customWorkers that rely on only having 2 worker_listeners
-    #       and the metrics worker_listener being the last one in the list.
-    #       if I ever need a different setup, I need to change all of those references
-
-    (synapseWorker "federation-sender1" 9101 {
-      worker_app = "synapse.app.federation_sender";
-    })
-
-    (synapseWorker "federation-reader1" 9102 {
-      worker_listeners = [
-        (synapseWorkerListenerConfig 8009 [ "federation" ] {
-          x_forwarded = true;
-        })
-      ];
-    })
-
-    (synapseWorker "event-persister1" 9103 {
-      worker_listeners = [
-        (synapseWorkerListener 9091 [ "replication" ])
-      ];
-    })
-
-    (synapseWorker "client-worker1" 9104 {
-       worker_listeners = [
-         (synapseWorkerListener 8010 [ "client" ])
-       ];
-    })
-
-    (synapseWorker "media-repo1" 9105 {
-       worker_app = "synapse.app.media_repository";
-       worker_listeners = [
-         (synapseWorkerListener 8011 [ "media" ])
-       ];
-    })
-
-  ];
+  ]);
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -354,9 +232,7 @@ in {
   services.postgresql = let
     db = name: {
       inherit name;
-      ensurePermissions = {
-        "DATABASE \"${name}\"" = "ALL PRIVILEGES";
-      };
+      ensureDBOwnership = true;
     };
 
     # steps to migrate dendrite database from one machine to the other
@@ -369,7 +245,6 @@ in {
     # # enable dendrite on other machine
     svcs = [
       "matrix-synapse"
-      "grafana"
       "dendrite"
     ];
   in {
@@ -521,6 +396,30 @@ in {
     "${config.services.matrix-synapse.dataDir}/secrets.yaml"
   ];
   systemd.services.matrix-synapse.serviceConfig.LimitNOFILE = 65535;
+
+  services.matrix-synapse.workers = let
+    lc = res: port: config: {
+      worker_listeners = [
+        {
+          inherit port;
+          type = "http";
+          bind_addresses = [ "127.0.0.1" ];
+          tls = false;
+          resources = [{
+            names = [ res ];
+          }];
+        }
+      ];
+    };
+    l = res: port: lc res port {};
+  in {
+    "federation_sender" = { };
+    "federation_receiver" = (lc "federation" synapseFederationReceiverPort { x_forwarded = true; });
+    "event_persister" = (l "replication" 9091);
+    "client_worker" = (l "client" synapseClientWorkerPort);
+    "media_repo" = (l "media" synapseMediaRepoPort);
+  };
+
   services.matrix-synapse.settings = let
     db = pgdb "matrix-synapse";
     dataDir = config.services.matrix-synapse.dataDir;
@@ -530,34 +429,7 @@ in {
     max_upload_size = "1000M";
 
     redis.enabled = true;
-    send_federation = false;
-    enable_media_repo = false;
     enable_metrics = true;
-
-    federation_sender_instances = [
-      wrk.federation-sender1.worker_name
-    ];
-
-    instance_map.${wrk.event-persister1.worker_name} = {
-      host = "localhost";
-      port = (builtins.elemAt wrk.event-persister1.worker_listeners 0).port;
-    };
-
-    stream_writers = {
-      events = wrk.event-persister1.worker_name;
-    };
-
-    experimental_features = {
-      spaces_enabled = true;
-
-      #msc2716_enabled = true; # history backfilling
-
-      # NOTE: do not enable faster_joins, apparently it has caused corruption
-      # https://github.com/matrix-org/synapse/issues/12878
-      #faster_joins = true; # use msc3706 if using workers
-
-      #msc3030_enabled = true; # get events at given timestamp
-    };
 
     # these have good defaults already but I just wanna ensure they stick even if the default changes
     enable_registration = false;
@@ -566,32 +438,10 @@ in {
     report_stats = false;
     presence.enabled = false;
 
-    app_service_config_files = [
-      #"${dataDir}/matrix-appservice-discord-registration.yaml"
-    ];
-
     database = {
       name = "psycopg2";
       args.host = "localhost";
     };
-
-    instance_map.main = {
-      host = "localhost";
-      port = 9093;
-    };
-
-    listeners = let
-      s = synapseListener;
-      c = synapseListenerConfig;
-    in [
-      (c synapseLocalPort [ "client" "federation" ] {
-        x_forwarded = true;
-      })
-      (s 9093 [ "replication" ])
-      (c 9009 [ "metrics" ] {
-        type = "metrics";
-      })
-    ];
 
     trusted_key_servers = [
       {
@@ -646,17 +496,22 @@ in {
   # matrixNginx takes care of most things, but we have to configure the worker endpoints here
 
   services.nginx.virtualHosts.${synapseDomain} = let
-      wrk = config.services.matrix-synapse.customWorkers;
-      synapseListener = workerName:
-        "http://127.0.0.1:${toString (builtins.elemAt wrk.${workerName}.worker_listeners 0).port}";
+    localListener = port: "http://127.0.0.1:${toString port}";
   in {
-    locations."/_matrix/federation/".proxyPass = synapseListener "federation-reader1";
-    locations."~ ^/_matrix/client/.*/(sync|events|initialSync)".proxyPass = synapseListener "client-worker1";
+    locations."/_matrix/federation/" = {
+      proxyPass = localListener synapseFederationReceiverPort;
+    };
+
+    locations."~ ^/_matrix/client/.*/(sync|events|initialSync)" = {
+      proxyPass = localListener synapseClientWorkerPort;
+    };
 
     locations.${builtins.concatStringsSep "" [
       "~ ^/(_matrix/media|_synapse/admin/v1/"
       "(purge_media_cache|(room|user)/.*/media.*|media/.*|quarantine_media/.*|users/.*/media))"
-    ]}.proxyPass = synapseListener "media-repo1";
+    ]} = {
+      proxyPass = localListener synapseMediaRepoPort;
+    };
 
     # other things hosted at the synapse domain
     locations."/maple".root = "/web";
@@ -699,6 +554,7 @@ in {
   security.acme.certs.${synapseDomain}.extraDomainNames = [
     "www.${synapseDomain}"
     "element.${synapseDomain}"
+    "hydrogen.${synapseDomain}"
     "maple.${synapseDomain}"
   ];
 
@@ -739,96 +595,10 @@ in {
     locations."/".root = "${custom-element}";
   };
 
-  # prometheus: monitoring tool, only used for matrix for now
-  services.prometheus = let
-    wrk = config.services.matrix-synapse.customWorkers // {
-      master.worker_listeners = config.services.matrix-synapse.settings.listeners;
-    };
-  in {
-    enable = true;
-    globalConfig.scrape_interval = "5s";
-    scrapeConfigs = [
-      {
-        job_name = "synapse";
-        metrics_path = "/_synapse/metrics";
-
-        static_configs = lib.mapAttrsToList (name: value: {
-
-          targets = with builtins; let
-            metricsListeners = filter (x: x.type == "metrics") value.worker_listeners;
-            port = if length metricsListeners > 0 then (elemAt metricsListeners 0).port else -1;
-          in [ "127.0.0.1:${toString port}" ];
-
-          labels = { instance = synapseDomain; job = name; index = "1"; };
-
-        }) wrk;
-      }
-    ];
-
-    ruleFiles = [
-      (pkgs.fetchurl {
-        url = "https://raw.githubusercontent.com/matrix-org/synapse/v${pkgs.matrix-synapse.version}/contrib/prometheus/synapse-v2.rules";
-        sha256 = "00hknrfrsiwgx6vkc7d4arh0q7mg5j9q8ig9yiwfkklcs02namss";
-      })
-    ];
-  };
-
-  # grafana: fancy interface for the prometheus synapse metrics
-  services.grafana = {
-    enable = true;
-
-    settings.security = with config.age.secrets; {
-      admin_password = "$__file{${grafana-password.path}}";
-      secret_key = "$__file{${grafana-secret-key.path}}";
-    };
-
-    # use postgresql
-    settings.database = {
-      type = "postgres";
-      host = "127.0.0.1";
-      user = "grafana";
-    };
-
-    provision = {
-      enable = true;
-
-      dashboards.settings = let
-        d = name: path: { inherit name path; };
-        f = name: url: sha256: d name (pkgs.fetchurl { inherit url sha256; });
-      in {
-        apiVersion = 1;
-        providers = map (x: {
-          name = x.name;
-          type = "file";
-          folder = "Server";
-          options.path = x.path;
-        }) [
-
-          # TODO: pin to certain version
-          (f "synapse"
-            "https://raw.githubusercontent.com/matrix-org/synapse/develop/contrib/grafana/synapse.json"
-            "sha256-qF+QckDCdBqnSN+ONauzlDl465Hdq79IejCyCzPVOL4=")
-
-        ];
-      };
-
-      datasources.settings = {
-        apiVersion = 1;
-        datasources = [
-          {
-            name = "Prometheus";
-            type = "prometheus";
-            url = "http://127.0.0.1:${toString config.services.prometheus.port}";
-            access = "proxy";
-            isDefault = true;
-            jsonData = {
-              timeInterval = config.services.prometheus.globalConfig.scrape_interval;
-            };
-          }
-        ];
-      };
-
-    };
+  services.nginx.virtualHosts."hydrogen.${synapseDomain}" = {
+    forceSSL = true;
+    useACMEHost = synapseDomain;
+    locations."/".root = "${pkgs.hydrogen-web}";
   };
 
   # redirect www to non-www
@@ -926,8 +696,6 @@ in {
       synapsePort
       dendritePort
       5357 # wsdd, for samba win10 discovery
-      3000 # grafana
-      9090 # prometheus
     ];
     allowedUDPPorts = [
       3702 # wsdd, for samba win10 discovery
@@ -968,21 +736,6 @@ in {
     synapse-secrets = mkSecret {
       file = ../secrets/synapse/secrets.yaml.age;
       path = "synapse/secrets.yaml";
-    };
-
-    # TODO: do I even need serviceFiles anymore? can't I just use owner like this everywhere?
-    grafana-secret-key = mkSecret {
-      file = ../secrets/grafana/secret-key.age;
-      path = "grafana/secret-key";
-    } // {
-      owner = "grafana";
-    };
-
-    grafana-password = mkSecret {
-      file = ../secrets/grafana/password.age;
-      path = "grafana/password";
-    } // {
-      owner = "grafana";
     };
 
     cloudflare-password = mkSecret {
