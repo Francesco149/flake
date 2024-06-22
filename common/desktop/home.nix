@@ -240,8 +240,10 @@ in with config; {
   programs.bash = {
     enable = true;
     shellAliases = {
-      xb="pushd ~/flake && nixos-rebuild switch --use-remote-sudo --flake .#${configName}; popd";
-      xt="pushd ~/flake && nixos-rebuild test --use-remote-sudo --flake .#${configName}; popd";
+      xb="pushd ~/flake && nixos-rebuild switch --use-remote-sudo --build-host 192.168.1.4 --flake .#${configName}; popd";
+      xt="pushd ~/flake && nixos-rebuild test --use-remote-sudo --build-host 192.168.1.4 --flake .#${configName}; popd";
+      xlb="pushd ~/flake && nixos-rebuild switch --use-remote-sudo --flake .#${configName}; popd";
+      xlt="pushd ~/flake && nixos-rebuild test --use-remote-sudo --flake .#${configName}; popd";
       xu="pushd ~/flake && nix flake update; popd";
       xub="xu && xb";
       xq="nix search nixpkgs";
@@ -282,6 +284,7 @@ in with config; {
   xdg.dataFile = {
     "emacs/backup/.keep".text = "";
     "emacs/undo/.keep".text = "";
+    # TODO: for some reason it's not able to mkdir this so I have to manually create it
     "barrier/SSL/Fingerprints/TrustedServers.txt".source = ./barrier/TrustedServers.txt;
     "wallpaper.png".source = ./wallpaper.png;
     "chatterino/Settings/window-layout.json".source = ./chatterino/window-layout.json;
