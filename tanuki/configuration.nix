@@ -7,19 +7,10 @@
   ];
 
   boot.loader.systemd-boot.enable = true;
-
-  # the hdmi switch freaks out if I boot at low res and then switch res
-  boot.loader.systemd-boot.consoleMode = "max";
-
+  boot.loader.systemd-boot.consoleMode = "max"; # hdmi switch is happier if we dont switch res during boot
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
-  boot.initrd.secrets = {
-    "/crypto_keyfile.bin" = null;
-  };
-
-  boot.initrd.luks.devices."luks-d654e001-13da-4c87-8a5d-28597e1a9199".device = "/dev/disk/by-uuid/d654e001-13da-4c87-8a5d-28597e1a9199";
-  boot.initrd.luks.devices."luks-d654e001-13da-4c87-8a5d-28597e1a9199".keyFile = "/crypto_keyfile.bin";
+  boot.initrd.luks.devices."luks-83b8c10a-431d-4a92-b9b5-26320303d2c0".device = "/dev/disk/by-uuid/83b8c10a-431d-4a92-b9b5-26320303d2c0";
 
   networking = {
     hostName = "tanuki";

@@ -8,25 +8,26 @@
     [ (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
-  boot.initrd.availableKernelModules = [ "xhci_pci" "ehci_pci" "ahci" "usbhid" "usb_storage" "sd_mod" "rtsx_usb_sdmmc" ];
+  boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "usbhid" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-intel" ];
+  boot.kernelModules = [ ];
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/3667065a-312e-4ead-92de-2bffb15551b0";
+    { device = "/dev/disk/by-uuid/86c4282e-d93e-452d-9242-f7accb724490";
       fsType = "ext4";
     };
 
-  boot.initrd.luks.devices."luks-f4777f50-5bb1-479a-ad52-4d44bfa811da".device = "/dev/disk/by-uuid/f4777f50-5bb1-479a-ad52-4d44bfa811da";
+  boot.initrd.luks.devices."luks-fed0ef76-583c-4483-b9c5-b8bfe85c76ae".device = "/dev/disk/by-uuid/fed0ef76-583c-4483-b9c5-b8bfe85c76ae";
 
-  fileSystems."/boot/efi" =
-    { device = "/dev/disk/by-uuid/D22C-0BBF";
+  fileSystems."/boot" =
+    { device = "/dev/disk/by-uuid/B5E1-89BB";
       fsType = "vfat";
+      options = [ "fmask=0022" "dmask=0022" ];
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/8d277b9a-adce-413a-9de8-917cb8949b0d"; }
+    [ { device = "/dev/disk/by-uuid/fb530a9b-c375-4697-863b-891cdc34cd0d"; }
     ];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
@@ -34,7 +35,9 @@
   # still possible to use this option, but it's recommended to use it in conjunction
   # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
   networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp0s25.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp1s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.enp2s0.useDHCP = lib.mkDefault true;
+  # networking.interfaces.wlo1.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
