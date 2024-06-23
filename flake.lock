@@ -185,27 +185,6 @@
         "type": "github"
       }
     },
-    "home-manager-stable": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs-stable"
-        ]
-      },
-      "locked": {
-        "lastModified": 1718530513,
-        "narHash": "sha256-BmO8d0r+BVlwWtMLQEYnwmngqdXIuyFzMwvmTcLMee8=",
-        "owner": "nix-community",
-        "repo": "home-manager",
-        "rev": "a1fddf0967c33754271761d91a3d921772b30d0e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "ref": "release-24.05",
-        "repo": "home-manager",
-        "type": "github"
-      }
-    },
     "home-manager-wsl": {
       "inputs": {
         "nixpkgs": [
@@ -310,6 +289,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-mailserver": {
+      "locked": {
+        "lastModified": 1718835956,
+        "narHash": "sha256-wM9v2yIxClRYsGHut5vHICZTK7xdrUGfrLkXvSuv6s4=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "dd457de7e08c6d06789b1f5b88fc9327f4d96309",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "nixos-24.05",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-stable": {
       "locked": {
         "lastModified": 1718811006,
@@ -367,10 +362,10 @@
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager_3",
-        "home-manager-stable": "home-manager-stable",
         "home-manager-wsl": "home-manager-wsl",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
+        "nixpkgs-mailserver": "nixpkgs-mailserver",
         "nixpkgs-stable": "nixpkgs-stable_2",
         "nixpkgs-wsl": "nixpkgs-wsl"
       }

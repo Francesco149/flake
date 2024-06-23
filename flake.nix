@@ -6,8 +6,9 @@
 
     # NOTE: remember to update home-manager versions
 
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05"; # for servers
-    nixpkgs-wsl.url = "github:nixos/nixpkgs/nixos-23.11"; # nixos-wsl lags behind
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs-wsl.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs-mailserver.url = "github:nixos/nixpkgs/nixos-24.05";
 
     flake-utils.url = "github:numtide/flake-utils";
 
@@ -22,11 +23,6 @@
       # home-manager pins nixpkgs to a specific version in its flake.
       # we want to make sure everything pins to the same version of nixpkgs to be more efficient
       inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    home-manager-stable = {
-      url = "github:nix-community/home-manager/release-24.05";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
     home-manager-wsl = {
@@ -67,8 +63,8 @@
     nixpkgs,
     nixpkgs-stable,
     nixpkgs-wsl,
+    nixpkgs-mailserver,
     home-manager,
-    home-manager-stable,
     home-manager-wsl,
     nixos-wsl,
     agenix,
@@ -100,6 +96,10 @@
     };
 
     pkgs-stable = import nixpkgs-stable {
+      inherit system;
+    };
+
+    pkgs-mailserver = import nixpkgs-mailserver {
       inherit system;
     };
 
@@ -136,12 +136,6 @@
     );
 
     # these are to be used with mkSystem
-
-    stable = {
-      nixpkgs = nixpkgs-stable;
-      pkgs = pkgs-stable;
-      home-manager = home-manager-stable;
-    };
 
     wsl = {
       nixpkgs = nixpkgs-wsl;
@@ -190,14 +184,16 @@
       # NOTE: avoid having complex dependencies in these. a bit of code duplication is fine.
       #       we don't want to randomly break stuff changing some other machine's config.
       #
+      # TODO: use some object I merge like `// unstable` above to make it easier to switch
+      #       stable to unstable in a non error prone way for example
 
       # mail server
-      headpats = nixpkgs-stable.lib.nixosSystem rec {
+      headpats = nixpkgs-mailserver.lib.nixosSystem rec {
         inherit system;
-        pkgs = pkgs-stable;
+        pkgs = pkgs-mailserver;
         modules = [
           ./headpats/configuration.nix
-          agenix-stable.nixosModules.default
+          agenix.nixosModules.default
         ];
       };
 
@@ -222,7 +218,7 @@
         specialArgs = { inherit user; };
         modules = [
           ./streampc/configuration.nix
-          agenix-stable.nixosModules.default
+          agenix.nixosModules.default
         ];
       };
 
