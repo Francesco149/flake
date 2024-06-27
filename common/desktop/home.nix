@@ -31,58 +31,6 @@ let
       # TODO: remove a lot of these pkgs since I only use emacs for org mode now
   );
 
-  firefox-custom = let
-    firefoxNoSigning = pkgs.firefox-bin-unwrapped.overrideAttrs (lib.const {
-      MOZ_REQUIRE_SIGNING = false;
-
-      # TODO: find way to disable sign requirement without building from source
-      #       this does nothing at the moment.
-
-    });
-  in pkgs.wrapFirefox firefoxNoSigning {
-
-    extraPolicies = {
-      CaptivePortal = false;
-      DisableFirefoxStudies = true;
-      DisablePocket = true;
-      DisableTelemetry = true;
-      DisableFirefoxAccounts = true;
-      DisableProfileImport = true;
-      DisableProfileRefresh = true;
-      DisableSystemAddonUpdate = true;
-
-      FirefoxHome = {
-        Pocket = false;
-        Snippets = false;
-      };
-
-      UserMessaging = {
-        ExtensionRecommendations = false;
-        SkipOnboarding = true;
-      };
-    };
-
-    extraPrefs = ''
-      // show more ssl cert infos
-      lockPref("security.identityblock.show_extended_validation", true);
-
-      // DDG is fucked so might as well use a better botnet
-      lockPref("browser.policies.runOncePerModification.setDefaultSearchEngine", "Google");
-
-      lockPref("privacy.sanitize.sanitizeOnShutdown", false); // don't clear cookies/history
-      lockPref("browser.startup.page", 3); // restore tabs on startup
-
-      //this seems to cause bugs when i click links on a fullscreened firefox
-      //lockPref("browser.link.open_newwindow", 2); // open links in new windows (for exwm)
-
-      // fuck off with this sponsored shit
-      lockPref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsored", false);
-      lockPref("services.sync.prefs.sync.browser.newtabpage.activity-stream.showSponsoredTopSites", false);
-
-      lockPref("media.ffmpeg.vaapi.enabled", true);
-    '';
-  };
-
   # some programs don't use the gtk file picker by default.
   # tricking them into thinking I'm running gnome seems to work
   fix-file-picker = binary: pkgs.writeShellScriptBin (baseNameOf binary) ''
@@ -92,10 +40,6 @@ let
   # some gnome applications don't follow gtk theme by default
   fix-theme = binary: pkgs.writeShellScriptBin (baseNameOf binary) ''
     exec env GTK_THEME=${themeName} ${binary} "$@"
-  '';
-
-  fix-rdd-sandbox = binary: pkgs.writeShellScriptBin (baseNameOf binary) ''
-    exec env MOZ_DISABLE_RDD_SANDBOX=1 ${binary} "$@"
   '';
 
 in with config; {
@@ -198,7 +142,7 @@ in with config; {
 
     dmenu
     maim
-    (fix-rdd-sandbox "${firefox-custom}/bin/firefox")
+    firefox
     (fix-file-picker "${pkgs.tdesktop}/bin/telegram-desktop")
     chatterino2
     obs-studio
@@ -532,19 +476,26 @@ in with config; {
 
   services.gnome-keyring.enable = true;
 
-  xdg.mimeApps.defaultApplications = {
-    "x-scheme-handler/http" = "firefox.desktop";
-    "x-scheme-handler/https" = "firefox.desktop";
-    "text/html" = "firefox.desktop";
-    "application/x-extension-htm" = "firefox.desktop";
-    "application/x-extension-html" = "firefox.desktop";
-    "application/x-extension-shtml" = "firefox.desktop";
-    "application/xhtml+xml" = "firefox.desktop";
-    "application/x-extension-xhtml" = "firefox.desktop";
-    "application/x-extension-xht" = "firefox.desktop";
+  xdg.mimeApps = let
+    firefoxDesktop = "firefox.desktop";
+    associations = {
+      "x-scheme-handler/tg" = "org.telegram.desktop.desktop";
+      "x-scheme-handler/http" = firefoxDesktop;
+      "x-scheme-handler/https" = firefoxDesktop;
+      "text/html" = firefoxDesktop;
+      "application/pdf" = firefoxDesktop;
+      "application/x-extension-htm" = firefoxDesktop;
+      "application/x-extension-html" = firefoxDesktop;
+      "application/x-extension-shtml" = firefoxDesktop;
+      "application/xhtml+xml" = firefoxDesktop;
+      "application/x-extension-xhtml" = firefoxDesktop;
+      "application/x-extension-xht" = firefoxDesktop;
+    };
+  in {
+    enable = true;
+    defaultApplications = associations;
+    associations.added = associations;
   };
-
-  home.sessionVariables.DEFAULT_BROWSER = "${firefox-custom}/bin/firefox";
 
   programs.autorandr.enable = true;
   programs.autorandr.hooks.postswitch = {
