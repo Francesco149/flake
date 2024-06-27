@@ -64,7 +64,12 @@ in {
       tmux
       internetarchive
       vim
+
+      # archivebox and dependencies. archives web pages locally
       archivebox
+      single-file-cli
+      nodejs
+
     ]);
     openssh.authorizedKeys.keys = authorizedKeys;
   };
