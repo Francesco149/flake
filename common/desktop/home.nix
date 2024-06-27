@@ -134,6 +134,7 @@ in with config; {
     aria
     nnn
     picotts
+    gh
 
     xclip # required for pass show -c, also useful in general
     mpv
