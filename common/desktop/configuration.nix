@@ -47,8 +47,14 @@ in {
 
   programs.nm-applet.enable = true;
 
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    jack.enable = true;
+  };
 
   # TODO: not functional at the moment
   #services.openvpn.servers = {
@@ -71,9 +77,6 @@ in {
   };
 
   services.blueman.enable = true;
-
-  # TODO: check if this is actually required for bluetooth
-  hardware.pulseaudio.package = pkgs.pulseaudioFull;
 
   services.gvfs.enable = true; # for nautilus
   services.udisks2.enable = true; # to mount removable devices more easily
