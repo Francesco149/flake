@@ -21,6 +21,7 @@ in {
   imports = [
     ./hardware-configuration.nix
     ../common/nix.nix
+    ../common/mpv/configuration.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -37,23 +38,18 @@ in {
     isNormalUser = true;
     description = "${user}";
     extraGroups = [ "networkmanager" "wheel" "audio" "jackaudio" ];
-    packages = (with pkgs; [
+    packages = with pkgs; [
       firefox
       raysession
       barrier
       custom-obs
       armcord
 
-      (mpv-unwrapped.override {
-        jackaudioSupport = true;
-      })
-
-      yt-dlp
-
       (pkgs.writeShellScriptBin "mus" ''
         mpv --ao=jack --jack-name=mpv-music --no-video --ytdl-format=bestaudio --loop-playlist "$@"
       '')
-    ]);
+    ];
+
     openssh.authorizedKeys.keys = authorizedKeys;
   };
 
