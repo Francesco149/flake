@@ -2,17 +2,19 @@ rec {
   user = "loli";
   system = "x86_64-linux";
 
-  ips = let
-    pre = "192.168.1.";
-    i = x: "${pre}${toString x}";
-  in {
-    inherit pre;
-    mask = "${i 0}/24";
-    gateway = i 1;
-    dekai = i 4;
-    streampc = i 202;
-    meido = i 11;
-  };
+  ips =
+    let
+      pre = "192.168.1.";
+      i = x: "${pre}${toString x}";
+    in
+    {
+      inherit pre;
+      mask = "${i 0}/24";
+      gateway = i 1;
+      dekai = i 4;
+      streampc = i 202;
+      meido = i 11;
+    };
 
   nginx = {
     localOnly = {
