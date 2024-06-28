@@ -90,46 +90,6 @@
         "type": "github"
       }
     },
-    "declarative-cachix": {
-      "locked": {
-        "lastModified": 1698062126,
-        "narHash": "sha256-JtL+IM2Vrlfwny2DtD/o1Ot6kWPq3cEFiEKNzWO0ZsY=",
-        "owner": "jonascarpay",
-        "repo": "declarative-cachix",
-        "rev": "800c308a85b964eb3447a3cb07e8190fb74dcf59",
-        "type": "github"
-      },
-      "original": {
-        "owner": "jonascarpay",
-        "ref": "master",
-        "repo": "declarative-cachix",
-        "type": "github"
-      }
-    },
-    "emacs-overlay": {
-      "inputs": {
-        "flake-utils": [
-          "flake-utils"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "nixpkgs-stable": "nixpkgs-stable"
-      },
-      "locked": {
-        "lastModified": 1718903445,
-        "narHash": "sha256-0wQzcl2b1vyf3C/sQcSRS9aENDORAlE/aWvoPXyShvk=",
-        "owner": "nix-community",
-        "repo": "emacs-overlay",
-        "rev": "496c42b156668e2fa266019704ea4aafc9ce351d",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "emacs-overlay",
-        "type": "github"
-      }
-    },
     "flake-compat": {
       "flake": false,
       "locked": {
@@ -307,22 +267,6 @@
     },
     "nixpkgs-stable": {
       "locked": {
-        "lastModified": 1718811006,
-        "narHash": "sha256-0Y8IrGhRmBmT7HHXlxxepg2t8j1X90++qRN3lukGaIk=",
-        "owner": "NixOS",
-        "repo": "nixpkgs",
-        "rev": "03d771e513ce90147b65fe922d87d3a0356fc125",
-        "type": "github"
-      },
-      "original": {
-        "owner": "NixOS",
-        "ref": "nixos-23.11",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs-stable_2": {
-      "locked": {
         "lastModified": 1718717462,
         "narHash": "sha256-qddfQLMaWR2gxfEzUM/zFZVK6H1kTv9WBQSBQxbP3MU=",
         "owner": "nixos",
@@ -357,8 +301,6 @@
       "inputs": {
         "agenix": "agenix",
         "agenix-stable": "agenix-stable",
-        "declarative-cachix": "declarative-cachix",
-        "emacs-overlay": "emacs-overlay",
         "flake-compat": "flake-compat",
         "flake-utils": "flake-utils",
         "home-manager": "home-manager_3",
@@ -366,7 +308,7 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "nixpkgs-mailserver": "nixpkgs-mailserver",
-        "nixpkgs-stable": "nixpkgs-stable_2",
+        "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-wsl": "nixpkgs-wsl"
       }
     },

@@ -48,14 +48,6 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
-
-    emacs-overlay = {
-      url = "github:nix-community/emacs-overlay";
-      inputs.nixpkgs.follows = "nixpkgs";
-      inputs.flake-utils.follows = "flake-utils";
-    };
-
-    declarative-cachix.url = "github:jonascarpay/declarative-cachix/master";
   };
 
   outputs =
@@ -69,8 +61,6 @@
     , nixos-wsl
     , agenix
     , agenix-stable
-    , emacs-overlay
-    , declarative-cachix
     , ...
     }:
     let
@@ -86,7 +76,6 @@
 
         overlays = [
           (import ./custom-packages.nix)
-          emacs-overlay.overlay
         ];
 
         # only used by archivebox, not actually exposed to the internet
@@ -127,9 +116,7 @@
                 configName = conf.configName;
               };
               home-manager.users.${user} = {
-                imports = [
-                  declarative-cachix.homeManagerModules.declarative-cachix-experimental
-                ] ++ conf.homeImports;
+                imports = conf.homeImports;
               };
             }
           ];
@@ -157,16 +144,6 @@
         # main desktop machine. low power draw
         tanuki = mkSystem (rec {
           configName = "tanuki"; # TODO: any way to avoid this duplication?
-          modules = [
-            ./${configName}/configuration.nix
-            agenix.nixosModules.default
-          ];
-          homeImports = [ ./${configName}/home.nix ];
-        } // unstable);
-
-        # beefier desktop, mostly used to back up to my zfs array
-        nixos-11400f = mkSystem (rec {
-          configName = "nixos-11400f";
           modules = [
             ./${configName}/configuration.nix
             agenix.nixosModules.default
