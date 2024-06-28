@@ -3,7 +3,8 @@
 let
   pre = "192.168.1.";
   mkip = x: "${pre}${toString x}";
-in rec {
+in
+rec {
   user = "loli";
   system = "x86_64-linux";
 
@@ -31,9 +32,9 @@ in rec {
   ssh = with builtins; rec {
     # any machine that has a fixed ip will be added to the known hosts with its respective ssh key
     knownHosts = listToAttrs (
-      map (x: { name = "${x.ip}"; value.publicKey = x.key; } )
-      (filter (x: hasAttr "ip" x)
-        (attrValues machines))
+      map (x: { name = "${x.ip}"; value.publicKey = x.key; })
+        (filter (x: hasAttr "ip" x)
+          (attrValues machines))
     );
     authorizedKeys = with machines; map (x: x.key) [
       tanuki
