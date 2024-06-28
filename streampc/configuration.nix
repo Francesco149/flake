@@ -17,7 +17,8 @@ let
       ];
     });
 
-in {
+in
+{
   imports = [
     ./hardware-configuration.nix
     ../common/nix/configuration.nix
@@ -133,9 +134,9 @@ in {
   };
 
   environment.sessionVariables = {
-    INTEL_MEDIA_RUNTIME= "ONEVPL";
+    INTEL_MEDIA_RUNTIME = "ONEVPL";
     LIBVA_DRIVER_NAME = "iHD";
-    ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [vpl-gpu-rt]);
+    ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [ vpl-gpu-rt ]);
   };
 
   # config files
@@ -168,26 +169,29 @@ in {
   # agenix secrets are owned by root and symlinked from /run/agenix.d .
   # so to have user-owned secrets I have to disable symlinking and make sure the ownership is correct
   # TODO: don't copypaste these helpers everywhere
-  age.secrets = let
+  age.secrets =
+    let
 
-    secretPath = path: "/etc/secrets/${path}";
+      secretPath = path: "/etc/secrets/${path}";
 
-    mkSecret = { file, path }: {
-      inherit file;
-      path = secretPath path;
-      symlink = false;
+      mkSecret = { file, path }: {
+        inherit file;
+        path = secretPath path;
+        symlink = false;
+      };
+
+    in
+    {
+
+      barriers-private-key = mkSecret
+        {
+          file = ../secrets/barrier/Barrier.pem.age;
+          path = "barrier/SSL/Barrier.pem";
+        } // {
+        owner = "loli"; # TODO: barrier user?
+      };
+
     };
-
-  in {
-
-    barriers-private-key = mkSecret {
-      file = ../secrets/barrier/Barrier.pem.age;
-      path = "barrier/SSL/Barrier.pem";
-    } // {
-      owner = "loli"; # TODO: barrier user?
-    };
-
-  };
 
   system.stateVersion = "23.05";
 

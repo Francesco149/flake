@@ -3,7 +3,7 @@
 with config; {
 
   home.sessionVariables = {
-    EDITOR="vim";
+    EDITOR = "vim";
   };
 
   xdg.dataFile = {

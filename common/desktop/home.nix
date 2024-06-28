@@ -10,25 +10,27 @@ let
       # TODO: use emacsPgtk on wsl
       emacsCustom = (pkgs.emacsPackagesFor pkgs.emacs).emacsWithPackages;
     in
-      emacsCustom (epkgs: with epkgs; [
-        org org-superstar
-        undo-tree
-        sudo-edit
-        magit
-        vertico # fancy fuzzy completion everywhere
-        ace-window # window management utils, also integrates with embark
-        marginalia # extra info in vertico
-        which-key # display all possible command completions
-        nlinum-relative # relative line number
-        evil # vim-like keybindings
-        evil-collection # pre-configured evil keybinds for things not covered by core evil
-        tree-sitter tree-sitter-langs # way faster syntax gl than emacs' built in
-        direnv # integrate nix-direnv into emacs
-        consult # fancy buffer switching
-        avy # fancy jump to char
-      ])
+    emacsCustom (epkgs: with epkgs; [
+      org
+      org-superstar
+      undo-tree
+      sudo-edit
+      magit
+      vertico # fancy fuzzy completion everywhere
+      ace-window # window management utils, also integrates with embark
+      marginalia # extra info in vertico
+      which-key # display all possible command completions
+      nlinum-relative # relative line number
+      evil # vim-like keybindings
+      evil-collection # pre-configured evil keybinds for things not covered by core evil
+      tree-sitter
+      tree-sitter-langs # way faster syntax gl than emacs' built in
+      direnv # integrate nix-direnv into emacs
+      consult # fancy buffer switching
+      avy # fancy jump to char
+    ])
 
-      # TODO: remove a lot of these pkgs since I only use emacs for org mode now
+    # TODO: remove a lot of these pkgs since I only use emacs for org mode now
   );
 
   # some programs don't use the gtk file picker by default.
@@ -42,7 +44,8 @@ let
     exec env GTK_THEME=${themeName} ${binary} "$@"
   '';
 
-in with config; {
+in
+with config; {
 
   imports = [
     ../vim/home.nix
@@ -185,15 +188,15 @@ in with config; {
   programs.bash = {
     enable = true;
     shellAliases = {
-      xb="pushd ~/flake && nixos-rebuild switch --use-remote-sudo --build-host 192.168.1.4 --flake .#${configName}; popd";
-      xt="pushd ~/flake && nixos-rebuild test --use-remote-sudo --build-host 192.168.1.4 --flake .#${configName}; popd";
-      xlb="pushd ~/flake && nixos-rebuild switch --use-remote-sudo --flake .#${configName}; popd";
-      xlt="pushd ~/flake && nixos-rebuild test --use-remote-sudo --flake .#${configName}; popd";
-      xu="pushd ~/flake && nix flake update; popd";
-      xub="xu && xb";
-      xq="nix search nixpkgs";
-      eq="nix-env -f '<nixpkgs>' -qaP -A pkgs.emacsPackages | grep";
-      yt-date="yt-dlp --skip-download --get-filename --output '%(upload_date)s'";
+      xb = "pushd ~/flake && nixos-rebuild switch --use-remote-sudo --build-host 192.168.1.4 --flake .#${configName}; popd";
+      xt = "pushd ~/flake && nixos-rebuild test --use-remote-sudo --build-host 192.168.1.4 --flake .#${configName}; popd";
+      xlb = "pushd ~/flake && nixos-rebuild switch --use-remote-sudo --flake .#${configName}; popd";
+      xlt = "pushd ~/flake && nixos-rebuild test --use-remote-sudo --flake .#${configName}; popd";
+      xu = "pushd ~/flake && nix flake update; popd";
+      xub = "xu && xb";
+      xq = "nix search nixpkgs";
+      eq = "nix-env -f '<nixpkgs>' -qaP -A pkgs.emacsPackages | grep";
+      yt-date = "yt-dlp --skip-download --get-filename --output '%(upload_date)s'";
     };
     bashrcExtra = ''
       set -o vi
@@ -447,7 +450,7 @@ in with config; {
     "*xterm*faceName" = "PxPlus IBM VGA8";
     "*xterm*faceNameDoublesize" = "Unifont";
     "*xterm*faceSize" = 12;
-    "*xterm*allowBoldFonts" =  false;
+    "*xterm*allowBoldFonts" = false;
     "*xterm*background" = "black";
     "*xterm*foreground" = "grey";
     "*xterm*reverseVideo" = false;
@@ -476,26 +479,28 @@ in with config; {
 
   services.gnome-keyring.enable = true;
 
-  xdg.mimeApps = let
-    firefoxDesktop = "firefox.desktop";
-    associations = {
-      "x-scheme-handler/tg" = "org.telegram.desktop.desktop";
-      "x-scheme-handler/http" = firefoxDesktop;
-      "x-scheme-handler/https" = firefoxDesktop;
-      "text/html" = firefoxDesktop;
-      "application/pdf" = firefoxDesktop;
-      "application/x-extension-htm" = firefoxDesktop;
-      "application/x-extension-html" = firefoxDesktop;
-      "application/x-extension-shtml" = firefoxDesktop;
-      "application/xhtml+xml" = firefoxDesktop;
-      "application/x-extension-xhtml" = firefoxDesktop;
-      "application/x-extension-xht" = firefoxDesktop;
+  xdg.mimeApps =
+    let
+      firefoxDesktop = "firefox.desktop";
+      associations = {
+        "x-scheme-handler/tg" = "org.telegram.desktop.desktop";
+        "x-scheme-handler/http" = firefoxDesktop;
+        "x-scheme-handler/https" = firefoxDesktop;
+        "text/html" = firefoxDesktop;
+        "application/pdf" = firefoxDesktop;
+        "application/x-extension-htm" = firefoxDesktop;
+        "application/x-extension-html" = firefoxDesktop;
+        "application/x-extension-shtml" = firefoxDesktop;
+        "application/xhtml+xml" = firefoxDesktop;
+        "application/x-extension-xhtml" = firefoxDesktop;
+        "application/x-extension-xht" = firefoxDesktop;
+      };
+    in
+    {
+      enable = true;
+      defaultApplications = associations;
+      associations.added = associations;
     };
-  in {
-    enable = true;
-    defaultApplications = associations;
-    associations.added = associations;
-  };
 
   programs.autorandr.enable = true;
   programs.autorandr.hooks.postswitch = {
@@ -506,81 +511,83 @@ in with config; {
       systemctl --user restart polybar
     '';
   };
-  programs.autorandr.profiles = let
-    miniMonLeft = "00ffffffffffff001ee456010000000009200103807341780bcf74a75546982410494b2108008180950090400101a940b300614001019c84809470383c403020e50458c1100000185536809470383c403020e50458c110000000000000fc0041525a4f50410a202020202020000000fd0030901faa24000a202020202020011502031cc3420400230907078301000068030c001000884800e305c0004037809470383c403020e50458c110000018816e809470383c403020e50458c1100000180000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004f";
-    miniMonMid  = "00ffffffffffff001ee456010000000009200103807341780bcf74a75546982410494b2108008180950090400101a940b300614001019c84809470383c403020e50458c1100000185536809470383c403020e50458c110000000000000fc0041525a4f50410a202020202020000000fd0030901faa24000a202020202020011502032cf3420400230907078301000068030c001000884800681a000001013090e6e305c000e60605016262004037809470383c403020e50458c110000018816e809470383c403020e50458c11000001800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002f";
-    miniMonBack = "00ffffffffffff001c525601010000002b1e0103802313782a6435a5544f9e27125054a1cf0071408180814081c09500d1c0a9c0b300023a801871382d40582c450059c21000001e000000fd003a901faa24000a202020202020000000fc0041525a4f50410a202020202020000000ff003030303030303030303030310a0181020338f1479001020304454523091f078301000067030c001000384867d85dc40148c000681a000001013a90e6e305c000e606050169694ffd8180a070381f403020350059c21000001e786e80a0703835403020360059c21000001a0f5c80a0703835403020360059c21000001a00000000000000000000000000000000005f";
-    touchMon    = "00ffffffffffff000469f116949a00001c1a010380221378ea82059256539529245054bfee0081c00101010101010101010101010101662156aa51001e30468f330058c21000001e000000fd00324c1e500f000a202020202020000000fc00415355532056543136380a2020000000ff0047374c4d54463033393537320a00b8";
-    monConfig = {
-      enable = true;
-      position = "0x0";
-    };
-    miniMonConfig = monConfig // {
-      mode = "1920x1080";
-      rate = lib.mkDefault "144.0";
-      gamma = "1.08:1.08:1.08";
-    };
-    touchMonConfig = monConfig // {
-      mode = "1366x768";
-      rate = "59.79";
-    };
-    disabled = {
-      enable = false;
-    };
-
-    # intel hd 4600's max pixel rate caps out at 120hz
-    hz120 = {
-      rate = "120.0";
-    };
-
-    tanukiOutputs = {
-      VGA-1 = disabled;
-      HDMI-1 = disabled;
-      DP-1 = disabled;
-      HDMI-2 = disabled;
-    };
-
-    intel11400fOutputs = {
-      DVI-D-0 = disabled;
-      HDMI-0 = disabled;
-      DP-0 = disabled;
-      DP-1 = disabled;
-    };
-
-  in {
-    "tanuki-left" = {
-      fingerprint = { HDMI-2 = miniMonLeft; };
-      config.HDMI-2 = miniMonConfig // hz120;
-    };
-    "tanuki-mid" = {
-      fingerprint = { HDMI-2 = miniMonMid; };
-      config.HDMI-2 = miniMonConfig // hz120;
-    };
-    "11400f-workstation" = {
-      fingerprint = {
-        DP-1 = miniMonMid;
-        DVI-D-0 = touchMon;
-        HDMI-0 = miniMonBack;
+  programs.autorandr.profiles =
+    let
+      miniMonLeft = "00ffffffffffff001ee456010000000009200103807341780bcf74a75546982410494b2108008180950090400101a940b300614001019c84809470383c403020e50458c1100000185536809470383c403020e50458c110000000000000fc0041525a4f50410a202020202020000000fd0030901faa24000a202020202020011502031cc3420400230907078301000068030c001000884800e305c0004037809470383c403020e50458c110000018816e809470383c403020e50458c1100000180000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004f";
+      miniMonMid = "00ffffffffffff001ee456010000000009200103807341780bcf74a75546982410494b2108008180950090400101a940b300614001019c84809470383c403020e50458c1100000185536809470383c403020e50458c110000000000000fc0041525a4f50410a202020202020000000fd0030901faa24000a202020202020011502032cf3420400230907078301000068030c001000884800681a000001013090e6e305c000e60605016262004037809470383c403020e50458c110000018816e809470383c403020e50458c11000001800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002f";
+      miniMonBack = "00ffffffffffff001c525601010000002b1e0103802313782a6435a5544f9e27125054a1cf0071408180814081c09500d1c0a9c0b300023a801871382d40582c450059c21000001e000000fd003a901faa24000a202020202020000000fc0041525a4f50410a202020202020000000ff003030303030303030303030310a0181020338f1479001020304454523091f078301000067030c001000384867d85dc40148c000681a000001013a90e6e305c000e606050169694ffd8180a070381f403020350059c21000001e786e80a0703835403020360059c21000001a0f5c80a0703835403020360059c21000001a00000000000000000000000000000000005f";
+      touchMon = "00ffffffffffff000469f116949a00001c1a010380221378ea82059256539529245054bfee0081c00101010101010101010101010101662156aa51001e30468f330058c21000001e000000fd00324c1e500f000a202020202020000000fc00415355532056543136380a2020000000ff0047374c4d54463033393537320a00b8";
+      monConfig = {
+        enable = true;
+        position = "0x0";
       };
-      config = intel11400fOutputs // {
-        DP-1 = miniMonConfig;
-        DVI-D-0 = touchMonConfig // {
-          position = "1920x0";
+      miniMonConfig = monConfig // {
+        mode = "1920x1080";
+        rate = lib.mkDefault "144.0";
+        gamma = "1.08:1.08:1.08";
+      };
+      touchMonConfig = monConfig // {
+        mode = "1366x768";
+        rate = "59.79";
+      };
+      disabled = {
+        enable = false;
+      };
+
+      # intel hd 4600's max pixel rate caps out at 120hz
+      hz120 = {
+        rate = "120.0";
+      };
+
+      tanukiOutputs = {
+        VGA-1 = disabled;
+        HDMI-1 = disabled;
+        DP-1 = disabled;
+        HDMI-2 = disabled;
+      };
+
+      intel11400fOutputs = {
+        DVI-D-0 = disabled;
+        HDMI-0 = disabled;
+        DP-0 = disabled;
+        DP-1 = disabled;
+      };
+
+    in
+    {
+      "tanuki-left" = {
+        fingerprint = { HDMI-2 = miniMonLeft; };
+        config.HDMI-2 = miniMonConfig // hz120;
+      };
+      "tanuki-mid" = {
+        fingerprint = { HDMI-2 = miniMonMid; };
+        config.HDMI-2 = miniMonConfig // hz120;
+      };
+      "11400f-workstation" = {
+        fingerprint = {
+          DP-1 = miniMonMid;
+          DVI-D-0 = touchMon;
+          HDMI-0 = miniMonBack;
+        };
+        config = intel11400fOutputs // {
+          DP-1 = miniMonConfig;
+          DVI-D-0 = touchMonConfig // {
+            position = "1920x0";
+          };
+        };
+      };
+      "11400f-stream" = {
+        fingerprint = {
+          DP-1 = miniMonMid;
+          DVI-D-0 = touchMon;
+          HDMI-0 = miniMonBack;
+        };
+        config.DP-1 = disabled;
+        config.DVI-D-0 = touchMonConfig;
+        config.HDMI-0 = miniMonConfig // {
+          position = "1366x0";
         };
       };
     };
-    "11400f-stream" = {
-      fingerprint = {
-        DP-1 = miniMonMid;
-        DVI-D-0 = touchMon;
-        HDMI-0 = miniMonBack;
-      };
-      config.DP-1 = disabled;
-      config.DVI-D-0 = touchMonConfig;
-      config.HDMI-0 = miniMonConfig // {
-        position = "1366x0";
-      };
-    };
-  };
 
 }

@@ -7,7 +7,8 @@ let
   headpatUsers = [ loli headpats ];
   desktopUsers = [ loli ];
   streampcUsers = [ loli streampc ];
-in {
+in
+{
   "gh2md/token.age".publicKeys = desktopUsers;
   "gist/token.age".publicKeys = desktopUsers;
   "chatterino/settings.json.age".publicKeys = desktopUsers;

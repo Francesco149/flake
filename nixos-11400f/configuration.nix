@@ -17,7 +17,7 @@
     hostId = "8556b001";
   };
 
-  boot.supportedFilesystems =  [ "zfs" ];
+  boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.devNodes = "/dev/";
   boot.kernelParams = [
     "amdgpu.ppfeaturemask=0xffffffff"
@@ -61,13 +61,13 @@
   services.zfs.autoSnapshot = {
     enable = true;
     frequent = 96; # keep the latest x 15-minute snapshots (instead of four)
-    monthly = 24;  # keep x monthly snapshot (instead of twelve)
+    monthly = 24; # keep x monthly snapshot (instead of twelve)
   };
 
   # according to the wiki, zfs has its own scheduler and this supposedly prevent freezes
   # I haven't had any issues personally
   services.udev.extraRules = ''
-  ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="zfs_member", ATTR{../queue/scheduler}="none"
+    ACTION=="add|change", KERNEL=="sd[a-z]*[0-9]*|mmcblk[0-9]*p[0-9]*|nvme[0-9]*n[0-9]*p[0-9]*", ENV{ID_FS_TYPE}=="zfs_member", ATTR{../queue/scheduler}="none"
   '';
 
   system.stateVersion = "22.05";

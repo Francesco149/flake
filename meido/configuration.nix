@@ -116,8 +116,8 @@ let
       enableACME = true;
 
       listen = [
-        { port =  443; addr="0.0.0.0"; ssl = true; }
-        { port = port; addr="0.0.0.0"; ssl = true; }
+        { port = 443; addr = "0.0.0.0"; ssl = true; }
+        { port = port; addr = "0.0.0.0"; ssl = true; }
       ];
 
       locations."/_matrix".proxyPass = "http://localhost:${toString localPort}";
@@ -137,7 +137,8 @@ let
     };
   };
 
-in {
+in
+{
   imports = [
     ./hardware-configuration.nix
 
@@ -229,57 +230,59 @@ in {
     prefixLength = 24;
   }];
 
-  services.postgresql = let
-    db = name: {
-      inherit name;
-      ensureDBOwnership = true;
+  services.postgresql =
+    let
+      db = name: {
+        inherit name;
+        ensureDBOwnership = true;
+      };
+
+      # steps to migrate dendrite database from one machine to the other
+      # # enable postgre on destination machine with initialScript
+      # # disable any services using the database
+      # psql -U postgres -tAc 'CREATE USER "dendrite";'
+      # psql -U postgres -tAc 'CREATE DATABASE "dendrite";'
+      # pg_dump -C -U dendrite dendrite | ssh root@192.168.1.11 psql -U dendrite dendrite
+      # sudo rsync -avz /var/lib/private/dendrite root@192.168.1.11:/var/lib/private
+      # # enable dendrite on other machine
+      svcs = [
+        "matrix-synapse"
+        "dendrite"
+      ];
+    in
+    {
+      enable = true;
+      # package = pkgs.postgresql_14;
+      enableTCPIP = true;
+
+      authentication = pkgs.lib.mkOverride 10 ''
+        local all all trust
+        host all all 127.0.0.1/32 trust
+        host all all ::1/128 trust
+      '';
+
+      ensureDatabases = svcs;
+      ensureUsers = map (x: (db x)) svcs;
+
+      # using collation other than C can cause subtle corruption in your indices if libc/icu changes stuff.
+      # this script recreates template1, the default database template, to have collation C
+      # https://www.citusdata.com/blog/2020/12/12/dont-let-collation-versions-corrupt-your-postgresql-indexes/
+      initialScript = pkgs.writeText "postgres-initial" ''
+        ALTER database template1 is_template=false;
+        DROP database template1;
+
+        CREATE DATABASE template1
+        WITH OWNER = postgres
+          ENCODING = 'UTF8'
+          TABLESPACE = pg_default
+          LC_COLLATE = 'C'
+          LC_CTYPE = 'C'
+          CONNECTION LIMIT = -1
+          TEMPLATE template0;
+
+        ALTER database template1 is_template=true;
+      '';
     };
-
-    # steps to migrate dendrite database from one machine to the other
-    # # enable postgre on destination machine with initialScript
-    # # disable any services using the database
-    # psql -U postgres -tAc 'CREATE USER "dendrite";'
-    # psql -U postgres -tAc 'CREATE DATABASE "dendrite";'
-    # pg_dump -C -U dendrite dendrite | ssh root@192.168.1.11 psql -U dendrite dendrite
-    # sudo rsync -avz /var/lib/private/dendrite root@192.168.1.11:/var/lib/private
-    # # enable dendrite on other machine
-    svcs = [
-      "matrix-synapse"
-      "dendrite"
-    ];
-  in {
-    enable = true;
-    # package = pkgs.postgresql_14;
-    enableTCPIP = true;
-
-    authentication = pkgs.lib.mkOverride 10 ''
-      local all all trust
-      host all all 127.0.0.1/32 trust
-      host all all ::1/128 trust
-    '';
-
-    ensureDatabases = svcs;
-    ensureUsers = map (x: (db x)) svcs;
-
-    # using collation other than C can cause subtle corruption in your indices if libc/icu changes stuff.
-    # this script recreates template1, the default database template, to have collation C
-    # https://www.citusdata.com/blog/2020/12/12/dont-let-collation-versions-corrupt-your-postgresql-indexes/
-    initialScript = pkgs.writeText "postgres-initial" ''
-      ALTER database template1 is_template=false;
-      DROP database template1;
-
-      CREATE DATABASE template1
-      WITH OWNER = postgres
-        ENCODING = 'UTF8'
-        TABLESPACE = pg_default
-        LC_COLLATE = 'C'
-        LC_CTYPE = 'C'
-        CONNECTION LIMIT = -1
-        TEMPLATE template0;
-
-      ALTER database template1 is_template=true;
-    '';
-  };
 
   # dendrite: experimental matrix server
 
@@ -298,92 +301,94 @@ in {
     httpPort = dendriteLocalPort;
   };
 
-  services.dendrite.settings = let
-    dataDir = dendriteDataDir;
+  services.dendrite.settings =
+    let
+      dataDir = dendriteDataDir;
 
-    dbConf = {
-      connection_string = pgdb "dendrite";
-      max_open_conns = 10;
-      max_idle_conns = 2;
-      conn_max_lifetime = -1;
+      dbConf = {
+        connection_string = pgdb "dendrite";
+        max_open_conns = 10;
+        max_idle_conns = 2;
+        conn_max_lifetime = -1;
+      };
+    in
+    {
+      global.server_name = dendriteDomain;
+      global.private_key = "${dataDir}/matrix_key.pem";
+
+      global.trusted_third_party_id_servers = [
+        "midov.pl"
+        "tchncs.de"
+        "matrix.org"
+      ];
+
+      federation_api.key_perspectives = [
+        {
+          server_name = "matrix.org";
+          keys = [
+            {
+              key_id = "ed25519:auto";
+              public_key = "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw";
+            }
+            {
+              key_id = "ed25519:a_RXGa";
+              public_key = "l8Hft5qXKn1vfHrg3p4+W8gELQVo8N13JkluMfmn2sQ";
+            }
+          ];
+        }
+        {
+          server_name = "midov.pl";
+          keys = [
+            {
+              key_id = "ed25519:a_HXVM";
+              public_key = "4FOGNjNLe3LNGHgDGIMVm3Yx9IQZZnn1LDqv5O1xIns";
+            }
+          ];
+        }
+        {
+          server_name = "tchncs.de";
+          keys = [
+            {
+              key_id = "ed25519:a_rOPL";
+              public_key = "HZxh/ZZktCgLcsJgKw2tHS9lPcOo1kNBoEdeVtmkpeg";
+            }
+          ];
+        }
+      ];
+
+      # TODO: shorten this with some map loop magic?
+      app_service_api.database = dbConf;
+      federation_api.database = dbConf;
+      key_server.database = dbConf;
+      media_api.database = dbConf // { max_open_conns = 5; };
+      room_server.database = dbConf;
+      sync_api.database = dbConf;
+      user_api.account_database = dbConf;
+      user_api.device_database = dbConf;
+      mscs.database = dbConf // { max_open_conns = 5; };
+
+      # these are experimental features currently being pull requested
+      mscs.mscs = [
+        #"msc2836" # threads (client: https://cerulean.matrix.org/)
+        "msc2946" # space summary
+      ];
+
+      openRegistration = false;
+      client_api.registration_disabled = true;
+      client_api.guests_disabled = true;
+
+      media_api.max_file_size_bytes = 1073741824;
+
+      # do not enable dynamic thumbnails.
+      # these appears to cause a lot of issues. it slows down the homeserver to a crawl and the log is spammed
+      # with "signalling other goroutines" stuff. most likely misbehaving and holding things up
+      media_api.dynamic_thumbnails = false;
+
+      app_service_api.config_files = [
+        #"${dataDir}/matrix-appservice-discord-registration.yaml"
+      ];
+
     };
-  in {
-    global.server_name = dendriteDomain;
-    global.private_key = "${dataDir}/matrix_key.pem";
-
-    global.trusted_third_party_id_servers = [
-      "midov.pl"
-      "tchncs.de"
-      "matrix.org"
-    ];
-
-    federation_api.key_perspectives = [
-      {
-        server_name = "matrix.org";
-        keys = [
-          {
-            key_id = "ed25519:auto";
-            public_key = "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw";
-          }
-          {
-            key_id = "ed25519:a_RXGa";
-            public_key = "l8Hft5qXKn1vfHrg3p4+W8gELQVo8N13JkluMfmn2sQ";
-          }
-        ];
-      }
-      {
-        server_name = "midov.pl";
-        keys = [
-          {
-            key_id = "ed25519:a_HXVM";
-            public_key = "4FOGNjNLe3LNGHgDGIMVm3Yx9IQZZnn1LDqv5O1xIns";
-          }
-        ];
-      }
-      {
-        server_name = "tchncs.de";
-        keys = [
-          {
-            key_id = "ed25519:a_rOPL";
-            public_key = "HZxh/ZZktCgLcsJgKw2tHS9lPcOo1kNBoEdeVtmkpeg";
-          }
-        ];
-      }
-    ];
-
-    # TODO: shorten this with some map loop magic?
-    app_service_api.database = dbConf;
-    federation_api.database = dbConf;
-    key_server.database = dbConf;
-    media_api.database = dbConf // { max_open_conns =  5; };
-    room_server.database = dbConf;
-    sync_api.database = dbConf;
-    user_api.account_database = dbConf;
-    user_api.device_database = dbConf;
-    mscs.database = dbConf // { max_open_conns =  5; };
-
-    # these are experimental features currently being pull requested
-    mscs.mscs = [
-      #"msc2836" # threads (client: https://cerulean.matrix.org/)
-      "msc2946" # space summary
-    ];
-
-    openRegistration = false;
-    client_api.registration_disabled = true;
-    client_api.guests_disabled = true;
-
-    media_api.max_file_size_bytes = 1073741824;
-
-    # do not enable dynamic thumbnails.
-    # these appears to cause a lot of issues. it slows down the homeserver to a crawl and the log is spammed
-    # with "signalling other goroutines" stuff. most likely misbehaving and holding things up
-    media_api.dynamic_thumbnails = false;
-
-    app_service_api.config_files = [
-      #"${dataDir}/matrix-appservice-discord-registration.yaml"
-    ];
-
-  };
 
   # redis: just used by matrix now. used for inter-process communication
   services.redis.servers."".enable = true;
@@ -397,71 +402,75 @@ in {
   ];
   systemd.services.matrix-synapse.serviceConfig.LimitNOFILE = 65535;
 
-  services.matrix-synapse.workers = let
-    lc = res: port: config: {
-      worker_listeners = [
+  services.matrix-synapse.workers =
+    let
+      lc = res: port: config: {
+        worker_listeners = [
+          {
+            inherit port;
+            type = "http";
+            bind_addresses = [ "127.0.0.1" ];
+            tls = false;
+            resources = [{
+              names = [ res ];
+            }];
+          }
+        ];
+      };
+      l = res: port: lc res port { };
+    in
+    {
+      "federation_sender" = { };
+      "federation_receiver" = (lc "federation" synapseFederationReceiverPort { x_forwarded = true; });
+      "event_persister" = (l "replication" 9091);
+      "client_worker" = (l "client" synapseClientWorkerPort);
+      "media_repo" = (l "media" synapseMediaRepoPort);
+    };
+
+  services.matrix-synapse.settings =
+    let
+      db = pgdb "matrix-synapse";
+      dataDir = config.services.matrix-synapse.dataDir;
+      wrk = config.services.matrix-synapse.customWorkers;
+    in
+    {
+      server_name = synapseDomain;
+      max_upload_size = "1000M";
+
+      redis.enabled = true;
+      enable_metrics = true;
+
+      # these have good defaults already but I just wanna ensure they stick even if the default changes
+      enable_registration = false;
+      registration_shared_secret = null;
+      macaroon_secret_key = null;
+      report_stats = false;
+      presence.enabled = false;
+
+      database = {
+        name = "psycopg2";
+        args.host = "localhost";
+      };
+
+      trusted_key_servers = [
         {
-          inherit port;
-          type = "http";
-          bind_addresses = [ "127.0.0.1" ];
-          tls = false;
-          resources = [{
-            names = [ res ];
-          }];
+          server_name = "matrix.org";
+          verify_keys = {
+            "ed25519:auto" = "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw";
+            "ed25519:a_RXGa" = "l8Hft5qXKn1vfHrg3p4+W8gELQVo8N13JkluMfmn2sQ";
+          };
+        }
+        {
+          server_name = "midov.pl";
+          verify_keys."ed25519:a_HXVM" = "4FOGNjNLe3LNGHgDGIMVm3Yx9IQZZnn1LDqv5O1xIns";
+        }
+        {
+          server_name = "tchncs.de";
+          verify_keys."ed25519:a_rOPL" = "HZxh/ZZktCgLcsJgKw2tHS9lPcOo1kNBoEdeVtmkpeg";
         }
       ];
+
     };
-    l = res: port: lc res port {};
-  in {
-    "federation_sender" = { };
-    "federation_receiver" = (lc "federation" synapseFederationReceiverPort { x_forwarded = true; });
-    "event_persister" = (l "replication" 9091);
-    "client_worker" = (l "client" synapseClientWorkerPort);
-    "media_repo" = (l "media" synapseMediaRepoPort);
-  };
-
-  services.matrix-synapse.settings = let
-    db = pgdb "matrix-synapse";
-    dataDir = config.services.matrix-synapse.dataDir;
-    wrk = config.services.matrix-synapse.customWorkers;
-  in {
-    server_name = synapseDomain;
-    max_upload_size = "1000M";
-
-    redis.enabled = true;
-    enable_metrics = true;
-
-    # these have good defaults already but I just wanna ensure they stick even if the default changes
-    enable_registration = false;
-    registration_shared_secret = null;
-    macaroon_secret_key = null;
-    report_stats = false;
-    presence.enabled = false;
-
-    database = {
-      name = "psycopg2";
-      args.host = "localhost";
-    };
-
-    trusted_key_servers = [
-      {
-        server_name = "matrix.org";
-        verify_keys = {
-          "ed25519:auto" = "Noi6WqcDj0QmPxCNQqgezwTlBKrfqehY1u2FyWP9uYw";
-          "ed25519:a_RXGa" = "l8Hft5qXKn1vfHrg3p4+W8gELQVo8N13JkluMfmn2sQ";
-        };
-      }
-      {
-        server_name = "midov.pl";
-        verify_keys."ed25519:a_HXVM" = "4FOGNjNLe3LNGHgDGIMVm3Yx9IQZZnn1LDqv5O1xIns";
-      }
-      {
-        server_name = "tchncs.de";
-        verify_keys."ed25519:a_rOPL" = "HZxh/ZZktCgLcsJgKw2tHS9lPcOo1kNBoEdeVtmkpeg";
-      }
-    ];
-
-  };
 
   # bridges and other matrix appservices
 
@@ -495,49 +504,51 @@ in {
 
   # matrixNginx takes care of most things, but we have to configure the worker endpoints here
 
-  services.nginx.virtualHosts.${synapseDomain} = let
-    localListener = port: "http://127.0.0.1:${toString port}";
-  in {
-    locations."/_matrix/federation/" = {
-      proxyPass = localListener synapseFederationReceiverPort;
+  services.nginx.virtualHosts.${synapseDomain} =
+    let
+      localListener = port: "http://127.0.0.1:${toString port}";
+    in
+    {
+      locations."/_matrix/federation/" = {
+        proxyPass = localListener synapseFederationReceiverPort;
+      };
+
+      locations."~ ^/_matrix/client/.*/(sync|events|initialSync)" = {
+        proxyPass = localListener synapseClientWorkerPort;
+      };
+
+      locations.${builtins.concatStringsSep "" [
+        "~ ^/(_matrix/media|_synapse/admin/v1/"
+        "(purge_media_cache|(room|user)/.*/media.*|media/.*|quarantine_media/.*|users/.*/media))"
+      ]} = {
+        proxyPass = localListener synapseMediaRepoPort;
+      };
+
+      # other things hosted at the synapse domain
+      locations."/maple".root = "/web";
+
+      locations."/tix" = {
+        root = "/web";
+
+        # NOTE: firefox seems to ignore my hosts settings and still 403, but it does work
+        extraConfig = ''
+          allow 192.168.1.0/24;
+          allow 127.0.0.1;
+          deny all;
+        '';
+      };
+
+      locations."/test" = {
+        proxyPass = "http://0.0.0.0:6969";
+
+        # NOTE: firefox seems to ignore my hosts settings and still 403, but it does work
+        extraConfig = ''
+          allow 192.168.1.0/24;
+          allow 127.0.0.1;
+          deny all;
+        '';
+      };
     };
-
-    locations."~ ^/_matrix/client/.*/(sync|events|initialSync)" = {
-      proxyPass = localListener synapseClientWorkerPort;
-    };
-
-    locations.${builtins.concatStringsSep "" [
-      "~ ^/(_matrix/media|_synapse/admin/v1/"
-      "(purge_media_cache|(room|user)/.*/media.*|media/.*|quarantine_media/.*|users/.*/media))"
-    ]} = {
-      proxyPass = localListener synapseMediaRepoPort;
-    };
-
-    # other things hosted at the synapse domain
-    locations."/maple".root = "/web";
-
-    locations."/tix" = {
-      root = "/web";
-
-      # NOTE: firefox seems to ignore my hosts settings and still 403, but it does work
-      extraConfig = ''
-        allow 192.168.1.0/24;
-        allow 127.0.0.1;
-        deny all;
-      '';
-    };
-
-    locations."/test" = {
-      proxyPass = "http://0.0.0.0:6969";
-
-      # NOTE: firefox seems to ignore my hosts settings and still 403, but it does work
-      extraConfig = ''
-        allow 192.168.1.0/24;
-        allow 127.0.0.1;
-        deny all;
-      '';
-    };
-  };
 
   services.nginx.virtualHosts."test.local".locations."/" = {
     proxyPass = "http://0.0.0.0:6969";
@@ -564,36 +575,38 @@ in {
   #  locations."/cube/".alias = "${pkgs.cubecalc-ui-web}/";
   #};
 
-  services.nginx.virtualHosts."element.${synapseDomain}" = let
-    custom-element = pkgs.element-web.override {
-      conf = {
-        default_server_config = {
-          "m.homeserver" = {
-            base_url = "https://${synapseDomain}";
-            server_name = synapseDomain;
+  services.nginx.virtualHosts."element.${synapseDomain}" =
+    let
+      custom-element = pkgs.element-web.override {
+        conf = {
+          default_server_config = {
+            "m.homeserver" = {
+              base_url = "https://${synapseDomain}";
+              server_name = synapseDomain;
+            };
+          };
+          brand = "Anime Girls";
+          default_country_code = "US";
+          show_labs_settings = true;
+          default_theme = "dark";
+          room_directory = {
+            servers = [
+              synapseDomain
+              "opensuse.org"
+              "tchncs.de"
+              "libera.chat"
+              "gitter.im"
+              "matrix.org"
+            ];
           };
         };
-        brand = "Anime Girls";
-        default_country_code = "US";
-        show_labs_settings = true;
-        default_theme = "dark";
-        room_directory = {
-          servers = [
-            synapseDomain
-            "opensuse.org"
-            "tchncs.de"
-            "libera.chat"
-            "gitter.im"
-            "matrix.org"
-          ];
-        };
       };
+    in
+    {
+      forceSSL = true;
+      useACMEHost = synapseDomain;
+      locations."/".root = "${custom-element}";
     };
-  in {
-    forceSSL = true;
-    useACMEHost = synapseDomain;
-    locations."/".root = "${custom-element}";
-  };
 
   services.nginx.virtualHosts."hydrogen.${synapseDomain}" = {
     forceSSL = true;
@@ -711,46 +724,49 @@ in {
 
   # agenix secrets are owned by root and symlinked from /run/agenix.d .
   # so to have user-owned secrets I have to disable symlinking and make sure the ownership is correct
-  age.secrets = let
+  age.secrets =
+    let
 
-    secretPath = path: "/var/lib/secrets/${path}";
+      secretPath = path: "/var/lib/secrets/${path}";
 
-    mkSecret = { file, path }: {
-      inherit file;
-      path = secretPath path;
-      symlink = false;
+      mkSecret = { file, path }: {
+        inherit file;
+        path = secretPath path;
+        symlink = false;
+      };
+
+    in
+    {
+
+      dendrite-private-key = mkSecret {
+        file = ../secrets/dendrite-keys/matrix_key.pem.age;
+        path = "dendrite/matrix_key.pem";
+      };
+
+      synapse-homeserver-signing-key = mkSecret {
+        file = ../secrets/synapse/homeserver.signing.key.age;
+        path = "synapse/homeserver.signing.key";
+      };
+
+      synapse-secrets = mkSecret {
+        file = ../secrets/synapse/secrets.yaml.age;
+        path = "synapse/secrets.yaml";
+      };
+
+      cloudflare-password = mkSecret {
+        file = ../secrets/cloudflare/password.age;
+        path = "cloudflare/password";
+      };
+
+      matterbridge-config = mkSecret
+        {
+          file = ../secrets/matterbridge/config.toml.age;
+          path = "matterbridge/config.toml";
+        } // {
+        owner = "matterbridge";
+      };
+
     };
-
-  in {
-
-    dendrite-private-key = mkSecret {
-      file = ../secrets/dendrite-keys/matrix_key.pem.age;
-      path = "dendrite/matrix_key.pem";
-    };
-
-    synapse-homeserver-signing-key = mkSecret {
-      file = ../secrets/synapse/homeserver.signing.key.age;
-      path = "synapse/homeserver.signing.key";
-    };
-
-    synapse-secrets = mkSecret {
-      file = ../secrets/synapse/secrets.yaml.age;
-      path = "synapse/secrets.yaml";
-    };
-
-    cloudflare-password = mkSecret {
-      file = ../secrets/cloudflare/password.age;
-      path = "cloudflare/password";
-    };
-
-    matterbridge-config = mkSecret {
-      file = ../secrets/matterbridge/config.toml.age;
-      path = "matterbridge/config.toml";
-    } // {
-      owner = "matterbridge";
-    };
-
-  };
 
   system.stateVersion = "22.11";
 

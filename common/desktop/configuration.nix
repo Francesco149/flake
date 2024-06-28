@@ -8,7 +8,8 @@ let
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCpNgs8JFiW2okM8bWoQXkXD6y3x1LONA3hNQbUmvJhMK8BP7Ajkd5avC0dhyOnHee1WCoiQfCfqN/2SVgHMDmRv2QNluciZ4scFr1IwXRxrUqRPpDid6bBIc/e7PYcFBfA2r1nfOdZTePiQcQAcb0yhblqtsg9aOgl+JwqK4GvoQgwriB3Hp6PrezRYBcQjjLbcrU8U1vqKCljhL/cYy5qj5ybJ4hRYcsuZoiQxjtomlrsmibVcTJZVnwPL3DVhCcNrPYABstVgLZfLSttCQCdB2VvGJOx5r6gaB8bkgHsqgERyZza4hBYsMPLSuzxrxgEH+AZzTBGIZiWD0WgY+81 loli@void"
   ];
 
-in {
+in
+{
 
   imports = [
     ../locale/configuration.nix
@@ -149,44 +150,46 @@ in {
 
   # agenix secrets are owned by root and symlinked from /run/agenix.d .
   # so to have user-owned secrets I have to disable symlinking and make sure the ownership is correct
-  age.secrets = let
+  age.secrets =
+    let
 
-    mkUserSecret = { file, path }: {
-      inherit file path;
-      owner = "${user}";
-      group = "users";
-      symlink = false;
+      mkUserSecret = { file, path }: {
+        inherit file path;
+        owner = "${user}";
+        group = "users";
+        symlink = false;
+      };
+
+      secretPath = path: "/var/lib/${user}-secrets/${path}";
+
+    in
+    {
+
+      gh2md-token = mkUserSecret {
+        file = ../../secrets/gh2md/token.age;
+        path = "/home/${user}/.config/gh2md/token";
+      };
+
+      gist-token = mkUserSecret {
+        file = ../../secrets/gist/token.age;
+        path = "/home/${user}/.gist";
+      };
+
+      chatterino-settings = mkUserSecret {
+        file = ../../secrets/chatterino/settings.json.age;
+        path = "/home/${user}/.local/share/chatterino/Settings/settings.json";
+      };
+
+      protonvpn-creds = mkUserSecret {
+        file = ../../secrets/protonvpn/creds.txt.age;
+        path = "/home/${user}/.local/share/protonvpn/creds.txt";
+      };
+
+      protonvpn-conf = mkUserSecret {
+        file = ../../secrets/protonvpn/config.ovpn.age;
+        path = "/home/${user}/.local/share/protonvpn/config.ovpn";
+      };
+
     };
-
-    secretPath = path: "/var/lib/${user}-secrets/${path}";
-
-  in {
-
-    gh2md-token = mkUserSecret {
-      file = ../../secrets/gh2md/token.age;
-      path = "/home/${user}/.config/gh2md/token";
-    };
-
-    gist-token = mkUserSecret {
-      file = ../../secrets/gist/token.age;
-      path = "/home/${user}/.gist";
-    };
-
-    chatterino-settings = mkUserSecret {
-      file = ../../secrets/chatterino/settings.json.age;
-      path = "/home/${user}/.local/share/chatterino/Settings/settings.json";
-    };
-
-    protonvpn-creds = mkUserSecret {
-      file = ../../secrets/protonvpn/creds.txt.age;
-      path = "/home/${user}/.local/share/protonvpn/creds.txt";
-    };
-
-    protonvpn-conf = mkUserSecret {
-      file = ../../secrets/protonvpn/config.ovpn.age;
-      path = "/home/${user}/.local/share/protonvpn/config.ovpn";
-    };
-
-  };
 
 }

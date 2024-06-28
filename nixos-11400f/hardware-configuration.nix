@@ -5,7 +5,8 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot.initrd.availableKernelModules = [ "xhci_pci" "ahci" "nvme" "mpt3sas" "usbhid" "usb_storage" "sd_mod" ];
@@ -14,59 +15,68 @@
   boot.extraModulePackages = [ ];
 
   fileSystems."/" =
-    { device = "rpool/nixos";
+    {
+      device = "rpool/nixos";
       fsType = "zfs";
     };
 
   fileSystems."/nix" =
-    { device = "rpool/nixos/nix";
+    {
+      device = "rpool/nixos/nix";
       fsType = "zfs";
     };
 
   fileSystems."/nix/store" =
-    { device = "/nix/store";
+    {
+      device = "/nix/store";
       fsType = "none";
       options = [ "bind" ];
     };
 
   fileSystems."/home" =
-    { device = "rpool/userdata/home";
+    {
+      device = "rpool/userdata/home";
       fsType = "zfs";
     };
 
   fileSystems."/root" =
-    { device = "rpool/userdata/home/root";
+    {
+      device = "rpool/userdata/home/root";
       fsType = "zfs";
     };
 
   fileSystems."/home/loli" =
-    { device = "rpool/userdata/home/loli";
+    {
+      device = "rpool/userdata/home/loli";
       fsType = "zfs";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/B967-9E18";
+    {
+      device = "/dev/disk/by-uuid/B967-9E18";
       fsType = "vfat";
     };
 
   fileSystems."/memevault" =
-    { device = "memevault";
+    {
+      device = "memevault";
       fsType = "zfs";
     };
 
   fileSystems."/web" =
-    { device = "rpool/web";
+    {
+      device = "rpool/web";
       fsType = "zfs";
     };
 
   fileSystems."/home/git" =
-    { device = "rpool/userdata/home/git";
+    {
+      device = "rpool/userdata/home/git";
       fsType = "zfs";
     };
 
   swapDevices =
-    [ { device = "/dev/disk/by-uuid/5c21e5f0-c4c8-4181-b67a-aec2275c0f62"; }
-    ];
+    [{ device = "/dev/disk/by-uuid/5c21e5f0-c4c8-4181-b67a-aec2275c0f62"; }];
 
   # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
   # (the default) this is the recommended approach. When using systemd-networkd it's

@@ -2,7 +2,8 @@
 let
   release = "nixos-24.05";
   headpatsDomain = "headpats.uk";
-in {
+in
+{
   imports = [
     ./hardware-configuration.nix
     (builtins.fetchTarball {
@@ -40,7 +41,7 @@ in {
     loginAccounts = with config.age.secrets; {
       "loli@${headpatsDomain}" = {
         hashedPasswordFile = loli-hashed-password.path;
-        aliases = ["postmaster@${headpatsDomain}"];
+        aliases = [ "postmaster@${headpatsDomain}" ];
       };
     };
 
@@ -91,18 +92,20 @@ in {
     "/root/.ssh/id_rsa"
   ];
 
-  age.secrets = let
-    secretPath = path: "/var/lib/secrets/${path}";
-    mkSecret = { file, path }: {
-      inherit file;
-      path = secretPath path;
-      symlink = false;
+  age.secrets =
+    let
+      secretPath = path: "/var/lib/secrets/${path}";
+      mkSecret = { file, path }: {
+        inherit file;
+        path = secretPath path;
+        symlink = false;
+      };
+    in
+    {
+      loli-hashed-password = mkSecret {
+        file = ../secrets/headpats/loli-hashed-password.age;
+        path = "loli/hashed-password";
+      };
     };
-  in {
-    loli-hashed-password = mkSecret {
-      file = ../secrets/headpats/loli-hashed-password.age;
-      path = "loli/hashed-password";
-    };
-  };
 }
 

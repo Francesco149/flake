@@ -6,7 +6,8 @@ let
     cronomix
   ];
 
-in with config; {
+in
+with config; {
   home.packages =
     exts ++
     (with pkgs; [
