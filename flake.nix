@@ -210,9 +210,8 @@
       };
 
       # streaming beelink minipc
-      # configured with jack for fancy audio routing
       # draws 7-10w idle
-      # keep this isolated from all other configs, must be as stable as possible
+      # fancy audio routing etc for stream
       streampc = mkSystem( rec {
         configName = "streampc";
         modules = [
