@@ -213,14 +213,14 @@
       # configured with jack for fancy audio routing
       # draws 7-10w idle
       # keep this isolated from all other configs, must be as stable as possible
-      streampc = nixpkgs.lib.nixosSystem rec {
-        inherit system pkgs;
-        specialArgs = { inherit user; };
+      streampc = mkSystem( rec {
+        configName = "streampc";
         modules = [
-          ./streampc/configuration.nix
+          ./${configName}/configuration.nix
           agenix.nixosModules.default
         ];
-      };
+        homeImports = [ ./${configName}/home.nix ];
+      } // unstable);
 
       # new home server with my zfs array
       dekai = nixpkgs.lib.nixosSystem rec {

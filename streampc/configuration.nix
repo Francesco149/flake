@@ -42,11 +42,11 @@ in {
       barrier
       custom-obs
       armcord
+      mpv
 
-      # for astra-monitor
-      pciutils
-    ]) ++ (with pkgs.gnomeExtensions; [
-      astra-monitor
+      (pkgs.writeShellScriptBin "mus" ''
+        mpv --no-video --ytdl-format=bestaudio --loop-playlist "$@"
+      '')
     ]);
     openssh.authorizedKeys.keys = authorizedKeys;
   };
