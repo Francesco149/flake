@@ -10,7 +10,8 @@ in {
   imports =
     [ # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    ../common/nix.nix
+    ../common/nix/configuration.nix
+    ../common/locale/configuration.nix
     ];
 
   boot.loader.systemd-boot.enable = true;
@@ -19,26 +20,6 @@ in {
   boot.initrd.luks.devices."luks-901be401-55e0-4047-a286-bb53898060de".device = "/dev/disk/by-uuid/901be401-55e0-4047-a286-bb53898060de";
   networking.hostName = "dekai"; # Define your hostname.
   networking.networkmanager.enable = true;
-
-  time.timeZone = "Europe/Rome";
-  i18n.defaultLocale = "en_US.UTF-8";
-
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
-  };
-
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
-  };
 
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;

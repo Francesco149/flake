@@ -12,7 +12,7 @@ in {
 
   imports = [
     ../locale/configuration.nix
-    ../nix.nix
+    ../nix/configuration.nix
   ];
 
   users.users.${user} = {
