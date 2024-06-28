@@ -36,17 +36,22 @@ in {
   users.users."${user}" = {
     isNormalUser = true;
     description = "${user}";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "audio" "jackaudio" ];
     packages = (with pkgs; [
       firefox
-      carla
+      raysession
       barrier
       custom-obs
       armcord
-      mpv
+
+      (mpv-unwrapped.override {
+        jackaudioSupport = true;
+      })
+
+      yt-dlp
 
       (pkgs.writeShellScriptBin "mus" ''
-        mpv --no-video --ytdl-format=bestaudio --loop-playlist "$@"
+        mpv --ao=jack --jack-name=mpv-music --no-video --ytdl-format=bestaudio --loop-playlist "$@"
       '')
     ]);
     openssh.authorizedKeys.keys = authorizedKeys;
@@ -96,13 +101,18 @@ in {
   sound.enable = false;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
+
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-    jack.enable = true;
+
+    # TODO: for some reason I can't get RaySession to see the pipewire jack compatibility
+    #jack.enable = true;
   };
+
+  services.jack.jackd.enable = true;
 
   services.displayManager.autoLogin = {
     enable = true;
@@ -164,24 +174,6 @@ in {
     # TODO: don't repeat barrier dir, make it a let
     serviceConfig.ExecStart =
       toString ([ "${pkgs.barrier}/bin/barriers" "-f" "--profile-dir" "/etc/secrets/barrier/" ]);
-  };
-
-  systemd.user.services.startup-apps = {
-    enable = true;
-    description = "Various custom start-up apps";
-    after = [ "graphical-session.target" ];
-    partOf = [ "graphical-session.target" ];
-    wantedBy = [ "graphical-session.target" ];
-    serviceConfig = {
-      RemainAfterExit = "yes";
-      Type = "oneshot";
-    };
-
-    script = ''
-      "${custom-obs}/bin/obs" &
-      "${pkgs.carla}/bin/carla" "/home/${user}/stream-linux.carxp" &
-      "${pkgs.firefox}/bin/firefox" &
-    '';
   };
 
   # secrets
