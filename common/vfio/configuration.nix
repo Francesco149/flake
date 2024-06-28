@@ -2,6 +2,8 @@
 
 {
 
+  consts = import ../consts.nix;
+
   # unused at the moment, but previously tested.
   # if I ever need to do GPU passthrough again, this is some of the setup
 
@@ -24,7 +26,7 @@
 
   networking.defaultGateway = {
     interface = "br0";
-    address = "192.168.1.1";
+    address = consts.ips.gateway;
   };
 
   boot.kernelParams = [

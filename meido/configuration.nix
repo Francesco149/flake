@@ -1,6 +1,8 @@
-{ config, pkgs, lib, user, meidoLocalIp, ... }:
+{ config, pkgs, lib, user, ... }:
 
 let
+
+  consts = import ../common/consts.nix;
 
   authorizedKeys = [
     "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCpNgs8JFiW2okM8bWoQXkXD6y3x1LONA3hNQbUmvJhMK8BP7Ajkd5avC0dhyOnHee1WCoiQfCfqN/2SVgHMDmRv2QNluciZ4scFr1IwXRxrUqRPpDid6bBIc/e7PYcFBfA2r1nfOdZTePiQcQAcb0yhblqtsg9aOgl+JwqK4GvoQgwriB3Hp6PrezRYBcQjjLbcrU8U1vqKCljhL/cYy5qj5ybJ4hRYcsuZoiQxjtomlrsmibVcTJZVnwPL3DVhCcNrPYABstVgLZfLSttCQCdB2VvGJOx5r6gaB8bkgHsqgERyZza4hBYsMPLSuzxrxgEH+AZzTBGIZiWD0WgY+81 loli@void"
@@ -196,7 +198,7 @@ in
     hostName = "meido";
     usePredictableInterfaceNames = false;
     nameservers = [ "127.0.0.1" "::1" ];
-    defaultGateway = "192.168.1.1";
+    defaultGateway = consts.ips.gateway;
     resolvconf.enable = false;
     dhcpcd.enable = false;
   };
@@ -226,7 +228,7 @@ in
   };
 
   networking.interfaces.eth0.ipv4.addresses = [{
-    address = meidoLocalIp;
+    address = consts.ips.meido;
     prefixLength = 24;
   }];
 
@@ -242,8 +244,8 @@ in
       # # disable any services using the database
       # psql -U postgres -tAc 'CREATE USER "dendrite";'
       # psql -U postgres -tAc 'CREATE DATABASE "dendrite";'
-      # pg_dump -C -U dendrite dendrite | ssh root@192.168.1.11 psql -U dendrite dendrite
-      # sudo rsync -avz /var/lib/private/dendrite root@192.168.1.11:/var/lib/private
+      # pg_dump -C -U dendrite dendrite | ssh root@destination psql -U dendrite dendrite
+      # sudo rsync -avz /var/lib/private/dendrite root@destination:/var/lib/private
       # # enable dendrite on other machine
       svcs = [
         "matrix-synapse"
@@ -529,34 +531,18 @@ in
 
       locations."/tix" = {
         root = "/web";
-
-        # NOTE: firefox seems to ignore my hosts settings and still 403, but it does work
-        extraConfig = ''
-          allow 192.168.1.0/24;
-          allow 127.0.0.1;
-          deny all;
-        '';
+        inherit (consts.nginx.localOnly) extraConfig;
       };
 
       locations."/test" = {
         proxyPass = "http://0.0.0.0:6969";
-
-        # NOTE: firefox seems to ignore my hosts settings and still 403, but it does work
-        extraConfig = ''
-          allow 192.168.1.0/24;
-          allow 127.0.0.1;
-          deny all;
-        '';
+        inherit (consts.nginx.localOnly) extraConfig;
       };
     };
 
   services.nginx.virtualHosts."test.local".locations."/" = {
     proxyPass = "http://0.0.0.0:6969";
-    extraConfig = ''
-      allow 192.168.1.0/24;
-      allow 127.0.0.1;
-      deny all;
-    '';
+    inherit (consts.nginx.localOnly) extraConfig;
   };
 
   # allow access to private paths by making it a local request
@@ -670,7 +656,7 @@ in
       #use sendfile = yes
       #max protocol = smb2
       # note: localhost is the ipv6 localhost ::1
-      hosts allow = 192.168.1. 127.0.0.1 localhost
+      hosts allow = ${consts.ips.pre} 127.0.0.1 localhost
       hosts deny = 0.0.0.0/0
       guest account = nobody
       map to guest = bad user

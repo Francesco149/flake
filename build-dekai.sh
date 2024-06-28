@@ -1,4 +1,4 @@
 #!/bin/sh
 
-dst='root@192.168.1.4'
-nixos-rebuild --flake .#dekai --target-host $dst --build-host $dst switch
+dekai="$(nix eval --raw --file ./common/consts.nix ips.dekai)"
+nixos-rebuild --flake .#dekai --target-host "root@$dekai" --build-host "root@$dekai" switch

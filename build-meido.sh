@@ -1,3 +1,5 @@
 #!/bin/sh
 
-nixos-rebuild --flake .#meido --target-host root@192.168.1.11 --build-host localhost switch
+dekai="$(nix eval --raw --file ./common/consts.nix ips.dekai)"
+meido="$(nix eval --raw --file ./common/consts.nix ips.meido)"
+nixos-rebuild --flake .#meido --target-host "root@$meido" --build-host "$dekai" switch

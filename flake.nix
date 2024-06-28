@@ -64,8 +64,7 @@
     , ...
     }:
     let
-      user = "loli";
-      system = "x86_64-linux";
+      inherit (import ./common/consts.nix) user system;
 
       pkgs = import nixpkgs {
         inherit system;
@@ -104,7 +103,7 @@
           inherit (conf) pkgs;
 
           # pass user to modules (configuration.nix for example)
-          specialArgs = { inherit user nixos-wsl meidoLocalIp; };
+          specialArgs = { inherit user nixos-wsl; };
 
           modules = conf.modules ++ [
             conf.home-manager.nixosModules.home-manager
@@ -134,8 +133,6 @@
       unstable = {
         inherit nixpkgs pkgs home-manager;
       };
-
-      meidoLocalIp = "192.168.1.11";
 
     in
     {
@@ -180,7 +177,7 @@
         # this is a low power x86_64 mini-pc (fujitsu esprimo). draws 7-10w idle
         meido = nixpkgs-stable.lib.nixosSystem rec {
           inherit system;
-          specialArgs = { inherit user meidoLocalIp; };
+          specialArgs = { inherit user; };
           pkgs = pkgs-stable;
           modules = [
             ./meido/configuration.nix

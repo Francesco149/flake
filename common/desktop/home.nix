@@ -16,6 +16,8 @@ let
     exec env GTK_THEME=${themeName} ${binary} "$@"
   '';
 
+  consts = import ../consts.nix;
+
 in
 with config; {
 
@@ -151,8 +153,8 @@ with config; {
   programs.bash = {
     enable = true;
     shellAliases = {
-      xb = "pushd ~/flake && nixos-rebuild switch --use-remote-sudo --build-host 192.168.1.4 --flake .#${configName}; popd";
-      xt = "pushd ~/flake && nixos-rebuild test --use-remote-sudo --build-host 192.168.1.4 --flake .#${configName}; popd";
+      xb = "pushd ~/flake && nixos-rebuild switch --use-remote-sudo --build-host ${consts.ips.dekai} --flake .#${configName}; popd";
+      xt = "pushd ~/flake && nixos-rebuild test --use-remote-sudo --build-host ${consts.ips.dekai} --flake .#${configName}; popd";
       xlb = "pushd ~/flake && nixos-rebuild switch --use-remote-sudo --flake .#${configName}; popd";
       xlt = "pushd ~/flake && nixos-rebuild test --use-remote-sudo --flake .#${configName}; popd";
       xu = "pushd ~/flake && nix flake update; popd";
@@ -243,7 +245,7 @@ with config; {
 
   services.barrier.client = {
     enable = true;
-    server = "192.168.1.202";
+    server = consts.ips.streampc;
     enableDragDrop = true;
   };
 
