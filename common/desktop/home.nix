@@ -153,8 +153,8 @@ with config; {
   programs.bash = {
     enable = true;
     shellAliases = {
-      xb = "pushd ~/flake && nixos-rebuild switch --use-remote-sudo --build-host ${consts.ips.dekai} --flake .#${configName}; popd";
-      xt = "pushd ~/flake && nixos-rebuild test --use-remote-sudo --build-host ${consts.ips.dekai} --flake .#${configName}; popd";
+      xb = "pushd ~/flake && nixos-rebuild switch --use-remote-sudo --build-host ${consts.machines.dekai.ip} --flake .#${configName}; popd";
+      xt = "pushd ~/flake && nixos-rebuild test --use-remote-sudo --build-host ${consts.machines.dekai.ip} --flake .#${configName}; popd";
       xlb = "pushd ~/flake && nixos-rebuild switch --use-remote-sudo --flake .#${configName}; popd";
       xlt = "pushd ~/flake && nixos-rebuild test --use-remote-sudo --flake .#${configName}; popd";
       xu = "pushd ~/flake && nix flake update; popd";
@@ -245,7 +245,7 @@ with config; {
 
   services.barrier.client = {
     enable = true;
-    server = consts.ips.streampc;
+    server = consts.machines.streampc.ip;
     enableDragDrop = true;
   };
 
