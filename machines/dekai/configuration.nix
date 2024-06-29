@@ -152,10 +152,8 @@ in
   networking = {
     hostName = "dekai";
     usePredictableInterfaceNames = false;
+    networkmanager.enable = true;
     nameservers = [ "127.0.0.1" "::1" ];
-    defaultGateway = consts.ips.gateway;
-    resolvconf.enable = false;
-    dhcpcd.enable = false;
   };
 
   boot.supportedFilesystems = [ "zfs" ];
