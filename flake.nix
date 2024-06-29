@@ -150,7 +150,7 @@
         sys "dekai" unstable //
         sys "meido" unstable //
 
-        {};
+        { };
 
       # use nix-shell or nix develop to access this shell
       devShell.x86_64-linux = pkgs.mkShell {
