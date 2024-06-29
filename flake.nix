@@ -95,7 +95,7 @@
         inherit system;
       };
 
-      optAttrList = with builtins; s: set: if hasAttr s set then getAttr s set else [];
+      optAttrList = with builtins; s: set: if hasAttr s set then getAttr s set else [ ];
 
       # only used on machines that use home-manager to avoid some duplication
 
