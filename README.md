@@ -28,10 +28,11 @@ configs (see tanuki for an example)
 add your own machine configuration to `flake.nix` in nixosConfigurations
 
 ```nix
-      my-machine = (mkSystem {
-        configName = "my-machine";
-      } // unstable);
+      my-machine = sys "my-machine" unstable; # or hmsys if you want home-manager
 ```
+
+if you use home-manager, create and edit `machines/my-machine/home.nix` . see other machines
+for reference (tanuki for example)
 
 edit `secrets/secrets.nix` to have your own ssh key and secrets
 

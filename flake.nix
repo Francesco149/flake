@@ -117,7 +117,7 @@
             }
           ] else [ ]);
         }
-      );
+        );
 
       # these are to be used with mkSystem
 
@@ -136,50 +136,20 @@
         pkgs = pkgs-mailserver;
       };
 
+      sys = name: conf: mkSystem ({ configName = name; } // conf);
+      hmsys = name: conf: mkSystem ({ configName = name; hm = true; } // conf);
+
     in
     {
       nixosConfigurations = {
 
-        # main desktop machine. low power draw
-        tanuki = mkSystem ({
-          configName = "tanuki"; # TODO: any way to avoid this duplication?
-          hm = true;
-        } // unstable);
+        tanuki = hmsys "tanuki" unstable;
+        streampc = hmsys "streampc" unstable;
+        nixos-wsl-5900x = hmsys "nixos-wsl-5900x" wsl;
 
-        # streaming beelink minipc
-        # draws 7-10w idle
-        # fancy audio routing etc for stream
-        streampc = mkSystem ({
-          configName = "streampc";
-          hm = true;
-        } // unstable);
-
-        # wsl on my windows machine
-        nixos-wsl-5900x = mkSystem ({
-          configName = "nixos-wsl-5900x";
-          hm = true;
-        } // wsl);
-
-        #
-        # servers
-        # NOTE: avoid having complex dependencies in these. a bit of code duplication is fine.
-        #       we don't want to randomly break stuff changing some other machine's config.
-
-        # mail server
-        headpats = mkSystem ({
-          configName = "headpats";
-        } // mailserver);
-
-        # home server (matrix and other stuff)
-        # this is a low power x86_64 mini-pc (fujitsu esprimo). draws 7-10w idle
-        meido = mkSystem ({
-          configName = "meido";
-        } // unstable);
-
-        # new home server with my zfs array
-        dekai = mkSystem ({
-          configName = "dekai";
-        } // unstable);
+        headpats = sys "headpats" mailserver;
+        dekai = sys "dekai" unstable;
+        meido = sys "meido" unstable;
 
       };
 
