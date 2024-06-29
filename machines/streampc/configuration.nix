@@ -2,7 +2,7 @@
 
 let
 
-  consts = import ../common/consts.nix;
+  consts = import ../../common/consts.nix;
   inherit (consts.ssh) authorizedKeys;
 
   custom-obs = with pkgs;
@@ -20,9 +20,9 @@ in
 {
   imports = [
     ./hardware-configuration.nix
-    ../common/nix/configuration.nix
-    ../common/locale/configuration.nix
-    ../common/mpv/configuration.nix
+    ../../common/nix/configuration.nix
+    ../../common/locale/configuration.nix
+    ../../common/mpv/configuration.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -141,8 +141,8 @@ in
   # config files
 
   environment.etc = {
-    "barrier.conf".source = ../barrier/barrier.conf;
-    "secrets/barrier/SSL/Fingerprints/TrustedClients.txt".source = ../barrier/TrustedClients.txt;
+    "barrier.conf".source = ../../common/barrier/barrier.conf;
+    "secrets/barrier/SSL/Fingerprints/TrustedClients.txt".source = ../../common/barrier/TrustedClients.txt;
   };
 
   # services
@@ -184,7 +184,7 @@ in
 
       barriers-private-key = mkSecret
         {
-          file = ../secrets/barrier/Barrier.pem.age;
+          file = ../../secrets/barrier/Barrier.pem.age;
           path = "barrier/SSL/Barrier.pem";
         } // {
         owner = "loli"; # TODO: barrier user?

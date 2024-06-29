@@ -7,7 +7,7 @@ with config; {
   nix.package = pkgs.nixFlakes;
 
   imports = [
-    ../common/vim/home.nix
+    ../../common/vim/home.nix
   ];
 
   home.packages = with pkgs; [
@@ -20,8 +20,8 @@ with config; {
   ];
 
   xdg.configFile = {
-    "yt-dlp/config".source = ../common/desktop/yt-dlp/config;
-    "youtube-dl/config".source = ../common/desktop/youtube-dl/config;
+    "yt-dlp/config".source = ../../common/desktop/yt-dlp/config;
+    "youtube-dl/config".source = ../../common/desktop/youtube-dl/config;
   };
 
   home.username = "${user}";

@@ -2,7 +2,7 @@
 
 let
 
-  consts = import ../common/consts.nix;
+  consts = import ../../common/consts.nix;
   inherit (consts.ssh) authorizedKeys;
 
   pgdb = name: "postgres://${name}@localhost/${name}?sslmode=disable";
@@ -722,28 +722,28 @@ in
     {
 
       dendrite-private-key = mkSecret {
-        file = ../secrets/dendrite-keys/matrix_key.pem.age;
+        file = ../../secrets/dendrite-keys/matrix_key.pem.age;
         path = "dendrite/matrix_key.pem";
       };
 
       synapse-homeserver-signing-key = mkSecret {
-        file = ../secrets/synapse/homeserver.signing.key.age;
+        file = ../../secrets/synapse/homeserver.signing.key.age;
         path = "synapse/homeserver.signing.key";
       };
 
       synapse-secrets = mkSecret {
-        file = ../secrets/synapse/secrets.yaml.age;
+        file = ../../secrets/synapse/secrets.yaml.age;
         path = "synapse/secrets.yaml";
       };
 
       cloudflare-password = mkSecret {
-        file = ../secrets/cloudflare/password.age;
+        file = ../../secrets/cloudflare/password.age;
         path = "cloudflare/password";
       };
 
       matterbridge-config = mkSecret
         {
-          file = ../secrets/matterbridge/config.toml.age;
+          file = ../../secrets/matterbridge/config.toml.age;
           path = "matterbridge/config.toml";
         } // {
         owner = "matterbridge";

@@ -2,7 +2,7 @@
 
 
 let
-  consts = import ../common/consts.nix;
+  consts = import ../../common/consts.nix;
   inherit (consts.ssh) authorizedKeys;
 
 in
@@ -11,8 +11,8 @@ in
     [
       # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ../common/nix/configuration.nix
-      ../common/locale/configuration.nix
+      ../../common/nix/configuration.nix
+      ../../common/locale/configuration.nix
     ];
 
   boot.loader.systemd-boot.enable = true;
@@ -33,7 +33,7 @@ in
   environment.systemPackages = with pkgs; [
     ((vim_configurable.override { }).customize {
       name = "vim";
-      vimrcConfig.customRC = (builtins.readFile ../common/vim/init.vim);
+      vimrcConfig.customRC = (builtins.readFile ../../common/vim/init.vim);
     }
     )
   ];

@@ -8,12 +8,12 @@ in
     ./hardware-configuration.nix
     (builtins.fetchTarball {
       url = "https://gitlab.com/simple-nixos-mailserver/nixos-mailserver/-/archive/${release}/nixos-mailserver-${release}.tar.gz";
-      sha256 = "sha256:1h1r4x2ffqwyk0ql6kjvcpg1bdiimyzhrsvn49702fsgzpx57fhd";
+      sha256 = "sha256:0clvw4622mqzk1aqw1qn6shl9pai097q62mq1ibzscnjayhp278b";
     })
   ];
 
   system.stateVersion = "22.05";
-  boot.cleanTmpDir = true;
+  boot.tmp.cleanOnBoot = true;
   zramSwap.enable = true;
   networking.hostName = "headpats";
   services.openssh.enable = true;
@@ -49,7 +49,7 @@ in
 
     # Use Let's Encrypt certificates. Note that this needs to set up a stripped
     # down nginx and opens port 80.
-    certificateScheme = 3;
+    certificateScheme = "acme-nginx";
   };
 
   security.acme.certs.${headpatsDomain}.extraDomainNames = [
@@ -103,7 +103,7 @@ in
     in
     {
       loli-hashed-password = mkSecret {
-        file = ../secrets/headpats/loli-hashed-password.age;
+        file = ../../secrets/headpats/loli-hashed-password.age;
         path = "loli/hashed-password";
       };
     };

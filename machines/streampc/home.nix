@@ -1,7 +1,7 @@
 { config, pkgs, user, configName, lib, ... }:
 with config; {
   imports = [
-    ../common/gnome/home.nix
+    ../../common/gnome/home.nix
   ];
 
   home.username = "${user}";

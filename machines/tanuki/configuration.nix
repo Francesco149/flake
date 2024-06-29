@@ -3,7 +3,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../common/desktop/configuration.nix
+    ../../common/desktop/configuration.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -29,7 +29,7 @@
   age.secrets = {
 
     barrierc-private-key = {
-      file = ../secrets/barrier/BarrierTanuki.pem.age;
+      file = ../../secrets/barrier/BarrierTanuki.pem.age;
       path = "/home/${user}/.local/share/barrier/SSL/Barrier.pem";
       symlink = false;
       owner = "loli";

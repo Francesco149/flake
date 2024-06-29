@@ -95,6 +95,8 @@
         inherit system;
       };
 
+      optAttrList = with builtins; s: set: if hasAttr s set then getAttr s set else [];
+
       # only used on machines that use home-manager to avoid some duplication
 
       mkSystem = conf: (
@@ -105,7 +107,9 @@
           # pass user to modules (configuration.nix for example)
           specialArgs = { inherit user nixos-wsl; };
 
-          modules = conf.modules ++ [
+          modules = [
+            ./machines/${conf.configName}/configuration.nix
+          ] ++ (optAttrList "modules" conf) ++ [
             conf.home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true; # instead of having its own private nixpkgs
@@ -115,7 +119,9 @@
                 configName = conf.configName;
               };
               home-manager.users.${user} = {
-                imports = conf.homeImports;
+                imports = [
+                  ./machines/${conf.configName}/home.nix
+                ] ++ optAttrList "homeImports" conf;
               };
             }
           ];
@@ -142,17 +148,23 @@
         tanuki = mkSystem (rec {
           configName = "tanuki"; # TODO: any way to avoid this duplication?
           modules = [
-            ./${configName}/configuration.nix
             agenix.nixosModules.default
           ];
-          homeImports = [ ./${configName}/home.nix ];
+        } // unstable);
+
+        # streaming beelink minipc
+        # draws 7-10w idle
+        # fancy audio routing etc for stream
+        streampc = mkSystem (rec {
+          configName = "streampc";
+          modules = [
+            agenix.nixosModules.default
+          ];
         } // unstable);
 
         # wsl on my windows machine
         nixos-wsl-5900x = mkSystem (rec {
           configName = "nixos-wsl-5900x";
-          modules = [ ./${configName}/configuration.nix ];
-          homeImports = [ ./${configName}/home.nix ];
         } // wsl);
 
         #
@@ -168,7 +180,7 @@
           inherit system;
           pkgs = pkgs-mailserver;
           modules = [
-            ./headpats/configuration.nix
+            ./machines/headpats/configuration.nix
             agenix.nixosModules.default
           ];
         };
@@ -180,29 +192,17 @@
           specialArgs = { inherit user; };
           pkgs = pkgs-stable;
           modules = [
-            ./meido/configuration.nix
+            ./machines/meido/configuration.nix
             agenix-stable.nixosModules.default
           ];
         };
-
-        # streaming beelink minipc
-        # draws 7-10w idle
-        # fancy audio routing etc for stream
-        streampc = mkSystem (rec {
-          configName = "streampc";
-          modules = [
-            ./${configName}/configuration.nix
-            agenix.nixosModules.default
-          ];
-          homeImports = [ ./${configName}/home.nix ];
-        } // unstable);
 
         # new home server with my zfs array
         dekai = nixpkgs.lib.nixosSystem rec {
           inherit system pkgs;
           specialArgs = { inherit user; };
           modules = [
-            ./dekai/configuration.nix
+            ./machines/dekai/configuration.nix
           ];
         };
 
