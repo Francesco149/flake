@@ -31,19 +31,32 @@ rec {
       print = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCcNr5q2BS7La3aC6Y+VPF98RHi0KK5WeqkrEfjzJ/PTcmEeK5KNyLVQiIHmaCaf9ojqkf8nAiLrtguy6P9ABZJg6c4NK0xVj9gDoIko7SbGSXjmaeq3Gbd5tZVc0PNO1PlVSLEtcxYANhUN6D9AqF3dQAYHDWaVGor5bxg8e6rFN7EQNpyt2ljK7pseP8zLOz9wSRlOQM89W3RtKqDhomG3L99+B7Oq6F+Vf3RGIdxUTS7sJRk3SuhsIlppI+DO6s2CYve270CItX4j/JwdVTCTEgvUiBaqmR2/j33LB3M5881tcV0S4GB5eWtWns3O6W6ZafbhZjf1vWPpkZewY0uv7Un3Oe/rGdHHnegZM+SzrmP7GlSLN/eBbuDpHvfDcOaWqcopSBIR/6isxchCyfNmQxhez6zK/UyTsUn2hPhkwsn4Q0/ubhpZYZ2mIl71l9yt1q99HvDEw9qXKn8jcoC9W5yqF2rHA3URsdsn03NVigqbQedXA8MLJMw9tM0r3vU+g0UckK0CexR58dSalzDH65+wM3S6W250hqzNvYtqXh7Nx9BcnFoQMObKNZOxlWDUbPIb7TKmsMcF3/qbYp+bkqC56kNoaoBZsCmkjjRALQmEB8bCVX0ZUktUPBznb5bchR3PDRBgMNNlfknjJNfXyejMbMi3T2z7geruePrew== root@meido";
       ip = mkip 11;
     };
+
+    headpats = {
+      key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4j6+dF+4xogE9C7/1Cm67AGslsOPEzCZm8j6WfbEoe7FK1tD3bV9ACjr7mgeCHurKv3IRLZuoQjkyp17c2LwW8hnz0evBnemgrQ3GrTEbYsPl4yJoAuBUdL7HU1DLoq6SlgNxy1lxn5FM5s5t8FH37yFqkvmt6zRoIqsQQ67lBduiNe9wlqskND8t5pckBsNkhot4Otv+Hetpm2lbB+hCo4FLrINZg/dBY5fsngOl5pFw8/Nu+/BdTLluyRgqQEbjFk7mf8AUU530GozTdszGR3gSHOd9vDKOLPWC+HodnV34glUIuTzPCsP7km/oXEDcyWpz2+dJYwsXNLIlRav1qPQ2W2PIduhCeN8NtV3lu2B6h/td+zgkfLkSCxpRokaSsnJCtYhX1GQTEFhWB35QiCwcHzjLf1367ufIrmbdjG1qalqsC0berLG885+Up2L0fFvOp2tH70zR9trTXVi3nnmvKpqamV7yFPClkEGa96hboH4NzIXZit/00LrsDjU= root@headpats";
+      print = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCWxWjFDPT0Gu6qi0Byj3TWoSKyxX0H1fm4OxVU6gWzE6mq6DoqlYa1CZwYo4N2k2vDW3YYdRbaiElebcyWrfIc2lLyz5HYZJ5dTzIlicjorwcU+QHtAU2k1wXWKIstEE3HbBXOuJBbEDKopSOBAThvCUQU1C+RcCJrMguis0pXQMlxTyCehNgFvXTFNIWD9dkUAAfsj7r5dlFrIYn1BpyIetWo6yaPQYLi9Cdu4P41dGDSSFuz0uE7l6sqZdKl3Rnbx6/Ay6WAvWjowbsctrFe9IaZMRNX6xNGIgOt8Z6hoItCJqYRELtWXa/Ao2dzyHsvBfw+LCHQ4MgxM9iuLJNMplWRrRvZkHdFi1DZb6nTbL3zZFMn67enhTjn0Olw1MfZ6sjxv37ImLUnDwMOzcjqaa4M60pIjEk+0C/87UdyT6KH2iuLpiuyKP/Vwb6xa5wUIJvrhFokbMyu6xwTIkS978u7EfF7S0sf3qLwPMudvRYdI6cUk4nJ/OwEGbWJlEU= root@headpats";
+      ip = "headpats.uk";
+    };
   };
 
   ssh = with builtins; rec {
+
     # any machine that has a fixed ip will be added to the known hosts with its ssh print
     knownHosts = listToAttrs (
       map (x: { name = "${x.ip}"; value.publicKey = x.print; })
         (filter (x: hasAttr "ip" x)
           (attrValues machines))
     );
+
     authorizedKeys = with machines; map (x: x.key) [
       tanuki
       dekai
     ];
+
+    # for secrets.nix convenience. machineName -> sshPubKey
+    keys = (builtins.listToAttrs (
+      map (x: { name = x; value = machines."${x}".key; })
+        (builtins.attrNames machines)));
   };
 
   ips = {

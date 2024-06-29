@@ -156,6 +156,7 @@
       devShell.x86_64-linux = pkgs.mkShell {
         packages = [
           pkgs.nixpkgs-fmt
+          agenix.packages.x86_64-linux.default
         ];
       };
     };
