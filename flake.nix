@@ -87,8 +87,8 @@
 
       # only used on machines that use home-manager to avoid some duplication
 
-      mkSystem = conf: (
-        conf.nixpkgs.lib.nixosSystem {
+      mkSystem = conf: {
+        "${conf.configName}" = conf.nixpkgs.lib.nixosSystem {
           inherit system;
           inherit (conf) pkgs;
 
@@ -116,8 +116,8 @@
               };
             }
           ] else [ ]);
-        }
-      );
+        };
+      };
 
       # these are to be used with mkSystem
 
@@ -141,17 +141,16 @@
 
     in
     {
-      nixosConfigurations = {
+      nixosConfigurations =
+        hmsys "tanuki" unstable //
+        hmsys "streampc" unstable //
+        hmsys "nixos-wsl-5900x" wsl //
 
-        tanuki = hmsys "tanuki" unstable;
-        streampc = hmsys "streampc" unstable;
-        nixos-wsl-5900x = hmsys "nixos-wsl-5900x" wsl;
+        sys "headpats" mailserver //
+        sys "dekai" unstable //
+        sys "meido" unstable //
 
-        headpats = sys "headpats" mailserver;
-        dekai = sys "dekai" unstable;
-        meido = sys "meido" unstable;
-
-      };
+        {};
 
       # use nix-shell or nix develop to access this shell
       devShell.x86_64-linux = pkgs.mkShell {
