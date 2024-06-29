@@ -2,7 +2,6 @@ let
 
   keys = (import ../common/consts.nix).ssh.keys;
 
-  meidoUsers = [ keys.tanuki keys.meido ];
   headpatUsers = [ keys.tanuki keys.headpats ];
   desktopUsers = [ keys.tanuki ];
   streampcUsers = [ keys.tanuki keys.streampc ];

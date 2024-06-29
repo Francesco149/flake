@@ -148,7 +148,6 @@
 
         sys "headpats" mailserver //
         sys "dekai" unstable //
-        sys "meido" unstable //
 
         { };
 

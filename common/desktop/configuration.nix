@@ -1,6 +1,6 @@
 # common configuration.nix for desktop machines
 
-{ pkgs, user, meidoLocalIp, ... }:
+{ pkgs, user, ... }:
 
 let
 
@@ -40,7 +40,7 @@ in
   networking = {
     domain = "localhost";
     usePredictableInterfaceNames = false;
-    nameservers = [ meidoLocalIp ];
+    nameservers = [ consts.machines.dekai.ip ];
     resolvconf.enable = false;
     networkmanager.enable = true;
   };
