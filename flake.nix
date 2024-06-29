@@ -6,7 +6,6 @@
 
     # NOTE: remember to update home-manager versions
 
-    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.05";
     nixpkgs-wsl.url = "github:nixos/nixpkgs/nixos-23.11";
     nixpkgs-mailserver.url = "github:nixos/nixpkgs/nixos-24.05";
 
@@ -43,24 +42,17 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    agenix-stable = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs-stable";
-    };
   };
 
   outputs =
     { self
     , nixpkgs
-    , nixpkgs-stable
     , nixpkgs-wsl
     , nixpkgs-mailserver
     , home-manager
     , home-manager-wsl
     , nixos-wsl
     , agenix
-    , agenix-stable
     , ...
     }:
     let
@@ -83,10 +75,6 @@
         ];
       };
 
-      pkgs-stable = import nixpkgs-stable {
-        inherit system;
-      };
-
       pkgs-mailserver = import nixpkgs-mailserver {
         inherit system;
       };
@@ -107,9 +95,12 @@
           # pass user to modules (configuration.nix for example)
           specialArgs = { inherit user nixos-wsl; };
 
-          modules = [
+          modules = with builtins; [
             ./machines/${conf.configName}/configuration.nix
-          ] ++ (optAttrList "modules" conf) ++ [
+            agenix.nixosModules.default
+          ] ++
+          (optAttrList "modules" conf) ++
+          (if hasAttr "hm" conf then [
             conf.home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true; # instead of having its own private nixpkgs
@@ -124,7 +115,7 @@
                 ] ++ optAttrList "homeImports" conf;
               };
             }
-          ];
+          ] else [ ]);
         }
       );
 
@@ -140,71 +131,55 @@
         inherit nixpkgs pkgs home-manager;
       };
 
+      mailserver = {
+        nixpkgs = nixpkgs-mailserver;
+        pkgs = pkgs-mailserver;
+      };
+
     in
     {
       nixosConfigurations = {
 
         # main desktop machine. low power draw
-        tanuki = mkSystem (rec {
+        tanuki = mkSystem ({
           configName = "tanuki"; # TODO: any way to avoid this duplication?
-          modules = [
-            agenix.nixosModules.default
-          ];
+          hm = true;
         } // unstable);
 
         # streaming beelink minipc
         # draws 7-10w idle
         # fancy audio routing etc for stream
-        streampc = mkSystem (rec {
+        streampc = mkSystem ({
           configName = "streampc";
-          modules = [
-            agenix.nixosModules.default
-          ];
+          hm = true;
         } // unstable);
 
         # wsl on my windows machine
-        nixos-wsl-5900x = mkSystem (rec {
+        nixos-wsl-5900x = mkSystem ({
           configName = "nixos-wsl-5900x";
+          hm = true;
         } // wsl);
 
         #
         # servers
         # NOTE: avoid having complex dependencies in these. a bit of code duplication is fine.
         #       we don't want to randomly break stuff changing some other machine's config.
-        #
-        # TODO: use some object I merge like `// unstable` above to make it easier to switch
-        #       stable to unstable in a non error prone way for example
 
         # mail server
-        headpats = nixpkgs-mailserver.lib.nixosSystem rec {
-          inherit system;
-          pkgs = pkgs-mailserver;
-          modules = [
-            ./machines/headpats/configuration.nix
-            agenix.nixosModules.default
-          ];
-        };
+        headpats = mkSystem ({
+          configName = "headpats";
+        } // mailserver);
 
         # home server (matrix and other stuff)
         # this is a low power x86_64 mini-pc (fujitsu esprimo). draws 7-10w idle
-        meido = nixpkgs-stable.lib.nixosSystem rec {
-          inherit system;
-          specialArgs = { inherit user; };
-          pkgs = pkgs-stable;
-          modules = [
-            ./machines/meido/configuration.nix
-            agenix-stable.nixosModules.default
-          ];
-        };
+        meido = mkSystem ({
+          configName = "meido";
+        } // unstable);
 
         # new home server with my zfs array
-        dekai = nixpkgs.lib.nixosSystem rec {
-          inherit system pkgs;
-          specialArgs = { inherit user; };
-          modules = [
-            ./machines/dekai/configuration.nix
-          ];
-        };
+        dekai = mkSystem ({
+          configName = "dekai";
+        } // unstable);
 
       };
 
