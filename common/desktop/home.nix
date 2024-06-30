@@ -116,7 +116,6 @@ with config; {
     obs-studio
     simplescreenrecorder
     screenkey
-    pavucontrol
     gimp
     blender
     tenacity
