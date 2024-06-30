@@ -152,8 +152,14 @@ in
   networking = {
     hostName = "dekai";
     usePredictableInterfaceNames = false;
-    networkmanager.enable = true;
     nameservers = [ "127.0.0.1" "::1" ];
+    networkmanager.dns = "none";
+    useDHCP = false;
+
+    interfaces.eth0.ipv4.addresses = [{
+      address = consts.machines.dekai.ip;
+      prefixLength = 24;
+    }];
   };
 
   boot.supportedFilesystems = [ "zfs" ];
@@ -287,11 +293,6 @@ in
   };
 
   programs.ssh.knownHosts = consts.ssh.knownHosts;
-
-  networking.interfaces.eth0.ipv4.addresses = [{
-    address = consts.machines.dekai.ip;
-    prefixLength = 24;
-  }];
 
   services.postgresql =
     let
