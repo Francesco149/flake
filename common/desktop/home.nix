@@ -106,7 +106,7 @@ with config; {
     polkit_gnome
     (fix-theme "${pkgs.gnome.nautilus}/bin/nautilus")
     gnome.seahorse # to manage gnome keyring for apps that want it
-    transmission-gtk
+    transmission_4-gtk
 
     dmenu
     maim
