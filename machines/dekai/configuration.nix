@@ -149,27 +149,50 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.luks.devices."luks-901be401-55e0-4047-a286-bb53898060de".device = "/dev/disk/by-uuid/901be401-55e0-4047-a286-bb53898060de";
+
   networking = {
     hostName = "dekai";
+    hostId = "09952a93";
     usePredictableInterfaceNames = false;
     nameservers = [ "127.0.0.1" "::1" ];
     networkmanager.dns = "none";
     useDHCP = false;
 
-    interfaces.eth0.ipv4.addresses = [{
+    # allow access to private paths by making it a local request
+    hosts."127.0.0.1" = [ synapseDomain ];
+
+    interfaces."${consts.machines.dekai.iface}".ipv4.addresses = [{
       address = consts.machines.dekai.ip;
       prefixLength = 24;
     }];
 
     defaultGateway = {
-      interface = "eth0";
+      interface = consts.machines.dekai.iface;
       address = consts.ips.gateway;
+    };
+
+    firewall = {
+      enable = true;
+      allowPing = true;
+      allowedTCPPorts = [
+        22 # ssh
+        80 # http
+        443 # https
+        synapsePort
+        dendritePort
+        5357 # wsdd, for samba win10 discovery
+        8000 # archivebox
+      ];
+      allowedUDPPorts = [
+        3702 # wsdd, for samba win10 discovery
+        53 # local dns
+      ];
     };
   };
 
+
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
-  networking.hostId = "09952a93";
   services.zfs.autoScrub.enable = true;
   services.zfs.trim.enable = true;
 
@@ -269,24 +292,6 @@ in
           "guest ok" = "yes";
         };
       };
-  };
-
-  networking.firewall = {
-    enable = true;
-    allowPing = true;
-    allowedTCPPorts = [
-      22 # ssh
-      80 # http
-      443 # https
-      synapsePort
-      dendritePort
-      5357 # wsdd, for samba win10 discovery
-      8000 # archivebox
-    ];
-    allowedUDPPorts = [
-      3702 # wsdd, for samba win10 discovery
-      53 # local dns
-    ];
   };
 
   services.openssh.enable = true;
@@ -403,9 +408,6 @@ in
     proxyPass = "http://0.0.0.0:6969";
     inherit (consts.nginx.localOnly) extraConfig;
   };
-
-  # allow access to private paths by making it a local request
-  networking.hosts."127.0.0.1" = [ synapseDomain ];
 
   services.nginx.virtualHosts."element.${synapseDomain}" =
     let
