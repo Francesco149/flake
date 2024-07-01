@@ -13,6 +13,7 @@ in
   imports = [
     ../locale/configuration.nix
     ../nix/configuration.nix
+    ../dnscrypt/configuration.nix
   ];
 
   users.users.${user} = {
