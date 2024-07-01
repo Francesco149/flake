@@ -185,7 +185,6 @@ in
       ];
       allowedUDPPorts = [
         3702 # wsdd, for samba win10 discovery
-        53 # local dns
       ];
     };
   };
