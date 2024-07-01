@@ -160,6 +160,11 @@ in
       address = consts.machines.dekai.ip;
       prefixLength = 24;
     }];
+
+    defaultGateway = {
+      interface = "eth0";
+      address = consts.ips.gateway;
+    };
   };
 
   boot.supportedFilesystems = [ "zfs" ];
