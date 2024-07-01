@@ -1,36 +1,22 @@
 # common configuration.nix for desktop machines
 
 { pkgs, user, ... }:
-
-let
-
-  consts = import ../consts.nix;
-  inherit (consts.ssh) authorizedKeys;
-
-in
 {
 
   imports = [
     ../locale/configuration.nix
     ../nix/configuration.nix
+    ../gnome/configuration.nix
     ../dnscrypt/configuration.nix
+    ../ssh/configuration.nix
   ];
 
   users.users.${user} = {
     isNormalUser = true;
     extraGroups = [ "networkmanager" "wheel" "adbusers" ];
-    openssh.authorizedKeys.keys = authorizedKeys;
   };
 
   programs.adb.enable = true;
-  services.getty.autologinUser = user;
-
-  users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
-  services.openssh.enable = true;
-
-  # workaround for race condition in autologin
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
 
   services.libinput = {
     enable = true;
@@ -41,30 +27,10 @@ in
   networking = {
     domain = "localhost";
     usePredictableInterfaceNames = false;
-    nameservers = [ consts.machines.dekai.ip ];
-    resolvconf.enable = false;
     networkmanager.enable = true;
   };
 
   programs.nm-applet.enable = true;
-
-  security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    jack.enable = true;
-  };
-
-  # TODO: not functional at the moment
-  #services.openvpn.servers = {
-  #  protonVPN = {
-  #    config = '' config /home/${user}/.local/share/protonvpn/config.ovpn '';
-  #    updateResolvConf = true;
-  #    autoStart = true;
-  #  };
-  #};
 
   hardware.bluetooth = {
     enable = true;
@@ -104,40 +70,38 @@ in
     "mitigations=off"
   ];
 
-  services.xserver = {
-    enable = true;
-    xkb.layout = "us";
-    xkb.variant = "";
-    displayManager.gdm.enable = true;
-    displayManager.gdm.wayland = false;
-  };
+  services.getty.autologinUser = user;
+
+  systemd.user.services.startup-apps =
+    let
+      apps = with pkgs; [
+        chatterino2
+        firefox
+        telegram-desktop
+        armcord
+      ];
+    in
+    {
+      enable = true;
+      description = "Various custom start-up apps";
+      after = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      wantedBy = [ "graphical-session.target" ];
+      serviceConfig = {
+        RemainAfterExit = "yes";
+        Type = "oneshot";
+      };
+
+      script = builtins.concatStringsSep "\n" (map (x: "${x.meta.mainProgram} &") apps);
+    };
+
+  # workaround for race condition in autologin
+  systemd.services."getty@tty1".enable = false;
+  systemd.services."autovt@tty1".enable = false;
 
   services.displayManager = {
     autoLogin.enable = true;
-    autoLogin.user = "${user}";
-  };
-
-  services.xserver.desktopManager.session = [
-    {
-      name = "home-manager";
-      start = ''
-        ${pkgs.runtimeShell} $HOME/.hm-xsession &
-        waitPID=$!
-      '';
-    }
-  ];
-
-  i18n.inputMethod = {
-    enabled = "ibus";
-    ibus.engines = with pkgs.ibus-engines; [ hangul mozc ];
-  };
-
-  networking.firewall = {
-    enable = true;
-    allowPing = true;
-    allowedTCPPorts = [
-      22 # ssh
-    ];
+    autoLogin.user = user;
   };
 
   # NOTE: private config files. comment out or provide your own

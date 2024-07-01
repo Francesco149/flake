@@ -21,11 +21,23 @@ with config; {
     settings."org/gnome/shell" = {
       disable-user-extensions = false;
       enabled-extensions = map (x: x.extensionUuid) exts;
+
+      favorite-apps = [
+        "firefox.desktop"
+        "xterm.desktop"
+        "org.gnome.Nautilus.desktop"
+        "armcord.desktop"
+        "org.telegram.desktop.desktop"
+        "org.gnome.TextEditor.desktop"
+      ];
     };
 
-    settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+    settings."org/gnome/desktop/interface" = {
+      color-scheme = "prefer-dark";
+      clock-show-weekday = true;
+    };
 
-    settings."settings-daemon/plugins/power" = {
+    settings."org/gnome/settings-daemon/plugins/power" = {
       power-button-action = "nothing";
       sleep-inactive-ac-type = "nothing";
     };

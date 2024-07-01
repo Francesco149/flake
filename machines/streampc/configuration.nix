@@ -22,6 +22,7 @@ in
     ./hardware-configuration.nix
     ../../common/nix/configuration.nix
     ../../common/locale/configuration.nix
+    ../../common/gnome/configuration.nix
     ../../common/mpv/configuration.nix
   ];
 
@@ -68,55 +69,9 @@ in
     ];
   };
 
-  services.xserver = {
-    enable = true;
-    displayManager.gdm.enable = true;
-    displayManager.gdm.wayland = false; # barrier doesn't fully support wayland
-    desktopManager.gnome.enable = true;
-    xkb.layout = "us";
-    xkb.variant = "";
-  };
-
-  # touchpad support (touchscreen too?)
-  services.libinput.enable = true;
-
-  sound.enable = false;
-  hardware.pulseaudio.enable = false;
-  security.rtkit.enable = true;
-
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-
-    # TODO: for some reason I can't get RaySession to see the pipewire jack compatibility
-    #jack.enable = true;
-  };
-
+  # TODO: for some reason I can't get RaySession to see the pipewire jack compatibility
+  service.pipewire.jack.enable = false;
   services.jack.jackd.enable = true;
-
-  services.displayManager.autoLogin = {
-    enable = true;
-    user = "${user}";
-  };
-
-  # qt theme
-  qt.enable = true;
-  qt.platformTheme = "qt5ct";
-
-  # TODO: this doesn't seem to do anything? I had to open qt5ct and manually set Adwaita-Dark.
-  #       capitalized name also didnt work
-  qt.style = "adwaita-dark";
-
-  # Workaround for GNOME autologin: https://github.com/NixOS/nixpkgs/issues/103746#issuecomment-945091229
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
-
-  environment.systemPackages = with pkgs; [
-    vim
-    adwaita-qt
-  ];
 
   # enables n100 hw encoding
   # TODO: check if all of these things are necessary
@@ -138,14 +93,12 @@ in
     ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [ vpl-gpu-rt ]);
   };
 
-  # config files
+  # barrier server
 
   environment.etc = {
     "barrier.conf".source = ../../common/barrier/barrier.conf;
     "secrets/barrier/SSL/Fingerprints/TrustedClients.txt".source = ../../common/barrier/TrustedClients.txt;
   };
-
-  # services
 
   systemd.user.services.barriers = {
     enable = true;
