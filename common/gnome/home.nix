@@ -18,7 +18,7 @@ with config; {
   dconf = {
     enable = true;
 
-    setting."org/gnome/mutter".dynamic-workspaces = true;
+    settings."org/gnome/mutter".dynamic-workspaces = true;
 
     settings."org/gnome/shell" = {
       disable-user-extensions = false;
