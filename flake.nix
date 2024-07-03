@@ -93,7 +93,10 @@
           inherit (conf) pkgs;
 
           # pass user to modules (configuration.nix for example)
-          specialArgs = { inherit user nixos-wsl; };
+          specialArgs = {
+            inherit user nixos-wsl;
+            inherit (conf) configName;
+          };
 
           modules = with builtins; [
             ./machines/${conf.configName}/configuration.nix

@@ -1,9 +1,10 @@
-{ config, pkgs, lib, user, ... }:
+{ config, pkgs, lib, user, configName, ... }:
 
 
 let
   consts = import ../../common/consts.nix;
   inherit (consts.ssh) authorizedKeys;
+  machine = consts.machines.${configName};
 
   pgdb = name: "postgres://${name}@localhost/${name}?sslmode=disable";
 
@@ -24,6 +25,8 @@ let
   synapseFederationReceiverPort = 8009;
   synapseClientWorkerPort = 8010;
   synapseMediaRepoPort = 8011;
+
+  archiveboxPort = 7777;
 
   # can't extract this from dendrite's module it seems. also referencing the systemd service causes inf recursion
   dendriteDataDir = "/var/lib/dendrite";
@@ -160,13 +163,13 @@ in
     # allow access to private paths by making it a local request
     hosts."127.0.0.1" = [ synapseDomain ];
 
-    interfaces."${consts.machines.dekai.iface}".ipv4.addresses = [{
-      address = consts.machines.dekai.ip;
+    interfaces."${machine.iface}".ipv4.addresses = [{
+      address = machine.ip;
       prefixLength = 24;
     }];
 
     defaultGateway = {
-      interface = consts.machines.dekai.iface;
+      interface = machine.iface;
       address = consts.ips.gateway;
     };
 
@@ -180,7 +183,7 @@ in
         synapsePort
         dendritePort
         5357 # wsdd, for samba win10 discovery
-        8000 # archivebox
+        archiveboxPort
       ];
       allowedUDPPorts = [
         3702 # wsdd, for samba win10 discovery
@@ -200,8 +203,7 @@ in
     ((vim_configurable.override { }).customize {
       name = "vim";
       vimrcConfig.customRC = (builtins.readFile ../../common/vim/init.vim);
-    }
-    )
+    })
   ];
 
   users.users."${user}" = {
@@ -213,12 +215,6 @@ in
       tmux
       internetarchive
       vim
-
-      # archivebox and dependencies. archives web pages locally
-      archivebox
-      single-file-cli
-      nodejs
-
     ]);
     openssh.authorizedKeys.keys = authorizedKeys;
   };
@@ -633,6 +629,27 @@ in
         listenPort = 20662;
         ssl = false;
       };
+    };
+  };
+
+  systemd.services.archivebox = {
+    enable = true;
+    description = "Archivebox server";
+    wants = [ "network-online.target" ];
+    after = [ "network-online.target" ];
+    serviceConfig = {
+      Type = "simple";
+      Restart = "on-failure";
+      User = user;
+      Group = "users";
+      WorkingDirectory = "/memevault/memes/archivebox";
+      Environment = [
+        "NODE_BINARY=${pkgs.nodejs}/bin/node"
+        "SINGLEFILE_BINARY=${pkgs.single-file-cli}/bin/single-file"
+      ];
+      ExecStart = ''
+        ${pkgs.archivebox}/bin/archivebox server ${machine.ip}:${toString archiveboxPort}
+      '';
     };
   };
 
