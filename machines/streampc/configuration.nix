@@ -16,6 +16,13 @@ let
       ];
     });
 
+  custom-firefox = with pkgs;
+    (pkgs.wrapFirefox
+      (pkgs.firefox-unwrapped.override {
+        jackSupport = true;
+      })
+      { });
+
 in
 {
   imports = [
@@ -41,7 +48,7 @@ in
     description = "${user}";
     extraGroups = [ "networkmanager" "wheel" "audio" "jackaudio" ];
     packages = with pkgs; [
-      firefox
+      custom-firefox
       raysession
       barrier
       custom-obs
