@@ -77,7 +77,7 @@ in
   };
 
   # TODO: for some reason I can't get RaySession to see the pipewire jack compatibility
-  service.pipewire.jack.enable = false;
+  services.pipewire.jack.enable = false;
   services.jack.jackd.enable = true;
 
   # enables n100 hw encoding
