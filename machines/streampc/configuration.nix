@@ -50,6 +50,7 @@ in
     packages = with pkgs; [
       custom-firefox
       raysession
+      git # used by raysession
       barrier
       custom-obs
       armcord
