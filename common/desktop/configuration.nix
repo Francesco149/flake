@@ -80,7 +80,6 @@
         telegram-desktop
         armcord
         gimp
-        mpv
       ];
     in
     {
@@ -94,9 +93,7 @@
         Type = "oneshot";
       };
 
-      script = builtins.concatStringsSep "\n" (map (x: "${x.meta.mainProgram} &") apps) + ''
-        ${pkgs.xterm}/bin/xterm &
-      '';
+      script = builtins.concatStringsSep "\n" (map (x: "${x.meta.mainProgram} &") apps);
     };
 
   # workaround for race condition in autologin
