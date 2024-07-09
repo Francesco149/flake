@@ -85,7 +85,7 @@ in
   # enables n100 hw encoding
   # TODO: check if all of these things are necessary
 
-  hardware.opengl = {
+  hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
       intel-media-driver
