@@ -9,6 +9,7 @@
     ../gnome/configuration.nix
     ../dnscrypt/configuration.nix
     ../ssh/configuration.nix
+    ../autologin/configuration.nix
   ];
 
   users.users.${user} = {
@@ -70,8 +71,6 @@
     "mitigations=off"
   ];
 
-  services.getty.autologinUser = user;
-
   systemd.user.services.startup-apps =
     let
       apps = with pkgs; [
@@ -95,15 +94,6 @@
 
       script = builtins.concatStringsSep "\n" (map (x: "${x.meta.mainProgram} &") apps);
     };
-
-  # workaround for race condition in autologin
-  systemd.services."getty@tty1".enable = false;
-  systemd.services."autovt@tty1".enable = false;
-
-  services.displayManager = {
-    autoLogin.enable = true;
-    autoLogin.user = user;
-  };
 
   # NOTE: private config files. comment out or provide your own
 

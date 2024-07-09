@@ -31,6 +31,7 @@ in
     ../../common/locale/configuration.nix
     ../../common/gnome/configuration.nix
     ../../common/mpv/configuration.nix
+    ../../common/autologin/configuration.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
