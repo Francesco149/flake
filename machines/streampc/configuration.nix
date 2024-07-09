@@ -55,6 +55,7 @@ in
       barrier
       custom-obs
       armcord
+      chatterino2
 
       (pkgs.writeShellScriptBin "mus" ''
         mpv --ao=jack --jack-name=mpv-music --no-video --ytdl-format=bestaudio --loop-playlist "$@"
@@ -139,17 +140,21 @@ in
         inherit file;
         path = secretPath path;
         symlink = false;
+        owner = "${user}";
+        group = "users";
       };
 
     in
     {
 
-      barriers-private-key = mkSecret
-        {
-          file = ../../secrets/barrier/Barrier.pem.age;
-          path = "barrier/SSL/Barrier.pem";
-        } // {
-        owner = "loli"; # TODO: barrier user?
+      barriers-private-key = mkSecret {
+        file = ../../secrets/barrier/Barrier.pem.age;
+        path = "barrier/SSL/Barrier.pem";
+      };
+
+      chatterino-settings = mkSecret {
+        file = ../../secrets/chatterino/overlay.json.age;
+        path = "/home/${user}/.local/share/chatterino/Settings/settings.json";
       };
 
     };
