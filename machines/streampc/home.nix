@@ -3,6 +3,7 @@ with config; {
   imports = [
     ../../common/gnome/home.nix
     ../../common/xterm/home.nix
+    ../../common/vim/home.nix
   ];
 
   home.username = "${user}";
