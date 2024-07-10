@@ -16,13 +16,6 @@ let
       ];
     });
 
-  custom-firefox = with pkgs;
-    (pkgs.wrapFirefox
-      (pkgs.firefox-unwrapped.override {
-        jackSupport = true;
-      })
-      { });
-
 in
 {
   imports = [
@@ -44,21 +37,24 @@ in
   # don't wanna set up all the dev tools here when it's mainly for streaming
   services.openssh.enable = true;
 
+  environment.systemPackages = with pkgs; [
+    pulseaudio # pactl to control pipewire
+  ];
+
   users.users."${user}" = {
     isNormalUser = true;
     description = "${user}";
-    extraGroups = [ "networkmanager" "wheel" "audio" "jackaudio" ];
+    extraGroups = [ "networkmanager" "wheel" "audio" ];
     packages = with pkgs; [
-      custom-firefox
-      raysession
-      git # used by raysession
+      firefox
+      qpwgraph
       barrier
       custom-obs
       armcord
       chatterino2
 
       (pkgs.writeShellScriptBin "mus" ''
-        mpv --ao=jack --jack-name=mpv-music --no-video --ytdl-format=bestaudio --loop-playlist "$@"
+        mpv --no-video --ytdl-format=bestaudio --loop-playlist "$@"
       '')
     ];
 
@@ -79,9 +75,29 @@ in
     ];
   };
 
-  # TODO: for some reason I can't get RaySession to see the pipewire jack compatibility
-  services.pipewire.jack.enable = false;
-  services.jack.jackd.enable = true;
+  # loopback device that I use to send music to my visualizer in the browser (appears as a mic)
+  services.pipewire.extraConfig.pipewire."10-loopback"."context.modules" =
+    let
+      sinkName = x: (builtins.replaceStrings [ " " ] [ "-" ] (lib.toLower x)) + "_sink";
+      loopback = x: {
+        name = "libpipewire-module-loopback";
+        args = {
+          "audio.position" = [ "FL" "FR" ];
+          "capture.props" = {
+            "media.class" = "Audio/Sink";
+            "node.name" = sinkName x;
+            "node.description" = "${x} Sink (In)";
+          };
+        };
+      };
+  in [
+    (loopback "Music")
+    (loopback "Quiet Game Compressed")
+    (loopback "Other Audio Vod")
+    (loopback "Other Audio NoVod")
+    (loopback "Compressed Other Audio Vod")
+    (loopback "Compressed Other Audio NoVod")
+  ];
 
   # enables n100 hw encoding
   # TODO: check if all of these things are necessary
