@@ -12,6 +12,7 @@ with config; {
     ../vim/home.nix
     ../gnome/home.nix
     ./gnome/home.nix
+    ../xterm/home.nix
   ];
 
   home.username = "${user}";
@@ -38,7 +39,6 @@ with config; {
     mpv
     libnotify # notify-send
 
-    pxplus-ibm-vga8-bin
     unifont
     noto-fonts
     noto-fonts-cjk-sans
@@ -170,22 +170,6 @@ with config; {
     enable = true;
     server = consts.machines.streampc.ip;
     enableDragDrop = true;
-  };
-
-  xresources.properties = {
-    "*xterm*faceName" = "PxPlus IBM VGA8";
-    "*xterm*faceNameDoublesize" = "Unifont";
-    "*xterm*faceSize" = 12;
-    "*xterm*allowBoldFonts" = false;
-    "*xterm*background" = "black";
-    "*xterm*foreground" = "grey";
-    "*xterm*reverseVideo" = false;
-    "*xterm*termName" = "xterm-256color";
-    "*xterm*VT100.Translations" = ''#override \
-      Shift <Key>Insert: insert-selection(CLIPBOARD) \n\
-      Ctrl Shift <Key>V: insert-selection(CLIPBOARD) \n\
-      Ctrl Shift <Key>C: copy-selection(CLIPBOARD)
-    '';
   };
 
   # TODO: not sure if these settings are necessary with gnome. maybe they're enabled by default
