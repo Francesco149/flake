@@ -88,6 +88,11 @@ in
             "node.name" = sinkName x;
             "node.description" = "${x} Sink (In)";
           };
+          "playback.props" = {
+            "media.class" = "Audio/Source";
+            "node.name" = (sinkName x) + "_out";
+            "node.description" = "${x} Sink (Out)";
+          };
         };
       };
   in [
