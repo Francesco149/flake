@@ -54,3 +54,11 @@ where tanuki is the name of one of the nixosConfiguration entries in `flake.nix`
 whenever you want to rebuild the system, you can simply run the alias `xb` from a shell. the flake must be
 located at `~/flake` for this to work, so you will have to move it if your default user is not the same as
 the stock nixos user
+
+# notes about streaming on linux
+these are just random notes for myself, things discovered through trial and error
+
+* use a jack input client for virtual sound devices, or whenever possible. do NOT use the pulse
+  audio input capture on obs. it will cause choppy audio, especially with a lot of devices.
+  I don't know if it's the pipewire pulse compatibility or if it does the same thing on pulse.
+  the jack input also makes it easier to manage on carla because it names the obs inputs
