@@ -88,11 +88,15 @@ in
             "node.name" = sinkName x;
             "node.description" = "${x} Sink (In)";
           };
-          "playback.props" = {
-            "media.class" = "Audio/Source";
-            "node.name" = (sinkName x) + "_out";
-            "node.description" = "${x} Sink (Out)";
-          };
+
+          # the loopback device already has a built in output.
+          # this is more useful if you need to hardwire it to a device with node.target
+
+          #"playback.props" = {
+          #  "media.class" = "Audio/Source";
+          #  "node.name" = (sinkName x) + "_out";
+          #  "node.description" = "${x} Sink (Out)";
+          #};
         };
       };
   in [
