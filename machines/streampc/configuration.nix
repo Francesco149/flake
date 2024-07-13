@@ -47,7 +47,7 @@ in
     extraGroups = [ "networkmanager" "wheel" "audio" ];
     packages = with pkgs; [
       firefox
-      qpwgraph
+      carla
       barrier
       custom-obs
       armcord
