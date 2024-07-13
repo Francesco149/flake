@@ -62,3 +62,9 @@ these are just random notes for myself, things discovered through trial and erro
   audio input capture on obs. it will cause choppy audio, especially with a lot of devices.
   I don't know if it's the pipewire pulse compatibility or if it does the same thing on pulse.
   the jack input also makes it easier to manage on carla because it names the obs inputs
+
+* pipewire with jack compatibility and carla are a better alternative to voicemeeter on windows.
+  you can create as many loopback devices as you want (either through pipewire conf or with
+  pulseaudio commands) and route audio to them. carla also allows you to use vst plugins and
+  all kinds of stuff. the loopback devices come with a monitor output that you can route to obs
+  by creating a jack input client on obs which will appear as a named input on carla
