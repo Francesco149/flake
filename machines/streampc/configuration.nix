@@ -54,7 +54,7 @@ in
       chatterino2
 
       (pkgs.writeShellScriptBin "mus" ''
-        mpv --no-video --ytdl-format=bestaudio --loop-playlist "$@"
+        mpv --ao=jack --jack-name=mpv-music --no-video --ytdl-format=bestaudio --loop-playlist "$@"
       '')
     ];
 
