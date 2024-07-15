@@ -42,6 +42,11 @@
       url = "github:ryantm/agenix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # this allows querying packages by filename as well as enabling comma, a command line tool
+    # that lets me run any package binary with , command even if it's not installed
+    nix-index-database.url = "github:nix-community/nix-index-database";
+    nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -53,6 +58,7 @@
     , home-manager-wsl
     , nixos-wsl
     , agenix
+    , nix-index-database
     , ...
     }:
     let
@@ -87,7 +93,9 @@
 
       # only used on machines that use home-manager to avoid some duplication
 
-      mkSystem = conf: {
+      mkSystem = let
+        nixIndex = { programs.nix-index-database.comma.enable = true; };
+      in conf: {
         "${conf.configName}" = conf.nixpkgs.lib.nixosSystem {
           inherit system;
           inherit (conf) pkgs;
@@ -115,10 +123,13 @@
               home-manager.users.${user} = {
                 imports = [
                   ./machines/${conf.configName}/home.nix
+                  nix-index-database.hmModules.nix-index nixIndex
                 ] ++ optAttrList "homeImports" conf;
               };
             }
-          ] else [ ]);
+          ] else [
+            nix-index-database.nixosModules.nix-index nixIndex
+          ]);
         };
       };
 
