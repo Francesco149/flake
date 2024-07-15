@@ -81,7 +81,7 @@ with config; {
     #steam-run # used to run non-nixos executables
     # TODO: find non-proprietary alternative
 
-    gnome.seahorse # to manage gnome keyring for apps that want it
+    seahorse # to manage gnome keyring for apps that want it
     transmission_4-gtk
 
     dmenu
@@ -156,7 +156,7 @@ with config; {
 
   gtk.enable = true;
   gtk.theme.name = themeName;
-  gtk.theme.package = pkgs.gnome.gnome-themes-extra;
+  gtk.theme.package = pkgs.gnome-themes-extra;
   gtk.iconTheme.name = "Paper";
   gtk.iconTheme.package = pkgs.paper-icon-theme;
 
