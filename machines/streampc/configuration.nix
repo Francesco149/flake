@@ -76,37 +76,43 @@ in
   };
 
   # loopback device that I use to send music to my visualizer in the browser (appears as a mic)
-  services.pipewire.extraConfig.pipewire."10-loopback"."context.modules" =
-    let
-      sinkName = x: (builtins.replaceStrings [ " " ] [ "-" ] (lib.toLower x)) + "_sink";
-      loopback = x: {
-        name = "libpipewire-module-loopback";
-        args = {
-          "audio.position" = [ "FL" "FR" ];
-          "capture.props" = {
-            "media.class" = "Audio/Sink";
-            "node.name" = sinkName x;
-            "node.description" = "${x} Sink (In)";
+  services.pipewire.extraConfig.pipewire = {
+
+    "10-loopback"."context.modules" =
+      let
+        sinkName = x: (builtins.replaceStrings [ " " ] [ "-" ] (lib.toLower x)) + "_sink";
+        loopback = x: {
+          name = "libpipewire-module-loopback";
+          args = {
+            "audio.position" = [ "FL" "FR" ];
+            "capture.props" = {
+              "media.class" = "Audio/Sink";
+              "node.name" = sinkName x;
+              "node.description" = "${x} Sink (In)";
+            };
+
+            # the loopback device already has a built in output.
+            # this is more useful if you need to hardwire it to a device with node.target
+
+            #"playback.props" = {
+            #  "media.class" = "Audio/Source";
+            #  "node.name" = (sinkName x) + "_out";
+            #  "node.description" = "${x} Sink (Out)";
+            #};
           };
-
-          # the loopback device already has a built in output.
-          # this is more useful if you need to hardwire it to a device with node.target
-
-          #"playback.props" = {
-          #  "media.class" = "Audio/Source";
-          #  "node.name" = (sinkName x) + "_out";
-          #  "node.description" = "${x} Sink (Out)";
-          #};
         };
-      };
-  in [
-    (loopback "Music")
-    (loopback "Quiet Game Compressed")
-    (loopback "Other Audio Vod")
-    (loopback "Other Audio NoVod")
-    (loopback "Compressed Other Audio Vod")
-    (loopback "Compressed Other Audio NoVod")
-  ];
+      in
+      [
+        (loopback "Music")
+        (loopback "Quiet Game Compressed")
+        (loopback "Other Audio Vod")
+        (loopback "Other Audio NoVod")
+        (loopback "Compressed Other Audio Vod")
+        (loopback "Compressed Other Audio NoVod")
+      ];
+
+    "01-jack-monitor"."jack.properties"."jack.merge-monitor" = true;
+  };
 
   # enables n100 hw encoding
   # TODO: check if all of these things are necessary
