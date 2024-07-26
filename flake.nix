@@ -93,45 +93,49 @@
 
       # only used on machines that use home-manager to avoid some duplication
 
-      mkSystem = let
-        nixIndex = { programs.nix-index-database.comma.enable = true; };
-      in conf: {
-        "${conf.configName}" = conf.nixpkgs.lib.nixosSystem {
-          inherit system;
-          inherit (conf) pkgs;
+      mkSystem =
+        let
+          nixIndex = { programs.nix-index-database.comma.enable = true; };
+        in
+        conf: {
+          "${conf.configName}" = conf.nixpkgs.lib.nixosSystem {
+            inherit system;
+            inherit (conf) pkgs;
 
-          # pass user to modules (configuration.nix for example)
-          specialArgs = {
-            inherit user nixos-wsl;
-            inherit (conf) configName;
+            # pass user to modules (configuration.nix for example)
+            specialArgs = {
+              inherit user nixos-wsl;
+              inherit (conf) configName;
+            };
+
+            modules = with builtins; [
+              ./machines/${conf.configName}/configuration.nix
+              agenix.nixosModules.default
+            ] ++
+            (optAttrList "modules" conf) ++
+            (if hasAttr "hm" conf then [
+              conf.home-manager.nixosModules.home-manager
+              {
+                home-manager.useGlobalPkgs = true; # instead of having its own private nixpkgs
+                home-manager.useUserPackages = true; # install to /etc/profiles instead of ~/.nix-profile
+                home-manager.extraSpecialArgs = {
+                  inherit user; # pass user to modules in conf (home.nix or whatever)
+                  configName = conf.configName;
+                };
+                home-manager.users.${user} = {
+                  imports = [
+                    ./machines/${conf.configName}/home.nix
+                    nix-index-database.hmModules.nix-index
+                    nixIndex
+                  ] ++ optAttrList "homeImports" conf;
+                };
+              }
+            ] else [
+              nix-index-database.nixosModules.nix-index
+              nixIndex
+            ]);
           };
-
-          modules = with builtins; [
-            ./machines/${conf.configName}/configuration.nix
-            agenix.nixosModules.default
-          ] ++
-          (optAttrList "modules" conf) ++
-          (if hasAttr "hm" conf then [
-            conf.home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true; # instead of having its own private nixpkgs
-              home-manager.useUserPackages = true; # install to /etc/profiles instead of ~/.nix-profile
-              home-manager.extraSpecialArgs = {
-                inherit user; # pass user to modules in conf (home.nix or whatever)
-                configName = conf.configName;
-              };
-              home-manager.users.${user} = {
-                imports = [
-                  ./machines/${conf.configName}/home.nix
-                  nix-index-database.hmModules.nix-index nixIndex
-                ] ++ optAttrList "homeImports" conf;
-              };
-            }
-          ] else [
-            nix-index-database.nixosModules.nix-index nixIndex
-          ]);
         };
-      };
 
       # these are to be used with mkSystem
 
