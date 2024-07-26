@@ -111,6 +111,7 @@ in
         (loopback "Compressed Other Audio NoVod")
       ];
 
+    # this makes the jack monitors properly restore in carla
     "01-jack-monitor"."jack.properties"."jack.merge-monitor" = true;
   };
 
