@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-staging.url = "github:nixos/nixpkgs/staging-next";
 
     # NOTE: remember to update home-manager versions
 
@@ -52,6 +53,7 @@
   outputs =
     { self
     , nixpkgs
+    , nixpkgs-staging
     , nixpkgs-wsl
     , nixpkgs-mailserver
     , home-manager
@@ -89,6 +91,10 @@
         inherit system;
       };
 
+      pkgs-staging = import nixpkgs-staging {
+        inherit system;
+      };
+
       optAttrList = with builtins; s: set: if hasAttr s set then getAttr s set else [ ];
 
       # only used on machines that use home-manager to avoid some duplication
@@ -104,7 +110,7 @@
 
             # pass user to modules (configuration.nix for example)
             specialArgs = {
-              inherit user nixos-wsl;
+              inherit user nixos-wsl pkgs-staging;
               inherit (conf) configName;
             };
 

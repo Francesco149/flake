@@ -219,6 +219,22 @@
         "type": "github"
       }
     },
+    "nixpkgs-staging": {
+      "locked": {
+        "lastModified": 1721995275,
+        "narHash": "sha256-hUo1rUbGqd4q2mejp+QSJmnMuSYHtXIis7FmthTuoa8=",
+        "owner": "nixos",
+        "repo": "nixpkgs",
+        "rev": "9e852fddaaee7711128b8729709a262a922b84b4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "nixos",
+        "ref": "staging-next",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
     "nixpkgs-wsl": {
       "locked": {
         "lastModified": 1720535198,
@@ -246,6 +262,7 @@
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
         "nixpkgs-mailserver": "nixpkgs-mailserver",
+        "nixpkgs-staging": "nixpkgs-staging",
         "nixpkgs-wsl": "nixpkgs-wsl"
       }
     },
