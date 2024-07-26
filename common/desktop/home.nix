@@ -76,8 +76,6 @@ with config; {
     autorandr # save and detect xrandr configurations automatically
     fusee-launcher
     pass
-    #steam-run # used to run non-nixos executables
-    # TODO: find non-proprietary alternative
 
     seahorse # to manage gnome keyring for apps that want it
     transmission_4-gtk
