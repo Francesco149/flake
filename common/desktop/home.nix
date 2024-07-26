@@ -1,7 +1,6 @@
 { config, pkgs, user, configName, lib, ... }:
 
 let
-  pythonPackages = pkgs.python39Packages; # adjust python version here as needed
   consts = import ../consts.nix;
   themeName = "Adwaita-dark";
 
@@ -28,7 +27,6 @@ with config; {
     git
     ffmpeg
     yt-dlp
-    youtube-dl
     aria
     nnn
     picotts
@@ -162,7 +160,6 @@ with config; {
 
   xdg.configFile = {
     "yt-dlp/config".source = ./yt-dlp/config;
-    "youtube-dl/config".source = ./youtube-dl/config;
     "mpv/scripts/copyTime.lua".source = ./mpv/scripts/copyTime.lua;
   };
 

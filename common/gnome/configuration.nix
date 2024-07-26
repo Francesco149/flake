@@ -10,7 +10,6 @@
   # touchpad support (touchscreen too?)
   services.libinput.enable = true;
 
-  sound.enable = false;
   hardware.pulseaudio.enable = false;
   security.rtkit.enable = true;
 
