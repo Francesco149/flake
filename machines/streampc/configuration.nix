@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-staging, lib, user, ... }:
+{ config, pkgs, lib, user, ... }:
 
 let
 
@@ -47,7 +47,7 @@ in
     extraGroups = [ "networkmanager" "wheel" "audio" ];
     packages = with pkgs; [
       firefox
-      #carla # temporarily get this from staging to fix segfault
+      carla
       barrier
       custom-obs
       armcord
@@ -56,9 +56,7 @@ in
       (pkgs.writeShellScriptBin "mus" ''
         mpv --ao=jack --jack-name=mpv-music --no-video --ytdl-format=bestaudio --loop-playlist "$@"
       '')
-    ] ++ (with pkgs-staging; [
-      carla
-    ]);
+    ];
 
     openssh.authorizedKeys.keys = authorizedKeys;
   };
