@@ -438,7 +438,7 @@ in
   # providing the cert and redirecting the connection to the local http port
 
   services.dendrite = {
-    enable = true;
+    enable = false;
     httpPort = dendriteLocalPort;
   };
 
@@ -537,7 +537,7 @@ in
   # synapse: matrix server
   # nginx is expected to handle https and proxy to the local http
 
-  services.matrix-synapse.enable = true;
+  services.matrix-synapse.enable = false;
   services.matrix-synapse.extraConfigFiles = [
     "${config.services.matrix-synapse.dataDir}/secrets.yaml"
   ];
@@ -616,7 +616,7 @@ in
   # bridges and other matrix appservices
 
   services.matterbridge = {
-    enable = true;
+    enable = false;
     configPath = config.age.secrets.matterbridge-config.path;
   };
 
