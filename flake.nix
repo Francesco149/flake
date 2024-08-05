@@ -79,7 +79,7 @@
 
         # only used by archivebox, not actually exposed to the internet
         config.permittedInsecurePackages = [
-          "python3.11-django-3.1.14"
+          "python3.12-django-3.1.14"
         ];
       };
 
