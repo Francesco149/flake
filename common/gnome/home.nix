@@ -13,6 +13,7 @@ with config; {
     (with pkgs; [
       # for astra-monitor
       pciutils
+      lm_sensors
     ]);
 
   dconf = {

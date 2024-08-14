@@ -21,6 +21,7 @@ in
   imports = [
     ./hardware-configuration.nix
     ../../common/mitigations/configuration.nix
+    ../../common/i915/configuration.nix
     ../../common/nix/configuration.nix
     ../../common/locale/configuration.nix
     ../../common/gnome/configuration.nix
@@ -114,26 +115,6 @@ in
 
     # this makes the jack monitors properly restore in carla
     "01-jack-monitor"."jack.properties"."jack.merge-monitor" = true;
-  };
-
-  # enables n100 hw encoding
-  # TODO: check if all of these things are necessary
-
-  hardware.graphics = {
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver
-      vaapi-intel-hybrid
-      intel-media-sdk
-      vpl-gpu-rt
-      intel-compute-runtime
-    ];
-  };
-
-  environment.sessionVariables = {
-    INTEL_MEDIA_RUNTIME = "ONEVPL";
-    LIBVA_DRIVER_NAME = "iHD";
-    ONEVPL_SEARCH_PATH = lib.strings.makeLibraryPath (with pkgs; [ vpl-gpu-rt ]);
   };
 
   # barrier server

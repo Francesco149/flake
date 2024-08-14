@@ -4,6 +4,7 @@
   imports = [
     ./hardware-configuration.nix
     ../../common/desktop/configuration.nix
+    ../../common/i915/configuration.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
