@@ -20,6 +20,7 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ../../common/mitigations/configuration.nix
     ../../common/nix/configuration.nix
     ../../common/locale/configuration.nix
     ../../common/gnome/configuration.nix
