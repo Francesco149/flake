@@ -8,13 +8,8 @@ let
 
 in
 with config; {
-  home.packages =
-    exts ++
-    (with pkgs; [
-      # for astra-monitor
-      pciutils
-      lm_sensors
-    ]);
+
+  home.packages = exts;
 
   dconf = {
     enable = true;
@@ -45,4 +40,5 @@ with config; {
       sleep-inactive-ac-type = "nothing";
     };
   };
+
 }

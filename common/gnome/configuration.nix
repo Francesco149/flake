@@ -31,5 +31,13 @@
 
   environment.systemPackages = with pkgs; [
     adwaita-qt
+    libgtop # for astra
+    pciutils
+    lm_sensors
   ];
+
+  # for astra
+  environment.variables = {
+    GI_TYPELIB_PATH = "/run/current-system/sw/lib/girepository-1.0";
+  };
 }
