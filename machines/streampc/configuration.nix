@@ -54,6 +54,7 @@ in
       custom-obs
       armcord
       chatterino2
+      guvcview # NOTE: do NOT use the obs v4l camera, it has all sorts of performance issues. capture this
 
       (pkgs.writeShellScriptBin "mus" ''
         mpv --ao=jack --jack-name=mpv-music --no-video --ytdl-format=bestaudio --loop-playlist "$@"
