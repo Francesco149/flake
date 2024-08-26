@@ -131,6 +131,7 @@ with config; {
       xub = "xu && xb";
       xq = "nix search nixpkgs";
       yt-date = "yt-dlp --skip-download --get-filename --output '%(upload_date)s'";
+      yt-playlist = "yt-dlp --flat-playlist -i --print-to-file url"; # yt-playlist links.txt url
     };
     bashrcExtra = ''
       set -o vi
