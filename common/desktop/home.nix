@@ -130,6 +130,7 @@ with config; {
       xu = "pushd ~/flake && nix flake update; popd";
       xub = "xu && xb";
       xq = "nix search nixpkgs";
+      xi = "nix-shell -p";
       yt-date = "yt-dlp --skip-download --get-filename --output '%(upload_date)s'";
       yt-playlist = "yt-dlp --flat-playlist -i --print-to-file url"; # yt-playlist links.txt url
     };
