@@ -84,10 +84,11 @@ in
     "10-loopback"."context.modules" =
       let
         sinkName = x: (builtins.replaceStrings [ " " ] [ "-" ] (lib.toLower x)) + "_sink";
-        loopback = x: {
+        loopbackD = x: delaySec: {
           name = "libpipewire-module-loopback";
           args = {
             "audio.position" = [ "FL" "FR" ];
+            "target.delay.sec" = delaySec;
             "capture.props" = {
               "media.class" = "Audio/Sink";
               "node.name" = sinkName x;
@@ -97,16 +98,22 @@ in
             # the loopback device already has a built in output.
             # this is more useful if you need to hardwire it to a device with node.target
 
-            #"playback.props" = {
-            #  "media.class" = "Audio/Source";
-            #  "node.name" = (sinkName x) + "_out";
-            #  "node.description" = "${x} Sink (Out)";
-            #};
+            "playback.props" = {
+              "media.class" = "Audio/Source";
+              "node.name" = (sinkName x) + "_out";
+              "node.description" = "${x} Sink (Out)";
+              "target.object" = "null-sink";
+              "node.dont-reconnect" = true;
+              "stream.dont-remix" = true;
+              "node.passive" = true;
+            };
           };
         };
+        loopback = x: loopbackD x 0.0;
       in
       [
         (loopback "Music")
+        (loopbackD "Music Delayed" 0.1) # for the music visualizer to sync with facecam
         (loopback "Quiet Game Compressed")
         (loopback "Other Audio Vod")
         (loopback "Other Audio NoVod")
@@ -116,6 +123,21 @@ in
 
     # this makes the jack monitors properly restore in carla
     "01-jack-monitor"."jack.properties"."jack.merge-monitor" = true;
+
+    # null audio sink for when I want to default audio output to nothing
+    "20-null"."context.objects" = [
+      {
+        factory = "adapter";
+        args = {
+          "factory.name" = "support.null-audio-sink";
+          "node.name" = "null-sink";
+          "node.description" = "sound black hole";
+          "media.class" = "Audio/Sink";
+          "object.linger" = 1;
+          "audio.position" = [ "FL" "FR" ];
+        };
+      }
+    ];
   };
 
   # barrier server
