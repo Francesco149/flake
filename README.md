@@ -63,8 +63,20 @@ these are just random notes for myself, things discovered through trial and erro
   I don't know if it's the pipewire pulse compatibility or if it does the same thing on pulse.
   the jack input also makes it easier to manage on carla because it names the obs inputs
 
+* do NOT use the obs video device source for your camera or capture card. use guvcview. it will
+  perform much better and load your system much less. even if you switch obs to emulated pixel
+  formats, it will still perform much worse than guvcview, not to mention it's more buggy and
+  sometimes changing settings will freeze the cam until you restart obs or re-add the source
+
 * pipewire with jack compatibility and carla are a better alternative to voicemeeter on windows.
   you can create as many loopback devices as you want (either through pipewire conf or with
   pulseaudio commands) and route audio to them. carla also allows you to use vst plugins and
   all kinds of stuff. the loopback devices come with a monitor output that you can route to obs
   by creating a jack input client on obs which will appear as a named input on carla
+
+* disabling hardware acceleration in your browser helps avoiding encoder overloads if you're
+  pushing your system to its limits
+
+* the low latency quicksync preset seems to stress the encoder much more, and once it gets
+  overloaded it can't ever recover and you get really choppy video. normal latency doesn't seem
+  to run into this issue even in the event that there is a brief encoder overload
