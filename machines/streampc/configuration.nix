@@ -153,7 +153,42 @@ in
     # TODO: don't repeat barrier dir, make it a let
     serviceConfig.ExecStart =
       toString ([ "${pkgs.barrier}/bin/barriers" "-f" "--profile-dir" "/etc/secrets/barrier/" ]);
-  };
+    };
+
+  # startup apps
+
+  systemd.user.services.startup-apps =
+    let
+      apps = [
+        "chatterino2"
+        "armcord"
+        "firefox"
+      ];
+      binary = x: let
+        meta = pkgs.${x}.meta;
+      in
+        with builtins;
+        pkgs.${x} + "/bin/" + (if hasAttr "mainProgram" meta then meta.mainProgram else x);
+      guvc = binary "guvcview";
+    in
+    {
+      enable = true;
+      description = "Various custom start-up apps";
+      after = [ "graphical-session.target" ];
+      partOf = [ "graphical-session.target" ];
+      wantedBy = [ "graphical-session.target" ];
+      serviceConfig = {
+        RemainAfterExit = "yes";
+        Type = "oneshot";
+      };
+
+      script = ''
+        ${guvc} --device=/dev/video0 --resolution=960x540 --fps=60 --profile=/home/${user}/cam.gpfl --render_window=full --audio=none &
+        ${guvc} --device=/dev/video2 --resolution=640x480 --fps=60 --audio=none &
+        ${binary "carla"} /home/${user}/stream-linux.carxp &
+        ${custom-obs}/bin/obs &
+      '' + (builtins.concatStringsSep "\n" (map (x: "${binary x} &") apps));
+    };
 
   # secrets
 
