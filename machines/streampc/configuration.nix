@@ -41,26 +41,23 @@ in
 
   environment.systemPackages = with pkgs; [
     pulseaudio # pactl to control pipewire
+    firefox
+    carla
+    barrier
+    custom-obs
+    armcord
+    chatterino2
+    guvcview # NOTE: do NOT use the obs v4l camera, it has all sorts of performance issues. capture this
+
+    (pkgs.writeShellScriptBin "mus" ''
+      mpv --ao=jack --jack-name=mpv-music --no-video --ytdl-format=bestaudio --loop-playlist "$@"
+    '')
   ];
 
   users.users."${user}" = {
     isNormalUser = true;
     description = "${user}";
     extraGroups = [ "networkmanager" "wheel" "audio" ];
-    packages = with pkgs; [
-      firefox
-      carla
-      barrier
-      custom-obs
-      armcord
-      chatterino2
-      guvcview # NOTE: do NOT use the obs v4l camera, it has all sorts of performance issues. capture this
-
-      (pkgs.writeShellScriptBin "mus" ''
-        mpv --ao=jack --jack-name=mpv-music --no-video --ytdl-format=bestaudio --loop-playlist "$@"
-      '')
-    ];
-
     openssh.authorizedKeys.keys = authorizedKeys;
   };
 
