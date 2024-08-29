@@ -77,9 +77,10 @@
           (import ./custom-packages.nix)
         ];
 
-        # only used by archivebox, not actually exposed to the internet
+        # NOTE: these are NOT and should NOT be exposed to the internet
         config.permittedInsecurePackages = [
-          "python3.12-django-3.1.14"
+          "python3.12-django-3.1.14" # archivebox
+          "olm-3.2.16"               # nextcloud
         ];
       };
 

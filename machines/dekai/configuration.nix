@@ -653,6 +653,18 @@ in
     };
   };
 
+  services.nextcloud = {
+    enable = true;
+    hostName = machine.ip;
+    config.adminpassFile = config.age.secrets.nextcloud-pass.path;
+    package = pkgs.nextcloud29;
+
+    extraApps = {
+      inherit (config.services.nextcloud.package.packages.apps) onlyoffice;
+    };
+    extraAppsEnable = true;
+  };
+
   # by default, agenix does not look in your home dir for keys
   age.identityPaths = [
     "/root/.ssh/id_ed25519"
@@ -700,6 +712,13 @@ in
           path = "matterbridge/config.toml";
         } // {
         owner = "matterbridge";
+      };
+
+      nextcloud-pass = mkSecret {
+        file = ../../secrets/nextcloud/password.age;
+        path = "nextcloud/password.txt";
+      } // {
+        owner = "nextcloud";
       };
 
     };
