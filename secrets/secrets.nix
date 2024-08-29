@@ -15,9 +15,6 @@ in
   "protonvpn/config.ovpn.age".publicKeys = desktopUsers;
   "barrier/BarrierTanuki.pem.age".publicKeys = desktopUsers;
 
-  "dendrite-keys/matrix_key.pem.age".publicKeys = dekaiUsers;
-  "synapse/homeserver.signing.key.age".publicKeys = dekaiUsers;
-  "synapse/secrets.yaml.age".publicKeys = dekaiUsers;
   "grafana/password.age".publicKeys = dekaiUsers;
   "grafana/secret-key.age".publicKeys = dekaiUsers;
   "cloudflare/password.age".publicKeys = dekaiUsers;
