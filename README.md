@@ -43,7 +43,7 @@ note: you would only do this if you're on the actual specific machine that you'r
 ```sh
 nix-shell -p git --run 'git clone https://github.com/Francesco149/flake ~/flake'
 cd ~/flake
-ix-shell -p git --run 'nix --extra-experimental-features nix-command --extra-experimental-features flakes develop' # or nix-shell
+nix-shell -p git --run 'nix --extra-experimental-features nix-command --extra-experimental-features flakes develop' # or nix-shell
 nixos-rebuild switch --use-remote-sudo --flake .#tanuki
 
 # relog into your user or reboot
