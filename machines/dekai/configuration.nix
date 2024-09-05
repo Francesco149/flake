@@ -87,6 +87,18 @@ in
 
   users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
 
+  # shut down when ups battery level is too low.
+  # also allows me to check the load by doing `apcaccess -pLOADPCT`
+  services.apcupsd = {
+    enable = true;
+    configText = ''
+      UPSTYPE usb
+      NISIP 127.0.0.1
+      BATTERYLEVEL 10
+      MINUTES 5
+    '';
+  };
+
   services.samba-wsdd.enable = true; # make shares visible for windows 10 clients
 
   services.samba = {
