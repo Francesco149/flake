@@ -1,9 +1,13 @@
 # common configuration.nix for desktop machines
 
 { pkgs, user, ... }:
+let
+  consts = import ../../common/consts.nix;
+in
 {
 
   imports = [
+    ../hosts/configuration.nix
     ../mitigations/configuration.nix
     ../locale/configuration.nix
     ../nix/configuration.nix
