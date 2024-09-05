@@ -183,7 +183,7 @@ in
   # https://discourse.nixos.org/t/enabling-nextcloud-office/31349/3
   virtualisation.oci-containers.containers.collabora = {
     image = "docker.io/collabora/code:latest";
-    ports = [ "${collaboraSPort}:${toString collaboraPort}/tcp" ];
+    ports = [ "${collaboraSPort}:${collaboraSPort}/tcp" ];
     environment = {
       dictionaries = "en_US";
       extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
