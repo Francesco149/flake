@@ -154,7 +154,7 @@ in
     # TODO: don't repeat barrier dir, make it a let
     serviceConfig.ExecStart =
       toString ([ "${pkgs.barrier}/bin/barriers" "-f" "--profile-dir" "/etc/secrets/barrier/" ]);
-    };
+  };
 
   # startup apps
 
@@ -165,9 +165,10 @@ in
         "armcord"
         "firefox"
       ];
-      binary = x: let
-        meta = pkgs.${x}.meta;
-      in
+      binary = x:
+        let
+          meta = pkgs.${x}.meta;
+        in
         with builtins;
         pkgs.${x} + "/bin/" + (if hasAttr "mainProgram" meta then meta.mainProgram else x);
       guvc = binary "guvcview";
