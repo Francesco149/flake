@@ -6,12 +6,15 @@ let
   inherit (consts.ssh) authorizedKeys;
   machine = consts.machines.${configName};
   archiveboxPort = 7777;
+  collaboraPort = 9980;
+  collaboraSPort = toString collaboraPort;
 
 in
 {
   imports =
     [
       ./hardware-configuration.nix
+      ../../common/hosts/configuration.nix
       ../../common/nix/configuration.nix
       ../../common/locale/configuration.nix
       ../../common/dnscrypt/configuration.nix
@@ -160,14 +163,86 @@ in
 
   services.nextcloud = {
     enable = true;
-    hostName = machine.ip;
+    hostName = machine.domains.cloud;
     config.adminpassFile = config.age.secrets.nextcloud-pass.path;
     package = pkgs.nextcloud29;
+    https = true;
 
     extraApps = {
-      inherit (config.services.nextcloud.package.packages.apps) onlyoffice;
+      inherit (config.services.nextcloud.package.packages.apps) richdocuments;
     };
     extraAppsEnable = true;
+  };
+
+  services.nginx.virtualHosts.${config.services.nextcloud.hostName} = {
+    forceSSL = true;
+    sslCertificate = config.age.secrets.nginx-selfsigned-crt.path;
+    sslCertificateKey = config.age.secrets.nginx-selfsigned-key.path;
+  };
+
+  # https://discourse.nixos.org/t/enabling-nextcloud-office/31349/3
+  virtualisation.oci-containers.containers.collabora = {
+    image = "docker.io/collabora/code:latest";
+    ports = [ "${collaboraSPort}:${toString collaboraPort}/tcp" ];
+    environment = {
+      dictionaries = "en_US";
+      extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
+      server_name = machine.domains.office;
+      aliasgroup1 = "https://${machine.domains.cloud}:443";
+    };
+    extraOptions = [
+      "--pull=newer"
+    ];
+  };
+
+  services.nginx.virtualHosts.${config.virtualisation.oci-containers.containers.collabora.environment.server_name} = {
+    forceSSL = true;
+    sslCertificate = config.age.secrets.nginx-selfsigned-crt.path;
+    sslCertificateKey = config.age.secrets.nginx-selfsigned-key.path;
+
+    extraConfig = ''
+      # static files
+      location ^~ /browser {
+        proxy_pass http://127.0.0.1:${collaboraSPort};
+        proxy_set_header Host $host;
+      }
+
+      # WOPI discovery URL
+      location ^~ /hosting/discovery {
+        proxy_pass http://127.0.0.1:${collaboraSPort};
+        proxy_set_header Host $host;
+      }
+
+      # Capabilities
+      location ^~ /hosting/capabilities {
+        proxy_pass http://127.0.0.1:${collaboraSPort};
+        proxy_set_header Host $host;
+     }
+
+     # main websocket
+     location ~ ^/cool/(.*)/ws$ {
+       proxy_pass http://127.0.0.1:${collaboraSPort};
+       proxy_set_header Upgrade $http_upgrade;
+       proxy_set_header Connection "Upgrade";
+       proxy_set_header Host $host;
+       proxy_read_timeout 36000s;
+     }
+
+     # download, presentation and image upload
+     location ~ ^/(c|l)ool {
+       proxy_pass http://127.0.0.1:${collaboraSPort};
+       proxy_set_header Host $host;
+     }
+
+     # Admin Console websocket
+     location ^~ /cool/adminws {
+       proxy_pass http://127.0.0.1:${collaboraSPort};
+       proxy_set_header Upgrade $http_upgrade;
+       proxy_set_header Connection "Upgrade";
+       proxy_set_header Host $host;
+       proxy_read_timeout 36000s;
+     }
+    '';
   };
 
   # by default, agenix does not look in your home dir for keys
@@ -196,6 +271,20 @@ in
         path = "nextcloud/password.txt";
       } // {
         owner = "nextcloud";
+      };
+
+      nginx-selfsigned-crt = mkSecret {
+        file = ../../secrets/nginx/nginx-selfsigned.crt.age;
+        path = "nginx/selfsigned.crt";
+      } // {
+        owner = "nginx";
+      };
+
+      nginx-selfsigned-key = mkSecret {
+        file = ../../secrets/nginx/nginx-selfsigned.key.age;
+        path = "nginx/selfsigned.key";
+      } // {
+        owner = "nginx";
       };
 
     };

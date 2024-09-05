@@ -20,6 +20,8 @@ in
   "cloudflare/password.age".publicKeys = dekaiUsers;
   "matterbridge/config.toml.age".publicKeys = dekaiUsers;
   "nextcloud/password.age".publicKeys = dekaiUsers;
+  "nginx/nginx-selfsigned.crt.age".publicKeys = dekaiUsers;
+  "nginx/nginx-selfsigned.key.age".publicKeys = dekaiUsers;
 
   "headpats/tanuki-hashed-password.age".publicKeys = headpatUsers;
 

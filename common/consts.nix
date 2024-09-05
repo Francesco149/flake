@@ -19,6 +19,14 @@ rec {
       print = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCPEDxFgoqXmI5JBEfaH6J+WghwQQ12XUhfOYb6I2PrAI5pOpDcnFRYbzZz9BfLuZrUAz0xX2/lglsv9ThaxPSqxOHJ72IKxDt8geJ7ecIPFKmutXivRWK2zjrKOMsKr1sq49qDs6QyCQOgVsqE8YBwcahnRmny0tq9lcVY5YX8H5sz7WuOJJI+BzczJHCnv44aZdFUAIwMbDQ2/cDR8KZuMNGmJ9MIU6x5yzDXO8BNbebRJKQlnp75c1xd1Ynd695qbdYLgVSX2y9sV5vEjlfOa7PffNeO5JSGf8EVWAN3pi3Wp0Y5Zz369vsK7hbr9uGm8gQSxHQN3qcdUM91TmJP/aZa8lFlDGd3lPXOOM2f4Ib/Z4W90l03ABjSt7M3eCgLV9jbfB5quRWsIU0a3KYgXePyPp2lUIuZuFpX5lMfkm4nWLBFkRXJhSyTxwnVd3evqGKIhrwFtpOaDlozdRbB+8PwssvDyHbsUu/WFv6O+4Af7UXlLwzFcSab/+zljUcOzln2B9vtzdhzFXkY4C/2HZleXsC+832haAWqQlKKrGZUGswh6Xs4hbu99YsZu1wPs+hxCsqUcqJ+MNgSOgNpp8NbmVQupaoqNrXghZKOfI+Dm2Z9yHjrm4p+PBFwbldaNX3h35P6n0Un8ihzcQfbJkXZY1anvgwXZhj2vgrQtw== root@nixos";
       ip = mkip 4;
       iface = "eth0";
+
+      domains = builtins.listToAttrs (
+        map (x: { name = x; value = "${x}.local"; })
+          [
+            "cloud"
+            "office"
+          ]
+      );
     };
 
     streampc = {
