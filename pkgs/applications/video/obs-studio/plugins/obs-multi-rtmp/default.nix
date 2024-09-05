@@ -18,20 +18,17 @@ stdenv.mkDerivation rec {
     (lib.cmakeBool "ENABLE_QT" true)
     (lib.cmakeBool "ENABLE_FRONTEND_API" true)
     (lib.cmakeBool "CMAKE_COMPILE_WARNING_AS_ERROR" false)
-
-    (lib.cmakeFeature "CMAKE_CXX_STANDARD" "20")
-    (lib.cmakeBool "CMAKE_CXX_STANDARD_REQUIRED" true)
-    (lib.cmakeFeature "QT_VERSION" "6")
-    (lib.cmakeFeature "CMAKE_BUILD_TYPE" "RelWithDebInfo")
-  ];
-
-  patches = [
-    # after 0.5.0.3-OBS30, the linux build doesn't install files in the correct location unless
-    # we patch them back
-    ./fix-build.patch
   ];
 
   dontWrapQtApps = true;
+
+  # install dirs changed after 0.5.0.3-OBS30
+  postInstall = ''
+    mkdir -p $out/{lib,share/obs/obs-plugins/}
+    mv $out/dist/obs-multi-rtmp/data $out/share/obs/obs-plugins/obs-multi-rtmp
+    mv $out/dist/obs-multi-rtmp/bin/64bit $out/lib/obs-plugins
+    rm -rf $out/dist
+  '';
 
   meta = with lib; {
     homepage = "https://github.com/sorayuki/obs-multi-rtmp/";
