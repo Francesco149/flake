@@ -10,7 +10,7 @@ let
       plugins = with obs-studio-plugins; [
         obs-gstreamer
         obs-move-transition
-        obs-multi-rtmp
+        pkgs.obs-multi-rtmp # temporary version bump until upstreamed
         obs-source-switcher
         obs-teleport
       ];

@@ -46,4 +46,7 @@ self: super: with super; {
         maintainers = with maintainers; [ lolisamurai ];
       };
     };
+
+  # temporary version bump until fixed upstream
+  obs-multi-rtmp = qt6Packages.callPackage ./pkgs/applications/video/obs-studio/plugins/obs-multi-rtmp { };
 }
