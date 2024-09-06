@@ -13,6 +13,7 @@ let
         pkgs.obs-multi-rtmp # temporary version bump until upstreamed
         obs-source-switcher
         obs-teleport
+        obs-text-pthread
       ];
     });
 
