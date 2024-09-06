@@ -81,7 +81,13 @@ these are just random notes for myself, things discovered through trial and erro
   overloaded it can't ever recover and you get really choppy video. normal latency doesn't seem
   to run into this issue even in the event that there is a brief encoder overload
 
-* for the n305 beelink mini-pc I use, I like to limit the cpu to 12 watts from the BIOS and set the
+* for the n305 beelink mini-pc I use, I like to limit the cpu to 12.5 watts from the BIOS and set
   max igpu frequency to 900 mhz. I've experienced system crashes from the igpu boosting, so
-  disable that as well. I also set the PSYS slope to 80 (0.8x) and it seemed to lower temperatures
-  a lot and maybe even perform slightly better overall (less throttling?)
+  disable that as well.
+
+* it's possible to do IMON curve and offset tweaks to push past the power limits (which can be
+  useful for gaming on low end laptops) but I actually want the opposite.
+  I set the PSYS slope to 50 (0.5x) and it seemed to lower temperatures. it also felt like the
+  GPU was unstable (I remember reliably crashing with turbo boost enabled for the iGPU). so I
+  set its IMON curve to 50 and offset to -7000 as well as raise max voltage to 1.6v to make it
+  always run at highest power with a lower max freq which I'm hoping will improve its stability.
