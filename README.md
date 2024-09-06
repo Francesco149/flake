@@ -80,3 +80,7 @@ these are just random notes for myself, things discovered through trial and erro
 * the low latency quicksync preset seems to stress the encoder much more, and once it gets
   overloaded it can't ever recover and you get really choppy video. normal latency doesn't seem
   to run into this issue even in the event that there is a brief encoder overload
+
+* for the n305 beelink mini-pc I use, I like to limit the cpu to 7 watts from the BIOS and set the
+  max igpu frequency to 900 mhz. I've experienced system crashes from the igpu boosting, so
+  disable that as well
