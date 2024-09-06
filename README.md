@@ -91,3 +91,6 @@ these are just random notes for myself, things discovered through trial and erro
   GPU was unstable (I remember reliably crashing with turbo boost enabled for the iGPU). so I
   set its IMON curve to 50 and offset to -7000 as well as raise max voltage to 1.6v to make it
   always run at highest power with a lower max freq which I'm hoping will improve its stability.
+
+* I also disabled spread spectrum. not sure if it affects stability or not but I had a quick
+  crash when I tried raising it to 6% from 1.5%
