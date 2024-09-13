@@ -95,3 +95,8 @@ these are just random notes for myself, things discovered through trial and erro
 
 * I also disabled spread spectrum. not sure if it affects stability or not but I had a quick
   crash when I tried raising it to 6% from 1.5%
+
+* I replaced the stock 12v 3a psu with a 12v 5a one since I was pretty much constantly maxing
+  out the old one and to my surprise, the cpu usage went down and I seem to have more headroom
+  than before. it's very possible that the old psu was causing it to throttle itself down due
+  to insufficient power delivery. I think I could have it at stock settings with no instability now
