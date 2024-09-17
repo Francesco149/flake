@@ -189,7 +189,7 @@ in
         ${guvc} --device=/dev/video0 --resolution=960x540 --fps=60 --profile=/home/${user}/cam.gpfl --render_window=full --audio=none &
         ${guvc} --device=/dev/video2 --resolution=640x480 --fps=60 --audio=none &
 
-        LV2_PATH=${pkgs.bolliedelayxt-lv2}/lib/lv2/ ${binary "carla"} /home/${user}/stream-linux.carxp &
+        LV2_PATH=${pkgs.bolliedelayxt-lv2}/lib/lv2/ ${pkgs.carla}/bin/carla-jack-multi /home/${user}/stream-linux.carxp &
         ${custom-obs}/bin/obs &
       '' + (builtins.concatStringsSep "\n" (map (x: "${binary x} &") apps));
     };
