@@ -189,8 +189,21 @@ in
         ${guvc} --device=/dev/video0 --resolution=960x540 --fps=60 --profile=/home/${user}/cam.gpfl --render_window=full --audio=none &
         ${guvc} --device=/dev/video2 --resolution=640x480 --fps=60 --audio=none &
 
-        LV2_PATH=${pkgs.bolliedelayxt-lv2}/lib/lv2/ ${pkgs.carla}/bin/carla-jack-multi /home/${user}/stream-linux.carxp &
-        ${custom-obs}/bin/obs &
+        ${custom-obs}/bin/obs --disable-shutdown-check &
+
+        # NOTE:
+        # the only way I could get this to work the way I want to is to first start regular
+        # carla, then start the -jack-multi version and use that to manage plugins.
+        # I want to be able to directly connect plugins to app audio output/inputs. regular
+        # carla has an internal/external canvas and plugins are only on the internal canvas
+        # and it gets annoying to route audio in and out of it. running only the -multi instance
+        # crashes obs for some reason.
+        # also, if I accidentally crash/close the -multi instance, it doesn't kill obs and I can
+        # restart it which is nice
+
+        ${pkgs.carla}/bin/carla &
+        sleep 10
+        ${pkgs.carla}/bin/carla-jack-multi /home/${user}/stream-linux.carxp &
       '' + (builtins.concatStringsSep "\n" (map (x: "${binary x} &") apps));
     };
 
