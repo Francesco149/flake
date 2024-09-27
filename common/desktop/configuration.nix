@@ -37,6 +37,7 @@ in
   };
 
   programs.nm-applet.enable = true;
+  programs.nix-ld.enable = true; # to run non-nixos bins
 
   hardware.bluetooth = {
     enable = true;
