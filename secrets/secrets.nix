@@ -27,4 +27,10 @@ in
 
   "barrier/Barrier.pem.age".publicKeys = streampcUsers;
   "chatterino/overlay.json.age".publicKeys = streampcUsers;
+  "obs/profiles/stream1536x864/basic.ini.age".publicKeys = streampcUsers;
+  "obs/profiles/stream1536x864/streamEncoder.json.age".publicKeys = streampcUsers;
+  "obs/profiles/stream1536x864/service.json.age".publicKeys = streampcUsers;
+  "obs/profiles/stream1536x864/obs-multi-rtmp.json.age".publicKeys = streampcUsers;
+  "obs/scenes/streamscenes.json.age".publicKeys = streampcUsers;
+  "obs/streampc-global.ini.age".publicKeys = streampcUsers;
 }
