@@ -1,0 +1,549 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!DOCTYPE CARLA-PROJECT>
+<CARLA-PROJECT VERSION='2.5'>
+ <EngineSettings>
+  <ForceStereo>false</ForceStereo>
+  <PreferPluginBridges>false</PreferPluginBridges>
+  <PreferUiBridges>true</PreferUiBridges>
+  <UIsAlwaysOnTop>false</UIsAlwaysOnTop>
+  <MaxParameters>200</MaxParameters>
+  <UIBridgesTimeout>4000</UIBridgesTimeout>
+ </EngineSettings>
+
+ <Transport>
+  <BeatsPerMinute>120</BeatsPerMinute>
+ </Transport>
+
+ <!-- Bollie Delay XT -->
+ <Plugin>
+  <Info>
+   <Type>LV2</Type>
+   <Name>Bollie Delay XT</Name>
+   <URI>https://ca9.eu/lv2/bolliedelayxt</URI>
+  </Info>
+
+  <Data>
+   <Active>Yes</Active>
+   <ControlChannel>1</ControlChannel>
+   <Options>0x0</Options>
+
+   <Parameter>
+    <Index>0</Index>
+    <Name>Enabled</Name>
+    <Symbol>CP_ENABLED</Symbol>
+    <Value>1</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>1</Index>
+    <Name>Trails</Name>
+    <Symbol>CP_TRAILS</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>2</Index>
+    <Name>Tempo Mode</Name>
+    <Symbol>CP_TEMPO_MODE</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>3</Index>
+    <Name>Ping Pong on</Name>
+    <Symbol>CP_PING_PONG</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>5</Index>
+    <Name>User-Tempo</Name>
+    <Symbol>CP_TEMPO_USER</Symbol>
+    <Value>120</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>6</Index>
+    <Name>Div. Ch. 1</Name>
+    <Symbol>CP_TEMPO_DIV_CH1</Symbol>
+    <Value>3</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>7</Index>
+    <Name>Div. Ch. 2</Name>
+    <Symbol>CP_TEMPO_DIV_CH2</Symbol>
+    <Value>3</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>8</Index>
+    <Name>Feedback</Name>
+    <Symbol>CP_FB</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>9</Index>
+    <Name>Crossfeed</Name>
+    <Symbol>CP_CF</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>10</Index>
+    <Name>Dry Gain</Name>
+    <Symbol>CP_GAIN_DRY</Symbol>
+    <Value>-97</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>11</Index>
+    <Name>Wet Gain</Name>
+    <Symbol>CP_GAIN_WET</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>12</Index>
+    <Name>Modulation on</Name>
+    <Symbol>CP_MOD_ON</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>13</Index>
+    <Name>Modulation Phase</Name>
+    <Symbol>CP_MOD_PHASE</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>14</Index>
+    <Name>Mod. Depth</Name>
+    <Symbol>CP_MOD_DEPTH</Symbol>
+    <Value>2</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>15</Index>
+    <Name>Mod. Rate</Name>
+    <Symbol>CP_MOD_RATE</Symbol>
+    <Value>0.100000001490116</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>16</Index>
+    <Name>High Cut Pre On</Name>
+    <Symbol>CP_HCF_PRE_ON</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>17</Index>
+    <Name>High Cut Pre Freq.</Name>
+    <Symbol>CP_HCF_PRE_FREQ</Symbol>
+    <Value>7500</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>18</Index>
+    <Name>High Cut Pre Q.</Name>
+    <Symbol>CP_HCF_PRE_Q</Symbol>
+    <Value>0.707000017166138</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>19</Index>
+    <Name>Low Cut Pre On</Name>
+    <Symbol>CP_LCF_PRE_ON</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>20</Index>
+    <Name>Low Cut Pre Freq.</Name>
+    <Symbol>CP_LCF_PRE_FREQ</Symbol>
+    <Value>20</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>21</Index>
+    <Name>Low Cut Pre Q.</Name>
+    <Symbol>CP_LCF_PRE_Q</Symbol>
+    <Value>0.707000017166138</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>22</Index>
+    <Name>High Cut Feedback On</Name>
+    <Symbol>CP_HCF_FB_ON</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>23</Index>
+    <Name>High Cut Feedback Freq.</Name>
+    <Symbol>CP_HCF_FB_FREQ</Symbol>
+    <Value>7500</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>24</Index>
+    <Name>High Cut Feedback Q.</Name>
+    <Symbol>CP_HCF_FB_Q</Symbol>
+    <Value>0.707000017166138</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>25</Index>
+    <Name>Low Cut Feedback On</Name>
+    <Symbol>CP_LCF_FB_ON</Symbol>
+    <Value>0</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>26</Index>
+    <Name>Low Cut Feedback Freq.</Name>
+    <Symbol>CP_LCF_FB_FREQ</Symbol>
+    <Value>20</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>27</Index>
+    <Name>Low Cut Feedback Q.</Name>
+    <Symbol>CP_LCF_FB_Q</Symbol>
+    <Value>0.707000017166138</Value>
+   </Parameter>
+
+   <CustomData>
+    <Type>http://kxstudio.sf.net/ns/carla/property</Type>
+    <Key>CarlaSkinIsCompacted</Key>
+    <Value>false</Value>
+   </CustomData>
+  </Data>
+ </Plugin>
+
+ <!-- Audio Gain (Stereo) -->
+ <Plugin>
+  <Info>
+   <Type>INTERNAL</Type>
+   <Name>Audio Gain (Stereo)</Name>
+   <Label>audiogain_s</Label>
+  </Info>
+
+  <Data>
+   <Active>Yes</Active>
+   <ControlChannel>1</ControlChannel>
+   <Options>0x0</Options>
+
+   <Parameter>
+    <Index>0</Index>
+    <Name>Gain</Name>
+    <Value>1.5</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>1</Index>
+    <Name>Apply Left</Name>
+    <Value>1</Value>
+   </Parameter>
+
+   <Parameter>
+    <Index>2</Index>
+    <Name>Apply Right</Name>
+    <Value>1</Value>
+   </Parameter>
+  </Data>
+ </Plugin>
+
+ <ExternalPatchbay>
+  <Connection>
+   <Source>Music Sink (Out):capture_FL</Source>
+   <Target>Carla:audio-in1</Target>
+  </Connection>
+  <Connection>
+   <Source>Music Sink (Out):capture_FL</Source>
+   <Target>Carla.249/Bollie Delay XT:In Ch. 1</Target>
+  </Connection>
+  <Connection>
+   <Source>Music Sink (Out):capture_FL</Source>
+   <Target>Carla.249/Audio Gain (Stereo):input_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Music Sink (Out):capture_FR</Source>
+   <Target>Carla:audio-in2</Target>
+  </Connection>
+  <Connection>
+   <Source>Music Sink (Out):capture_FR</Source>
+   <Target>Carla.249/Bollie Delay XT:In Ch. 2</Target>
+  </Connection>
+  <Connection>
+   <Source>Music Sink (Out):capture_FR</Source>
+   <Target>Carla.249/Audio Gain (Stereo):input_2</Target>
+  </Connection>
+  <Connection>
+   <Source>Elgato HD60 X Analog Stereo:capture_FL</Source>
+   <Target>OBS Studio: elgato-audio:in_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Elgato HD60 X Analog Stereo:capture_FR</Source>
+   <Target>OBS Studio: elgato-audio:in_2</Target>
+  </Connection>
+  <Connection>
+   <Source>USB PnP Audio Device Mono:capture_MONO</Source>
+   <Target>OBS Studio: mic:in_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Carla:audio-out1</Source>
+   <Target>sound black hole:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>Carla:audio-out2</Source>
+   <Target>sound black hole:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FL</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FR</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FL-193</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FR-194</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FL-205</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FR-206</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FL-214</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FR-215</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FL-224</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FR-225</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FL-228</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FR-229</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FL-239</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FR-240</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FL-255</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FR-256</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FL-247</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>OBS/OBS-Monitor:output_FR-248</Source>
+   <Target>Built-in Audio Analog Stereo:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>Carla.249/Bollie Delay XT:Out Ch. 1</Source>
+   <Target>Music Delayed Sink (In):playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>Carla.249/Bollie Delay XT:Out Ch. 2</Source>
+   <Target>Music Delayed Sink (In):playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>Firefox:output_FL</Source>
+   <Target>sound black hole:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>Firefox:output_FR</Source>
+   <Target>sound black hole:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>mpv:output_FL</Source>
+   <Target>sound black hole:playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>mpv:output_FL</Source>
+   <Target>Music Sink (In):playback_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>mpv:output_FR</Source>
+   <Target>sound black hole:playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>mpv:output_FR</Source>
+   <Target>Music Sink (In):playback_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>Carla.249/Audio Gain (Stereo):output_1</Source>
+   <Target>Firefox:input_FL</Target>
+  </Connection>
+  <Connection>
+   <Source>Carla.249/Audio Gain (Stereo):output_2</Source>
+   <Target>Firefox:input_FR</Target>
+  </Connection>
+  <Connection>
+   <Source>Music Delayed Sink (In):monitor_FL</Source>
+   <Target>OBS Studio: music:in_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Music Delayed Sink (In):monitor_FR</Source>
+   <Target>OBS Studio: music:in_2</Target>
+  </Connection>
+  <Connection>
+   <Source>Quiet Game Compressed Sink (In):monitor_FL</Source>
+   <Target>OBS Studio: game-com-vod:in_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Quiet Game Compressed Sink (In):monitor_FR</Source>
+   <Target>OBS Studio: game-com-vod:in_2</Target>
+  </Connection>
+  <Connection>
+   <Source>Other Audio Vod Sink (In):monitor_FL</Source>
+   <Target>OBS Studio: other-vod:in_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Other Audio Vod Sink (In):monitor_FR</Source>
+   <Target>OBS Studio: other-vod:in_2</Target>
+  </Connection>
+  <Connection>
+   <Source>Other Audio NoVod Sink (In):monitor_FL</Source>
+   <Target>OBS Studio: other-novod:in_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Other Audio NoVod Sink (In):monitor_FR</Source>
+   <Target>OBS Studio: other-novod:in_2</Target>
+  </Connection>
+  <Connection>
+   <Source>Compressed Other Audio Vod Sink (In):monitor_FL</Source>
+   <Target>OBS Studio: other-com-vod:in_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Compressed Other Audio Vod Sink (In):monitor_FR</Source>
+   <Target>OBS Studio: other-com-vod:in_2</Target>
+  </Connection>
+  <Connection>
+   <Source>Compressed Other Audio NoVod Sink (In):monitor_FL</Source>
+   <Target>OBS Studio: other-com-novod:in_1</Target>
+  </Connection>
+  <Connection>
+   <Source>Compressed Other Audio NoVod Sink (In):monitor_FR</Source>
+   <Target>OBS Studio: other-com-novod:in_2</Target>
+  </Connection>
+  <Positions>
+   <Position x1="170" y1="1407">
+    <Name>Music Sink (Out)</Name>
+   </Position>
+   <Position x1="1572" y1="270" x2="2562" y2="1945">
+    <Name>USB PnP Audio Device Analog Stereo</Name>
+   </Position>
+   <Position x1="885" y1="1682" x2="2514" y2="2019">
+    <Name>Elgato HD60 X Analog Stereo</Name>
+   </Position>
+   <Position x1="1603" y1="84" x2="3265" y2="1502">
+    <Name>Built-in Audio Analog Stereo</Name>
+   </Position>
+   <Position x1="933" y1="1255" x2="2508" y2="2167">
+    <Name>USB PnP Audio Device Mono</Name>
+   </Position>
+   <Position x1="1573" y1="193">
+    <Name>Music Delayed Sink (Out)</Name>
+   </Position>
+   <Position x1="1078" y1="18">
+    <Name>Quiet Game Compressed Sink (Out)</Name>
+   </Position>
+   <Position x1="1078" y1="92">
+    <Name>Other Audio Vod Sink (Out)</Name>
+   </Position>
+   <Position x1="1078" y1="166">
+    <Name>Other Audio NoVod Sink (Out)</Name>
+   </Position>
+   <Position x1="1078" y1="240">
+    <Name>Compressed Other Audio Vod Sink (Out)</Name>
+   </Position>
+   <Position x1="1078" y1="314">
+    <Name>Compressed Other Audio NoVod Sink (Out)</Name>
+   </Position>
+   <Position x1="815" y1="118">
+    <Name>Carla</Name>
+   </Position>
+   <Position x1="2572" y1="1369">
+    <Name>OBS/OBS-Monitor</Name>
+   </Position>
+   <Position x1="1320" y1="836">
+    <Name>sound black hole</Name>
+   </Position>
+   <Position x1="333" y1="948">
+    <Name>Music Sink (In)</Name>
+   </Position>
+   <Position x1="867" y1="1518">
+    <Name>Music Delayed Sink (In)</Name>
+   </Position>
+   <Position x1="854" y1="1599">
+    <Name>Quiet Game Compressed Sink (In)</Name>
+   </Position>
+   <Position x1="969" y1="1178">
+    <Name>Other Audio Vod Sink (In)</Name>
+   </Position>
+   <Position x1="921" y1="1442">
+    <Name>Other Audio NoVod Sink (In)</Name>
+   </Position>
+   <Position x1="879" y1="1316">
+    <Name>Compressed Other Audio Vod Sink (In)</Name>
+   </Position>
+   <Position x1="866" y1="1377">
+    <Name>Compressed Other Audio NoVod Sink (In)</Name>
+   </Position>
+   <Position x1="3270" y1="1735" x2="3266" y2="1685">
+    <Name>Midi-Bridge</Name>
+   </Position>
+   <Position x1="1878" y1="208" x2="1409" y2="55">
+    <Name>BLE MIDI 1</Name>
+   </Position>
+   <Position x1="638" y1="1330">
+    <Name>Firefox</Name>
+   </Position>
+   <Position x1="139" y1="920">
+    <Name>mpv</Name>
+   </Position>
+   <Position x1="624" y1="1499" pluginId="0">
+    <Name>Carla.249/Bollie Delay XT</Name>
+   </Position>
+   <Position x1="416" y1="1317" pluginId="1">
+    <Name>Carla.249/Audio Gain (Stereo)</Name>
+   </Position>
+  </Positions>
+ </ExternalPatchbay>
+</CARLA-PROJECT>

@@ -11,6 +11,7 @@ with config; {
   home.stateVersion = "24.05";
 
   xdg.dataFile."chatterino/Settings/window-layout.json".source = ./chatterino/overlay-window-layout.json;
+  home.file."stream-linux.carxp".source = ./carla/stream-linux.carxp;
 
   xdg.configFile."falkTX/Carla2.conf".text = ''
 [General]
