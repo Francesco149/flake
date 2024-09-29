@@ -125,6 +125,7 @@
               {
                 home-manager.useGlobalPkgs = true; # instead of having its own private nixpkgs
                 home-manager.useUserPackages = true; # install to /etc/profiles instead of ~/.nix-profile
+                home-manager.backupFileExtension = "backup"; # rename files to .backup if it would overwrite
                 home-manager.extraSpecialArgs = {
                   inherit user; # pass user to modules in conf (home.nix or whatever)
                   configName = conf.configName;
