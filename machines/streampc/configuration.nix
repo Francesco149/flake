@@ -21,6 +21,7 @@ in
 {
   imports = [
     ./hardware-configuration.nix
+    ../../common/limits/configuration.nix
     ../../common/hosts/configuration.nix
     ../../common/mitigations/configuration.nix
     ../../common/i915/configuration.nix

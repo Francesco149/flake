@@ -7,6 +7,7 @@ in
 {
 
   imports = [
+    ../limits/configuration.nix
     ../hosts/configuration.nix
     ../mitigations/configuration.nix
     ../locale/configuration.nix
