@@ -224,8 +224,7 @@ in
       secretPath = path: "/etc/secrets/${path}";
 
       mkSecret = { file, path }: {
-        inherit file;
-        path = secretPath path;
+        inherit file path;
         symlink = false;
         owner = "${user}";
         group = "users";
@@ -247,7 +246,7 @@ in
 
       barriers-private-key = mkSecret {
         file = ../../secrets/barrier/Barrier.pem.age;
-        path = "barrier/SSL/Barrier.pem";
+        path = secretPath "barrier/SSL/Barrier.pem";
       };
 
       chatterino-settings = mkSecret {
