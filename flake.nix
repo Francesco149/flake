@@ -73,6 +73,12 @@
         # find open alternatives to any proprietary software
         #config.allowUnfree = true;
 
+        # selectively enable unfree pkgs when absolutely needed
+        config.allowUnfreePredicate = pkg: builtins.elem (nixpkgs.lib.getName pkg) [
+          "nvidia-x11"
+          "nvidia-settings"
+        ];
+
         overlays = [
           (import ./custom-packages.nix)
         ];
