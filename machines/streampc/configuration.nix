@@ -230,17 +230,6 @@ in
         group = "users";
       };
 
-      obs-config-path = x: "/home/${user}/.config/obs-studio/${x}";
-      obs-profile-path = x: "profiles/stream1536x864/${x}";
-      obs-secret-path = x: ../../secrets/obs + "/${x}";
-      obs-config-profile-path = x: obs-config-path (obs-profile-path x);
-      obs-secret-profile-path = x: obs-secret-path (obs-profile-path x);
-
-      obs-secret = x: mkSecret {
-        file = obs-secret-profile-path "${x}.age";
-        path = obs-config-profile-path x;
-      };
-
     in
     {
 
@@ -252,21 +241,6 @@ in
       chatterino-settings = mkSecret {
         file = ../../secrets/chatterino/overlay.json.age;
         path = "/home/${user}/.local/share/chatterino/Settings/settings.json";
-      };
-
-      obs-basic = obs-secret "basic.ini";
-      obs-multi-rtmp = obs-secret "obs-multi-rtmp.json";
-      obs-service = obs-secret "service.json";
-      obs-streamEncoder = obs-secret "streamEncoder.json";
-
-      obs-streamscenes = x: mkSecret {
-        file = obs-secret-path "scenes/streamscenes.json.age";
-        path = obs-config-path "scenes/streamscenes.json";
-      };
-
-      obs-global = x: mkSecret {
-        file = obs-secret-path "streampc-global.ini.age";
-        path = obs-config-path "global.ini";
       };
 
     };
