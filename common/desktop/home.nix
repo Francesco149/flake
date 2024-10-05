@@ -165,7 +165,7 @@ with config; {
 
   services.barrier.client = {
     enable = true;
-    server = consts.machines.streampc.ip;
+    server = consts.machines.streampc-beelink-eq20-pro.ip;
     enableDragDrop = true;
   };
 
