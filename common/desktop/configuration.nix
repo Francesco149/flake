@@ -7,6 +7,7 @@ in
 {
 
   imports = [
+    ../users/configuration.nix
     ../limits/configuration.nix
     ../hosts/configuration.nix
     ../mitigations/configuration.nix
@@ -18,11 +19,7 @@ in
     ../autologin/configuration.nix
   ];
 
-  users.users.${user} = {
-    isNormalUser = true;
-    extraGroups = [ "networkmanager" "wheel" "adbusers" ];
-  };
-
+  users.users.${user}.extraGroups = [ "networkmanager" "adbusers" ];
   programs.adb.enable = true;
 
   services.libinput = {
