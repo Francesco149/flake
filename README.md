@@ -1,4 +1,31 @@
+# setting up a new machine remotely
+if you're not me, edit `machines/dummy/configuration.nix` to not have the ssh and mitigations
+settings and set up your own so you don't give me access to your machine.
+
+on the main machine, set up a directory in the flake for the new machine
+
+```sh
+cp -R ~/flake/machines/{dummy,mymachine}
+```
+
+on the target machine, clone the repo and build the dummy flake
+
+```sh
+nix-shell -p git --run 'git clone https://github.com/Francesco149/flake ~/flake'
+cd ~/flake
+nixos-generate-config --show-hardware-config > machines/dummy/hardware-configuration.nix
+git add machines/dummy/hardware-configuration.nix
+nixos-rebuild switch --use-remote-sudo --flake .#dummy
+scp machines/dummy/hardware-configuration.nix mainmachine:flake/machines/mymachine/
+```
+
+from the main machine, edit `flake.nix` and `machines/mymachine/configuration.nix`
+
+now you can remotely build the target machine (see for example `build-streampc.sh`)
+
 # setting up a new machine
+NOTE: this info is outdated TODO: update this info. follow the remote version
+
 set up your own hardware-specific config
 
 ```sh
