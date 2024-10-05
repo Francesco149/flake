@@ -2,7 +2,7 @@
 
 let
 
-  consts = import ../../common/consts.nix;
+  consts = import ../consts.nix;
   inherit (consts.ssh) authorizedKeys;
 
   custom-obs = with pkgs;
@@ -20,16 +20,14 @@ let
 in
 {
   imports = [
-    ./hardware-configuration.nix
-    ../../common/limits/configuration.nix
-    ../../common/hosts/configuration.nix
-    ../../common/mitigations/configuration.nix
-    ../../common/i915/configuration.nix
-    ../../common/nix/configuration.nix
-    ../../common/locale/configuration.nix
-    ../../common/gnome/configuration.nix
-    ../../common/mpv/configuration.nix
-    ../../common/autologin/configuration.nix
+    ../limits/configuration.nix
+    ../hosts/configuration.nix
+    ../mitigations/configuration.nix
+    ../nix/configuration.nix
+    ../locale/configuration.nix
+    ../gnome/configuration.nix
+    ../mpv/configuration.nix
+    ../autologin/configuration.nix
   ];
 
   boot.loader.systemd-boot.enable = true;
@@ -143,8 +141,8 @@ in
   # barrier server
 
   environment.etc = {
-    "barrier.conf".source = ../../common/barrier/barrier.conf;
-    "secrets/barrier/SSL/Fingerprints/TrustedClients.txt".source = ../../common/barrier/TrustedClients.txt;
+    "barrier.conf".source = ../barrier/barrier.conf;
+    "secrets/barrier/SSL/Fingerprints/TrustedClients.txt".source = ../barrier/TrustedClients.txt;
   };
 
   systemd.user.services.barriers = {
@@ -205,6 +203,9 @@ in
         ${pkgs.carla}/bin/carla &
         sleep 10
         ${pkgs.carla}/bin/carla-jack-multi /home/${user}/stream-linux.carxp &
+
+        mkdir -p /home/${user}/firefox-music.d
+        ${pkgs.firefox}/bin/firefox --profile /home/${user}/firefox-music.d --no-remote --kiosk --kiosk-monitor 1 https://francesco149.github.io/?visualize=true
       '' + (builtins.concatStringsSep "\n" (map (x: "${binary x} &") apps));
     };
 

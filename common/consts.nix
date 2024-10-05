@@ -29,9 +29,15 @@ rec {
       );
     };
 
-    streampc = {
+    streampc-beelink-eq20-pro = {
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINqSrHdrIXXD5I8Ho0mCbbGvocmgsGR/ZjWylIUS/cIX loli@streampc";
       print = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCtvGlJyJWlTygTiUxhdQEKPz5iOnQDpXq0NoK/fx23oTBYoAM+NxTkK+VMTkSF1E/yVVY2B/HCRrTpf9dKPNE0praYCBcQJYPBWwDVtGI4bOTKm3A7bFxUVxVo0nPVRUHJbZ0rnzyUsUeTD1GLRyYgZm+zyQysK1i/Qurw0yyMNIbvwjZJyr8pdsW6dt/tJRtk743ZNR8u4uPg9tEW2N/R0ZV8HjTOv7a+UAq5P4jFFSULtionQChwhJV4kFAJ/9YQxm2GXU3z0v7/IgK2eqv5yq7DPYHkx1u9y58/FtFGlJXhS7u0xZtX3lsT56Q2cVBb45m8tSro+YNC/gKSYCshuVjzZENbVh+852a+2q90XBVf3pe2j3g3mT9mDPln0OPRaZXf7fZPW7keJQ6gtkBOTfYvAOGe1Rl/nyJMLnUZijxtidQHD9NPbHwEUPWy2b/+IpSilAKLxSUb3ykyZk3VrBeq342ly3QjE9+0tTdX+oFZPL1vIVVnifcwiDqMFhKo+XdqgIS/ZO0nZVEswf/rkiE2nTa9GG/lTJgTVNkMCoyiBy1bvJ8sSUJPRrfu9b3ZgwDc5j4v6U0f1naJvMaITQuf89VnApxIuVIgWfiq6/dk+aFQ7BrxeTcUb0wjLYldetqxvyFL2KAAHBJiK2yR5xSq9S6rB4aV0+S4CLEvTQ== root@streampc";
+      ip = mkip 202;
+    };
+
+    streampc-7800x3d = {
+      key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINqSrHdrIXXD5I8Ho0mCbbGvocmgsGR/ZjWylIUS/cIX loli@streampc";
+      print = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCkEmB97CA5rkCZeVzu0cA2uALbfNkXsq4x3by7+fyeI8Lrbl1y2mC+9+Lfo7rfbNg9MZu6Bx1l+IVwJlJmk0Y7r8Vya524ZTWG1IV3mt5dPjkzhfaPIHi/E/A9XS85CflRclZyVpTILDit+k19ozb3d/97cZy0qGy2U0NpuCB+hTjF8aRWviKpxfraKOMV+TTMiMfjJook3vlQQOhw/HRHB34BSTLUrCH6kTp017uehsvko0fM6+Nqa27jmgl1bBxXI2wyImcHiE0VejwxgEIRLfog/Y58Wd7C/DIpgb84YK+WNhVN0dK9ChAa9KnV47ALMDpQiBCMUCoQUJN2HaKTcUljQyPE7dM4sFp/M0rqssxdStAtE7tDHc8Kvd3pEgiUtDWts7S4T04MCGq0aGwHWfyRxfq/KE4/ofBlzmqpuZZltd9RaYtsWuTAojkqbuv5dslO2mqkvlUfCm/wBiryJqigvxKrymHJBwNEYEoQ0+WttKShACFsa6U+BfFLTGEh6eevi1/gMFaZNgYzn0/GcGWfq7Ai1rk0fFR73hQorcIBv1yqO4RjDFqoir36LGdJWM1Y45KI1Aq5DP5bFnet9JcH+aSgu30UTZ0lYaBL/qo/K/S7w6Ls/md79eJ3u6g9+RfeczI9AWwy29NLO5Nhdu+j+V5dtD/JSOQZj2B+3Q== root@streampc";
       ip = mkip 202;
     };
 

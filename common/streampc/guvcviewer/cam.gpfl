@@ -14,7 +14,7 @@ ID{0x00980918};CHK{0:2:1:2}=VAL{2}
 #White Balance Temperature
 ID{0x0098091a};CHK{2800:12500:100:5000}=VAL{7200}
 #Sharpness
-ID{0x0098091b};CHK{0:4:1:2}=VAL{2}
+ID{0x0098091b};CHK{0:4:1:2}=VAL{0}
 #Auto Exposure
 ID{0x009a0901};CHK{0:3:1:0}=VAL{2}
 #Exposure Time, Absolute
