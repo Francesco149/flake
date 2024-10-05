@@ -182,6 +182,9 @@
         sys "headpats" mailserver //
         sys "dekai" unstable //
 
+        # dummy config to init a machine for remote rebuilds. also template for new configs
+        sys "dummy" unstable //
+
         { };
 
       # use nix-shell or nix develop to access this shell
