@@ -7,10 +7,6 @@
     ../../common/i915/configuration.nix
   ];
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.consoleMode = "max"; # hdmi switch is happier if we dont switch res during boot
-  boot.loader.efi.canTouchEfiVariables = true;
-
   boot.initrd.luks.devices."luks-83b8c10a-431d-4a92-b9b5-26320303d2c0".device = "/dev/disk/by-uuid/83b8c10a-431d-4a92-b9b5-26320303d2c0";
 
   networking = {

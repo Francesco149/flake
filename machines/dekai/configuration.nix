@@ -14,14 +14,12 @@ in
   imports =
     [
       ./hardware-configuration.nix
+      ../../common/boot/configuration.nix
       ../../common/hosts/configuration.nix
       ../../common/nix/configuration.nix
       ../../common/locale/configuration.nix
       ../../common/dnscrypt/configuration.nix
     ];
-
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   boot.initrd.luks.devices."luks-901be401-55e0-4047-a286-bb53898060de".device = "/dev/disk/by-uuid/901be401-55e0-4047-a286-bb53898060de";
 

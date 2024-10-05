@@ -7,6 +7,7 @@ in
 {
 
   imports = [
+    ../boot/configuration.nix
     ../users/configuration.nix
     ../limits/configuration.nix
     ../hosts/configuration.nix
