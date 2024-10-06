@@ -205,7 +205,7 @@ in
         ${pkgs.carla}/bin/carla-jack-multi /home/${user}/stream-linux.carxp &
 
         mkdir -p /home/${user}/firefox-music.d
-        ${pkgs.firefox}/bin/firefox --profile /home/${user}/firefox-music.d --no-remote --kiosk --kiosk-monitor 1 https://francesco149.github.io/?visualize=true
+        ${pkgs.firefox}/bin/firefox --profile /home/${user}/firefox-music.d --no-remote --kiosk --kiosk-monitor 1 https://francesco149.github.io/?visualize=true &
       '' + (builtins.concatStringsSep "\n" (map (x: "${binary x} &") apps));
     };
 
