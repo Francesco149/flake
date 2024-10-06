@@ -185,7 +185,7 @@ in
       };
 
       script = ''
-        ${guvc} --device=/dev/video0 --resolution=960x540 --fps=60 --profile=/home/${user}/cam.gpfl --render_window=full --audio=none &
+        ${guvc} --device=/dev/video0 --resolution=1920x1080--fps=60 --profile=/home/${user}/cam.gpfl --render_window=full --audio=none &
         ${guvc} --device=/dev/video2 --resolution=640x480 --fps=60 --audio=none &
 
         ${custom-obs}/bin/obs --disable-shutdown-check &
