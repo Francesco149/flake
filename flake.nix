@@ -177,6 +177,7 @@
         hmsys "tanuki" unstable //
         hmsys "streampc-beelink-eq20-pro" unstable //
         hmsys "streampc-7800x3d" unstable //
+        hmsys "streampc-5900x" unstable //
         hmsys "nixos-wsl-5900x" wsl //
 
         sys "headpats" mailserver //
