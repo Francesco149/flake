@@ -22,6 +22,9 @@ scp machines/dummy/hardware-configuration.nix mainmachine:flake/machines/mymachi
 
 from the main machine, edit `flake.nix` and `machines/mymachine/configuration.nix`
 
+check the bottom of `/etc/nixos/configuration.nix` on the target machines and copy the stateVersion
+line to your `configuration.nix`
+
 now you can remotely build the target machine (see for example `build-streampc.sh`)
 
 # setting up a new machine
@@ -35,6 +38,9 @@ nixos-generate-config --show-hardware-config > machines/mymachine/hardware-confi
 
 edit `machines/mymachine/configuration.nix` to your liking. you probably want to remove the
 ssh and mitigations configs as they would give me access to your machine and make it insecure
+
+check the bottom of `/etc/nixos/configuration.nix` and copy the stateVersion line to your
+`configuration.nix`
 
 add your own machine configuration to `flake.nix` in nixosConfigurations
 
