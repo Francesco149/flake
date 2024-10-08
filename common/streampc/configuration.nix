@@ -246,6 +246,4 @@ in
 
     };
 
-  system.stateVersion = "23.05";
-
 }
