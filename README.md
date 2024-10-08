@@ -11,7 +11,8 @@ cp -R ~/flake/machines/{dummy,mymachine}
 on the target machine, clone the repo and build the dummy flake
 
 ```sh
-nix-shell -p git --run 'git clone https://github.com/Francesco149/flake ~/flake'
+nix-shell -p git
+git clone https://github.com/Francesco149/flake ~/flake
 cd ~/flake
 nixos-generate-config --show-hardware-config > machines/dummy/hardware-configuration.nix
 git add machines/dummy/hardware-configuration.nix
@@ -24,44 +25,28 @@ from the main machine, edit `flake.nix` and `machines/mymachine/configuration.ni
 now you can remotely build the target machine (see for example `build-streampc.sh`)
 
 # setting up a new machine
-NOTE: this info is outdated TODO: update this info. follow the remote version
-
-set up your own hardware-specific config
+set up your own hardware-specific config (nixos-generate-config must be run on the target machine)
 
 ```sh
 cd ~/flake
-mkdir machines/my-machine
-cd machines/my-machine
-nixos-generate-config --dir .
+cp -R ~/flake/machines/{dummy,mymachine}
+nixos-generate-config --show-hardware-config > machines/mymachine/hardware-configuration.nix
 ```
 
-note: if you're doing this on a remote machine you could simply enable
-ssh on its stock `/etc/nixos/configuration.nix` and work on your local
-computer by doing:
-
-```
-mkdir machines/my-machine
-cd machines/my-machine
-ssh remotemachine sudo -S nixos-generate-config --show-hardware-config > hardware-configuration.nix
-dst='root@remotemachine'
-# edit configuration.nix, home.nix, flake.nix etc
-nixos-rebuild --flake .#my-machine --target-host $dst --build-host $dst switch
-# can also change build-host to localhost if the target is a slow machine
-```
-
-edit `configuration.nix` to your liking, you might want to import `../configuration.nix` like my other
-configs (see tanuki for an example)
+edit `machines/mymachine/configuration.nix` to your liking. you probably want to remove the
+ssh and mitigations configs as they would give me access to your machine and make it insecure
 
 add your own machine configuration to `flake.nix` in nixosConfigurations
 
 ```nix
-      sys "my-machine" unstable // # or hmsys if you want home-manager
+      sys "mymachine" unstable // # or hmsys if you want home-manager
 ```
 
-if you use home-manager, create and edit `machines/my-machine/home.nix` . see other machines
-for reference (tanuki for example)
+if you use home-manager, edit `machines/mymachine/home.nix` . see other machines
+for reference (`common/desktop/home.nix` for example)
 
-edit `secrets/secrets.nix` to have your own ssh key and secrets
+if you have any files you want to encrypt in the repo, edit `secrets/secrets.nix` to have your own
+ssh key and secrets
 
 # building from a fresh nixos install on the target machine
 note: you would only do this if you're on the actual specific machine that you're building
@@ -70,10 +55,9 @@ note: you would only do this if you're on the actual specific machine that you'r
 ```sh
 nix-shell -p git --run 'git clone https://github.com/Francesco149/flake ~/flake'
 cd ~/flake
-nix-shell -p git --run 'nix --extra-experimental-features nix-command --extra-experimental-features flakes develop' # or nix-shell
 nixos-rebuild switch --use-remote-sudo --flake .#tanuki
 
-# relog into your user or reboot
+# reboot
 ```
 
 where tanuki is the name of one of the nixosConfiguration entries in `flake.nix`
