@@ -125,3 +125,12 @@ this is to remind myself
 * start the music with `mus https://youtube...`
 * reload `stream-linux.carxp` on carla
 * make sure audio is fine on obs
+
+# known issues
+
+this is somewhat of a TODO list for myself
+
+* if anything causes the 2nd monitor to be disconnected, obs crashes and the visualizer glitches.
+  find a way to ensure that the display is always there even if disconnected
+* when mpv loops the playlist, it disappears and reappears as an audio device so you have to
+  re-connect it if the default output device is not where you want it to output
