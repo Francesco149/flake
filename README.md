@@ -117,3 +117,11 @@ these are just random notes for myself, things discovered through trial and erro
   out the old one and to my surprise, the cpu usage went down and I seem to have more headroom
   than before. it's very possible that the old psu was causing it to throttle itself down due
   to insufficient power delivery. I think I could have it at stock settings with no instability now
+
+# startup checklist for streampc
+this is to remind myself
+
+* select "music out" on the kiosk firefox for the music visualizer (but don't tick remember)
+* start the music with `mus https://youtube...`
+* reload `stream-linux.carxp` on carla
+* make sure audio is fine on obs
