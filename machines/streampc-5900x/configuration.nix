@@ -2,7 +2,7 @@
 {
   imports = [
     ./hardware-configuration.nix
-    ../../common/nvidia/configuration.nix
+    ../../common/amdgpu/configuration.nix
     ../../common/streampc/configuration.nix
   ];
 
