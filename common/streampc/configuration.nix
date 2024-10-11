@@ -49,6 +49,7 @@ in
     armcord
     chatterino2
     guvcview # NOTE: do NOT use the obs v4l camera, it has all sorts of performance issues. capture this
+    noto-fonts
 
     (pkgs.writeShellScriptBin "mus" ''
       mpv --audio-device='pipewire/music_sink' --no-video --ytdl-format=bestaudio --loop-playlist "$@"
