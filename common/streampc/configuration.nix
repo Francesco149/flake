@@ -187,8 +187,14 @@ in
       };
 
       script = ''
+        # webcam
         ${guvc} --device=/dev/video0 --resolution=1280x720 --fps=60 --profile=/home/${user}/cam.gpfl --render_window=full --audio=none &
-        ${guvc} --device=/dev/video2 --resolution=640x480 --fps=60 --audio=none &
+
+        # camlink, 90ms latency vs the elgato for filming crt
+        ${guvc} --device=/dev/video2 --resolution=1920x1080 --fps=60 --render_window=full --audio=none &
+
+        # elgato
+        ${guvc} --device=/dev/video4 --resolution=640x480 --fps=60 --audio=none &
 
         ${custom-obs}/bin/obs --disable-shutdown-check &
 
