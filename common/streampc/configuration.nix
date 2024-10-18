@@ -112,6 +112,7 @@ in
       in
       [
         (loopback "Music")
+        (loopback "Music Visualizer") # the sink I should select on firefox
         (loopback "Music Delayed") # for the music visualizer to sync with facecam
         (loopback "Quiet Game Compressed")
         (loopback "Other Audio Vod")

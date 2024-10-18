@@ -121,7 +121,7 @@ these are just random notes for myself, things discovered through trial and erro
 # startup checklist for streampc
 this is to remind myself
 
-* select "music out" on the kiosk firefox for the music visualizer (but don't tick remember)
+* select "music visualizer out" on the kiosk firefox for the music visualizer (but don't tick remember)
 * start the music with `mus https://youtube...`
 * reload `stream-linux.carxp` on carla
 * make sure audio is fine on obs
