@@ -196,7 +196,12 @@ in
         # elgato
         ${guvc} --device=/dev/video4 --resolution=640x480 --fps=60 --audio=none &
 
-        ${custom-obs}/bin/obs --disable-shutdown-check &
+        ${custom-obs}/bin/obs \
+          --disable-shutdown-check \
+          --profile stream-1536x864 \
+          --collection stream-scenes \
+          --scene stream \
+          &
 
         # NOTE:
         # the only way I could get this to work the way I want to is to first start regular
