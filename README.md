@@ -123,8 +123,8 @@ this is to remind myself
 
 * select "music visualizer out" on the kiosk firefox for the music visualizer if prompted
 * start the music with `mus https://youtube...`
+* click on the visualizer browser to make the firefox audio node actually appear
 * reload `stream-linux.carxp` on carla
-* might have to re-connect the music visualizer out to firefox. for some reason it doesn't automatically restore the connection
 * make sure audio is fine on obs
 
 # known issues
