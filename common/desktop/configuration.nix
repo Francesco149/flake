@@ -64,7 +64,7 @@ in
         chatterino2
         firefox
         telegram-desktop
-        armcord
+        legcord
         gimp
       ];
     in
