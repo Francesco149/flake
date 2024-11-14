@@ -24,7 +24,7 @@ with config; {
         "firefox.desktop"
         "xterm.desktop"
         "org.gnome.Nautilus.desktop"
-        "armcord.desktop"
+        "legcord.desktop"
         "org.telegram.desktop.desktop"
         "org.gnome.TextEditor.desktop"
       ];
