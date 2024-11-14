@@ -18,6 +18,7 @@ in
     ../dnscrypt/configuration.nix
     ../ssh/configuration.nix
     ../autologin/configuration.nix
+    ../tablet/configuration.nix
   ];
 
   users.users.${user}.extraGroups = [ "networkmanager" "adbusers" ];
