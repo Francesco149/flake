@@ -17,6 +17,7 @@
     "no_stf_barrier"
     "mds=off"
     "mitigations=off"
+    "tpm.disable_pcr_integrity=on"
   ];
 
 }
