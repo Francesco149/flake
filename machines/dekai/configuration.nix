@@ -185,7 +185,7 @@ in
     enable = true;
     hostName = machine.domains.cloud;
     config.adminpassFile = config.age.secrets.nextcloud-pass.path;
-    package = pkgs.nextcloud29;
+    package = pkgs.nextcloud30;
     https = true;
 
     extraApps = {
