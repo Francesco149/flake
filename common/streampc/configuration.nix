@@ -46,7 +46,7 @@ in
     carla
     barrier
     custom-obs
-    armcord
+    legcord
     chatterino2
     guvcview # NOTE: do NOT use the obs v4l camera, it has all sorts of performance issues. capture this
     noto-fonts
@@ -164,7 +164,7 @@ in
     let
       apps = [
         "chatterino2"
-        "armcord"
+        "legcord"
         "firefox"
       ];
       binary = x:
