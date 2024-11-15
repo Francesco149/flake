@@ -4,7 +4,7 @@ let
 
   headpatUsers = [ keys.tanuki keys.headpats ];
   desktopUsers = [ keys.tanuki ];
-  streampcUsers = [ keys.tanuki keys.streampc ];
+  streampcUsers = [ keys.tanuki keys.streampc-5900x ];
   dekaiUsers = [ keys.tanuki keys.dekai ];
 in
 {
