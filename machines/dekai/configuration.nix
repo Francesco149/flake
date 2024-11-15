@@ -29,6 +29,9 @@ in
     usePredictableInterfaceNames = false;
     useDHCP = false;
 
+    wireless.enable = true;
+    wireless.userControlled.enable = true;
+
     interfaces."${machine.iface}".ipv4.addresses = [{
       address = machine.ip;
       prefixLength = 24;
