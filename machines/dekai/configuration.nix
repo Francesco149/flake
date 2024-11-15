@@ -54,6 +54,7 @@ in
       ];
       allowedUDPPorts = [
         3702 # wsdd, for samba win10 discovery
+        137 138 # nmbd
       ];
     };
   };
@@ -104,6 +105,8 @@ in
 
   services.samba = {
     enable = true;
+    enableNmbd = true;
+    enableWinbindd = true;
     openFirewall = true;
     settings =
       let
@@ -127,11 +130,14 @@ in
           "guest ok" = "yes";
         };
 
+        photos = sharecfg // {
+          path = "/mnt/Shares/Photos";
+        };
 
         global = {
           "workgroup" = "WORKGROUP";
-          "server string" = "smbnix";
-          "netbios name" = "smbnix";
+          "server string" = "DEKAI";
+          "netbios name" = "DEKAI";
           "security" = "user";
           #use sendfile = yes
           #max protocol = smb2
