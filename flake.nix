@@ -181,7 +181,7 @@
 
         # various machines I tested the stream pc configuration on
         hmsys "streampc-beelink-eq20-pro" unstable //
-        hmsys "streampc-7800x3d" unstable //
+        hmsys "zen" unstable //
         hmsys "streampc-5900x" unstable //
         hmsys "streampc-11400f" unstable //
 

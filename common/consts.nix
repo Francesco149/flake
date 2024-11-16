@@ -35,10 +35,10 @@ rec {
       ip = mkip 202;
     };
 
-    streampc-7800x3d = {
+    zen = {
       key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINqSrHdrIXXD5I8Ho0mCbbGvocmgsGR/ZjWylIUS/cIX loli@streampc";
       print = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCkEmB97CA5rkCZeVzu0cA2uALbfNkXsq4x3by7+fyeI8Lrbl1y2mC+9+Lfo7rfbNg9MZu6Bx1l+IVwJlJmk0Y7r8Vya524ZTWG1IV3mt5dPjkzhfaPIHi/E/A9XS85CflRclZyVpTILDit+k19ozb3d/97cZy0qGy2U0NpuCB+hTjF8aRWviKpxfraKOMV+TTMiMfjJook3vlQQOhw/HRHB34BSTLUrCH6kTp017uehsvko0fM6+Nqa27jmgl1bBxXI2wyImcHiE0VejwxgEIRLfog/Y58Wd7C/DIpgb84YK+WNhVN0dK9ChAa9KnV47ALMDpQiBCMUCoQUJN2HaKTcUljQyPE7dM4sFp/M0rqssxdStAtE7tDHc8Kvd3pEgiUtDWts7S4T04MCGq0aGwHWfyRxfq/KE4/ofBlzmqpuZZltd9RaYtsWuTAojkqbuv5dslO2mqkvlUfCm/wBiryJqigvxKrymHJBwNEYEoQ0+WttKShACFsa6U+BfFLTGEh6eevi1/gMFaZNgYzn0/GcGWfq7Ai1rk0fFR73hQorcIBv1yqO4RjDFqoir36LGdJWM1Y45KI1Aq5DP5bFnet9JcH+aSgu30UTZ0lYaBL/qo/K/S7w6Ls/md79eJ3u6g9+RfeczI9AWwy29NLO5Nhdu+j+V5dtD/JSOQZj2B+3Q== root@streampc";
-      ip = mkip 202;
+      ip = mkip 203;
     };
 
     streampc-5900x = {
