@@ -47,25 +47,6 @@ with config; {
     p7zip
     internetarchive
 
-    (pkgs.writeShellScriptBin "speak" ''
-      file=$(mktemp /tmp/XXXXXXXXXX.wav)
-      pico2wave -w "$file" "$@"
-      mpv --no-config "$file"
-      rm "$file"
-    '')
-
-    (pkgs.writeShellScriptBin "countdown" ''
-      start="$(( $(date '+%s') + $1))"
-      while [ $start -ge $(date +%s) ]; do
-          time="$(( $start - $(date +%s) ))"
-          printf '%s\r' "$(date -u -d "@$time" +%H:%M:%S)"
-          sleep 0.1
-      done
-      msg="''${2:-countdown finished}"
-      notify-send "$msg"
-      speak "$msg"
-    '')
-
     font-awesome
     fira-mono
     roboto
@@ -73,7 +54,6 @@ with config; {
     v4l-utils
     gh2md
     gist
-    autorandr # save and detect xrandr configurations automatically
     fusee-launcher
     pass
 
@@ -89,31 +69,13 @@ with config; {
     simplescreenrecorder
     screenkey
     gimp
-    blender
-    tenacity
     tor-browser-bundle-bin
-    quickemu
-    qemu_kvm
-    shotcut
     gnumeric
     abiword
     sxiv
     komikku
     scrcpy
     legcord
-
-    (pkgs.writeShellScriptBin "cam" ''
-      mpv --profile=low-latency --untimed $(ls /dev/video* | dmenu)
-    '')
-
-    (pkgs.writeShellScriptBin "rerandr" ''
-      autorandr --change --force
-      notify-send "autorandr config: $(autorandr --current)"
-    '')
-
-    (pkgs.writeShellScriptBin "shot" ''
-      maim -s --format png /dev/stdout | xclip -selection clipboard -t image/png -i
-    '')
 
   ]);
 
