@@ -103,17 +103,6 @@ with config; {
 
   programs.alacritty.enable = true; # backup terminal just in case
 
-  xdg.dataFile = {
-    # TODO: for some reason it's not able to mkdir this so I have to manually create it
-    "barrier/SSL/Fingerprints/TrustedServers.txt".source = ./barrier/TrustedServers.txt;
-    "wallpaper.png".source = ./wallpaper.png;
-    "chatterino/Settings/window-layout.json".source = ./chatterino/window-layout.json;
-  };
-
-  xdg.configFile = {
-    "git/config".source = ./git/gitconfig;
-  };
-
   gtk.enable = true;
   gtk.theme.name = themeName;
   gtk.theme.package = pkgs.gnome-themes-extra;
@@ -123,12 +112,11 @@ with config; {
   xdg.configFile = {
     "yt-dlp/config".source = ./yt-dlp/config;
     "mpv/scripts/copyTime.lua".source = ./mpv/scripts/copyTime.lua;
+    "git/config".source = ./git/gitconfig;
   };
 
-  services.barrier.client = {
-    enable = true;
-    server = consts.machines.streampc-5900x.ip;
-    enableDragDrop = true;
+  xdg.dataFile = {
+    "wallpaper.png".source = ./wallpaper.png;
   };
 
   # TODO: not sure if these settings are necessary with gnome. maybe they're enabled by default
@@ -148,4 +136,5 @@ with config; {
   };
 
   services.gnome-keyring.enable = true;
+
 }
