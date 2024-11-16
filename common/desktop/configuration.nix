@@ -55,33 +55,6 @@ in
   services.gvfs.enable = true; # for nautilus
   services.udisks2.enable = true; # to mount removable devices more easily
 
-  # don't wanna get stuck in emergency mode over benign errors
-  systemd.enableEmergencyMode = false;
-
-  systemd.user.services.startup-apps =
-    let
-      apps = with pkgs; [
-        chatterino2
-        firefox
-        telegram-desktop
-        legcord
-        gimp
-      ];
-    in
-    {
-      enable = true;
-      description = "Various custom start-up apps";
-      after = [ "graphical-session.target" ];
-      partOf = [ "graphical-session.target" ];
-      wantedBy = [ "graphical-session.target" ];
-      serviceConfig = {
-        RemainAfterExit = "yes";
-        Type = "oneshot";
-      };
-
-      script = builtins.concatStringsSep "\n" (map (x: "${x.meta.mainProgram} &") apps);
-    };
-
   # NOTE: private config files. comment out or provide your own
 
   # by default, agenix does not look in your home dir for keys
