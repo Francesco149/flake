@@ -9,7 +9,7 @@
     powerManagement.finegrained = false; # experimental, saves power when gpu is not in use
     open = false; # open source kernel driver (experimental, unstable)
     nvidiaSettings = true; # `nvidia-settings`
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 }
 
