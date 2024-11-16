@@ -28,6 +28,7 @@ in
     ../gnome/configuration.nix
     ../mpv/configuration.nix
     ../autologin/configuration.nix
+    ../mouse/configuration.nix
   ];
 
   boot.loader.systemd-boot.enable = true;

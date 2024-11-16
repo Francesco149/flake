@@ -19,16 +19,11 @@ in
     ../ssh/configuration.nix
     ../autologin/configuration.nix
     ../tablet/configuration.nix
+    ../mouse/configuration.nix
   ];
 
   users.users.${user}.extraGroups = [ "networkmanager" "adbusers" ];
   programs.adb.enable = true;
-
-  services.libinput = {
-    enable = true;
-    mouse.accelProfile = "flat";
-    touchpad.accelProfile = "flat";
-  };
 
   networking = {
     domain = "localhost";
