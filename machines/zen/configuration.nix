@@ -9,6 +9,7 @@
   environment.systemPackages = with pkgs; [
     blender
     gimp
+    tenacity
 
     # photo editors I want to try
     darktable
