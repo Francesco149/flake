@@ -24,6 +24,7 @@ in
 
   users.users.${user}.extraGroups = [ "networkmanager" "adbusers" ];
   programs.adb.enable = true;
+  virtualisation.docker.enable = true;
 
   networking = {
     domain = "localhost";
