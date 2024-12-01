@@ -66,7 +66,8 @@ in
     };
   };
 
-
+  services.dbus.implementation = "broker";
+  hardware.bluetooth.enable = true;
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
   services.zfs.autoScrub.enable = true;
