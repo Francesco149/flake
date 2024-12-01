@@ -7,6 +7,7 @@ in
 rec {
   user = "loli";
   system = "x86_64-linux";
+  lancacheIp = mkip 5;
 
   machines = {
     tanuki = {

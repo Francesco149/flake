@@ -23,6 +23,8 @@ in
 
   boot.initrd.luks.devices."luks-901be401-55e0-4047-a286-bb53898060de".device = "/dev/disk/by-uuid/901be401-55e0-4047-a286-bb53898060de";
 
+  services.nginx.defaultListenAddresses = [ machine.ip ];
+
   networking = {
     hostName = "dekai";
     hostId = "09952a93";
@@ -34,6 +36,10 @@ in
 
     interfaces."${machine.iface}".ipv4.addresses = [{
       address = machine.ip;
+      prefixLength = 24;
+    }
+    {
+      address = consts.lancacheIp;
       prefixLength = 24;
     }];
 
@@ -263,6 +269,32 @@ in
         proxy_read_timeout 36000s;
       }
     '';
+  };
+
+  services.lancache = {
+    enable = true;
+    cacheLocation = "/mnt/storage/lancache";
+    logPrefix = "/var/log/nginx/lancache";
+    listenAddress = "192.168.1.5";
+    upstreamDns = [
+      "1.1.1.1"
+      "1.0.0.1"
+    ];
+    cacheDiskSize = "1000g";
+    cacheIndexSize = "250m";
+    cacheMaxAge = "3560d";
+    minFreeDisk = "10g";
+    sliceSize = "1m";
+    logFormat = "cachelog";
+
+    domainsPackage = pkgs.fetchFromGitHub {
+      owner = "uklans";
+      repo = "cache-domains";
+      rev = "1f5897f4dacf3dab5f4d6fca2fe497d3327eaea9";
+      sha256 = "sha256-xrHuYIrGSzsPtqErREMZ8geawvtYcW6h2GyeGMw1I88=";
+    };
+
+    workerProcesses = "auto";
   };
 
   # by default, agenix does not look in your home dir for keys

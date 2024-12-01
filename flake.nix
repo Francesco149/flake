@@ -48,6 +48,9 @@
     # that lets me run any package binary with , command even if it's not installed
     nix-index-database.url = "github:nix-community/nix-index-database";
     nix-index-database.inputs.nixpkgs.follows = "nixpkgs";
+
+    # caches downloads from epic launcher and other launchers
+    lancache.url = "github:menixator/lancache.nix";
   };
 
   outputs =
@@ -61,6 +64,7 @@
     , nixos-wsl
     , agenix
     , nix-index-database
+    , lancache
     , ...
     }:
     let
@@ -177,7 +181,11 @@
         hmsys "tanuki" unstable //
         hmsys "nixos-wsl-5900x" wsl //
         sys "headpats" mailserver //
-        sys "dekai" unstable //
+        sys "dekai" (unstable // {
+          modules = [
+            lancache.nixosModules.lancache
+          ];
+        }) //
 
         # various machines I tested the stream pc configuration on
         hmsys "streampc-beelink-eq20-pro" unstable //

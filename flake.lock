@@ -141,6 +141,21 @@
         "type": "github"
       }
     },
+    "lancache": {
+      "locked": {
+        "lastModified": 1725970598,
+        "narHash": "sha256-aagx8/Kc29sqQZ2PGOF56lRwaSt2xXhbsUBnoSCy1BE=",
+        "owner": "menixator",
+        "repo": "lancache.nix",
+        "rev": "1083113450931c8251de0d76bd3ed748201cffdf",
+        "type": "github"
+      },
+      "original": {
+        "owner": "menixator",
+        "repo": "lancache.nix",
+        "type": "github"
+      }
+    },
     "nix-index-database": {
       "inputs": {
         "nixpkgs": [
@@ -258,6 +273,7 @@
         "flake-utils": "flake-utils",
         "home-manager": "home-manager_2",
         "home-manager-wsl": "home-manager-wsl",
+        "lancache": "lancache",
         "nix-index-database": "nix-index-database",
         "nixos-wsl": "nixos-wsl",
         "nixpkgs": "nixpkgs",
