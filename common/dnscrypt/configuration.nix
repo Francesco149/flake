@@ -1,10 +1,11 @@
-{ ... }:
+{ lib, ... }:
 {
   services.dnscrypt-proxy2 = {
     enable = true;
     settings = {
       ipv6_servers = true;
       require_dnssec = true;
+      listen_addresses = [ "[::1]:51" ];
 
       sources.public-resolvers = {
         urls = [
@@ -31,4 +32,14 @@
   };
 
   services.resolved.enable = false;
+
+  # Forward loopback traffic on port 53 to dnscrypt-proxy2.
+  networking.firewall.extraCommands = ''
+    ip6tables --table nat --flush OUTPUT
+    ${lib.flip (lib.concatMapStringsSep "\n") [ "udp" "tcp" ] (proto: ''
+      ip6tables --table nat --append OUTPUT \
+        --protocol ${proto} --destination ::1 --destination-port 53 \
+        --jump REDIRECT --to-ports 51
+    '')}
+  '';
 }
