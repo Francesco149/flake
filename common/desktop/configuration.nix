@@ -22,7 +22,7 @@ in
     ../mouse/configuration.nix
   ];
 
-  users.users.${user}.extraGroups = [ "networkmanager" "adbusers" ];
+  users.users.${user}.extraGroups = [ "networkmanager" "adbusers" "docker" ];
   programs.adb.enable = true;
   virtualisation.docker.enable = true;
 
