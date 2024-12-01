@@ -66,6 +66,7 @@ in
     };
   };
 
+  virtualisation.docker.enable = true;
   services.dbus.implementation = "broker";
   hardware.bluetooth.enable = true;
   boot.supportedFilesystems = [ "zfs" ];
@@ -85,7 +86,7 @@ in
   users.users."${user}" = {
     isNormalUser = true;
     description = "${user}";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = (with pkgs; [
       btop
       tmux
