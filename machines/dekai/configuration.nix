@@ -23,6 +23,7 @@ in
 
   boot.initrd.luks.devices."luks-901be401-55e0-4047-a286-bb53898060de".device = "/dev/disk/by-uuid/901be401-55e0-4047-a286-bb53898060de";
 
+  services.nginx.package = pkgs.nginxMainline.override { withSlice = true; };
   services.nginx.defaultListenAddresses = [ machine.ip ];
 
   networking = {
@@ -62,6 +63,7 @@ in
       allowedUDPPorts = [
         3702 # wsdd, for samba win10 discovery
         137 138 # nmbd
+        53 # lancache
       ];
     };
   };
@@ -278,7 +280,7 @@ in
     enable = true;
     cacheLocation = "/mnt/storage/lancache";
     logPrefix = "/var/log/nginx/lancache";
-    listenAddress = "192.168.1.5";
+    listenAddress = consts.lancacheIp;
     upstreamDns = [
       "1.1.1.1"
       "1.0.0.1"
@@ -298,6 +300,20 @@ in
     };
 
     workerProcesses = "auto";
+  };
+
+  services.bind = {
+    enable = true;
+
+    extraOptions = ''
+      recursion yes;
+
+      allow-recursion {
+        localnets;
+        localhost;
+        192.168.1.0/24;
+      };
+    '';
   };
 
   services.home-assistant = {
