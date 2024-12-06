@@ -1,5 +1,27 @@
-{ lib, ... }:
-{
+{ pkgs, lib, ... }:
+let
+  consts = import ../consts.nix;
+
+  lancacheDomains = let
+    d = x: y: { name = x; sha256 = y; };
+  in map (service: pkgs.fetchurl {
+    url = "https://github.com/uklans/cache-domains/raw/refs/heads/master/${service.name}.txt";
+    inherit (service) sha256;
+  }) [
+    # (d "name" lib.fakeSha256 )
+    (d "arenanet" "sha256-ab927cj5Uihdps2YMiDRFnCQbw/NdGfwf/1NVFOZHzM=" )
+    (d "blizzard" "sha256-LIP8srO7Gg2qW+ORhFfGQMerLMd7VZRoOkGAR3kd4E0=" )
+    (d "epicgames" "sha256-MpqODHAOXsdAWbX8TZXoFCPjSmKwvRz2Dn/Jn9qDzhs=" )
+    (d "steam" "sha256-Zd9AU8rBpcnCiB26RnVaYVaY/3qDcOzRQCcUW+qEd1g=" )
+    (d "rockstar" "sha256-hvEQdLi7NBw7lBxlQgqYW3NuF41arW8oOLunrTLJ9IQ=" )
+    (d "sony" "sha256-3sbdEbb4wHqL2PR3zIJ+H7lwkR4051vcTEgRr614IYA=" )
+    (d "nexusmods" "sha256-UamIHvoP00+TlTHAcfHGz4uaycdzdq/2gCtWPqXzOSk=" )
+    (d "nintendo" "sha256-MAB7qqEanlANjYbHV1cbuY20FxpGs/8oJkoT3omq0X4=" )
+    (d "uplay" "sha256-DuZ+uXne3shDHq5HSqHD8++0QvsPDqR/6Xywp7g4oxQ=" )
+    (d "xboxlive" "sha256-qnyNE/fZcDtc7QlKFA5+cLBJf4jD/6sn4pKoDCKXUFA=" )
+    (d "warframe" "sha256-S2VpJsQlm1cclv/4dThazI9NTLsnnf9p1M87viIdKNI=" )
+  ];
+in {
   services.dnscrypt-proxy2 = {
     enable = true;
     settings = {
@@ -18,6 +40,16 @@
 
       # You can choose a specific set of servers from https://github.com/DNSCrypt/dnscrypt-resolvers/blob/master/v3/public-resolvers.md
       # server_names = [ ... ];
+
+      cloaking_rules = with builtins; pkgs.writeText "dnscrypt-cloak" (
+        (lib.strings.concatStringsSep "\n"
+          (concatMap (domainList:
+            (map
+              (domain: "${domain} ${consts.lancacheIp}")
+              (lib.strings.splitString "\n"
+                (readFile domainList))))
+                lancacheDomains))
+      );
     };
   };
 
