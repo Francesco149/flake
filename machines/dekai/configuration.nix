@@ -185,6 +185,7 @@ in
       Environment = [
         "NODE_BINARY=${pkgs.nodejs}/bin/node"
         "SINGLEFILE_BINARY=${pkgs.single-file-cli}/bin/single-file"
+        "CHROME_USER_DATA_DIR=/memevault/memes/archivebox-cookies"
       ];
       ExecStart = ''
         ${pkgs.archivebox}/bin/archivebox server ${machine.ip}:${toString archiveboxPort}
