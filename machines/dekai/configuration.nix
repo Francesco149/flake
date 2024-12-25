@@ -172,7 +172,7 @@ in
   programs.ssh.knownHosts = consts.ssh.knownHosts;
 
   systemd.services.archivebox = {
-    enable = false; # TODO: TEMPORARILY BROKEN because of django failing to build
+    enable = true; # TODO: TEMPORARILY BROKEN because of django failing to build
     description = "Archivebox server";
     wants = [ "network-online.target" ];
     after = [ "network-online.target" ];
