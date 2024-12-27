@@ -53,7 +53,12 @@ in
     noto-fonts
 
     (pkgs.writeShellScriptBin "mus" ''
-      mpv --audio-device='pipewire/music_sink' --no-video --ytdl-format=bestaudio --loop-playlist "$@"
+      mpv \
+        --audio-device='pipewire/music_sink' \
+        --ytdl-raw-options-append=cookies-from-browser=firefox \
+        --no-video \
+        --ytdl-format=bestaudio \
+        --loop-playlist "$@"
     '')
   ];
 
