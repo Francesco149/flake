@@ -2,3 +2,4 @@
 --write-thumbnail
 --write-description
 --embed-chapters
+--cookies-from-browser=firefox
