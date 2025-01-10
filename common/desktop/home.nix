@@ -25,6 +25,7 @@ with config; {
     btop
     tokei
     git
+    act # type act to run github actions
     ffmpeg
     yt-dlp
     aria
@@ -76,6 +77,10 @@ with config; {
     komikku
     scrcpy
     legcord
+
+    # cross flash a st-link device to j-link and then program it with jlink
+    stlink-tool
+    segger-jlink
 
   ]);
 
