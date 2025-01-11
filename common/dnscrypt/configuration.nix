@@ -2,6 +2,14 @@
 let
   consts = import ../consts.nix;
 
+  # TODO: i can get the domains from here
+  #services.adguardhome.settings.dns.rewrites =
+  #  lib.pipe config.services.lancache.domainIndex [
+  #    (map (entry: entry.domains))
+  #    lib.flatten
+  #    (map (domain: { inherit domain; answer = lancacheServerIp; }))
+  #  ]
+
   lancacheDomains = let
     d = x: y: { name = x; sha256 = y; };
   in map (service: pkgs.fetchurl {
