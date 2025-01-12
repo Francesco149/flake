@@ -12,7 +12,7 @@ ID{0x0098090c};CHK{0:1:1:1}=VAL{0}
 #Power Line Frequency
 ID{0x00980918};CHK{0:2:1:2}=VAL{2}
 #White Balance Temperature
-ID{0x0098091a};CHK{2800:12500:100:5000}=VAL{3200}
+ID{0x0098091a};CHK{2800:12500:100:5000}=VAL{3500}
 #Sharpness
 ID{0x0098091b};CHK{0:4:1:2}=VAL{0}
 #Auto Exposure
