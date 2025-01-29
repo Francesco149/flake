@@ -19,6 +19,7 @@ in
       ../../common/nix/configuration.nix
       ../../common/locale/configuration.nix
       ../../common/dnscrypt/configuration.nix
+      ../../common/gnome/configuration.nix
     ];
 
   boot.initrd.luks.devices."luks-901be401-55e0-4047-a286-bb53898060de".device = "/dev/disk/by-uuid/901be401-55e0-4047-a286-bb53898060de";
@@ -32,9 +33,9 @@ in
     usePredictableInterfaceNames = false;
     useDHCP = false;
 
-    wireless.enable = true;
-    wireless.userControlled.enable = true;
-
+    # NOTE: these interface settings are not actually applied with gnome because
+    #       network manager takes over. so I have to manually config these for now.
+    #       TODO: declarative network manager config
     interfaces."${machine.iface}".ipv4.addresses = [{
       address = machine.ip;
       prefixLength = 24;
@@ -88,7 +89,7 @@ in
   users.users."${user}" = {
     isNormalUser = true;
     description = "${user}";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" "audio" ];
     packages = (with pkgs; [
       btop
       tmux
@@ -99,6 +100,78 @@ in
   };
 
   users.users.root.openssh.authorizedKeys.keys = authorizedKeys;
+
+  # loopback device (virtual mic)
+  services.pipewire.extraConfig.pipewire = {
+
+    "10-loopback"."context.modules" =
+      let
+        sinkName = x: (builtins.replaceStrings [ " " ] [ "-" ] (lib.toLower x)) + "_sink";
+        loopbackD = x: delaySec: {
+          name = "libpipewire-module-loopback";
+          args = {
+            "audio.position" = [ "FL" "FR" ];
+            "target.delay.sec" = delaySec;
+            "capture.props" = {
+              "media.class" = "Audio/Sink";
+              "node.name" = sinkName x;
+              "node.description" = "${x} Sink (In)";
+            };
+
+            # the loopback device already has a built in output.
+            # this is more useful if you need to hardwire it to a device with node.target
+
+            "playback.props" = {
+              "media.class" = "Audio/Source";
+              "node.name" = (sinkName x) + "_out";
+              "node.description" = "${x} Sink (Out)";
+              "target.object" = "null-sink";
+              "node.dont-reconnect" = true;
+              "stream.dont-remix" = true;
+              "node.passive" = true;
+            };
+          };
+        };
+        loopback = x: loopbackD x 0.0;
+      in
+      [
+        (loopback "Loopback")
+      ];
+
+    # this makes the jack monitors properly restore in carla
+    "01-jack-monitor"."jack.properties"."jack.merge-monitor" = true;
+
+    # null audio sink for when I want to default audio output to nothing
+    "20-null"."context.objects" = [
+      {
+        factory = "adapter";
+        args = {
+          "factory.name" = "support.null-audio-sink";
+          "node.name" = "null-sink";
+          "node.description" = "sound black hole";
+          "media.class" = "Audio/Sink";
+          "object.linger" = 1;
+          "audio.position" = [ "FL" "FR" ];
+        };
+      }
+    ];
+  };
+
+  systemd.user.services.startup-apps = {
+    enable = true;
+    description = "Various custom start-up apps";
+    after = [ "graphical-session.target" ];
+    partOf = [ "graphical-session.target" ];
+    wantedBy = [ "graphical-session.target" ];
+    serviceConfig = {
+      RemainAfterExit = "yes";
+      Type = "oneshot";
+    };
+
+    script = ''
+      ${pkgs.carla}/bin/carla-jack-multi
+    '';
+  };
 
   # shut down when ups battery level is too low.
   # also allows me to check the load by doing `apcaccess -pLOADPCT`
@@ -204,6 +277,8 @@ in
       inherit (config.services.nextcloud.package.packages.apps) richdocuments;
     };
     extraAppsEnable = true;
+
+    config.dbtype = "sqlite"; # TODO: migrate to pg
   };
 
   services.nginx.virtualHosts.${config.services.nextcloud.hostName} = {
