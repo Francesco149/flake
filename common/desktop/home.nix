@@ -82,6 +82,49 @@ with config; {
     stlink-tool
     segger-jlink
 
+    # custom shell script to convert a webp animation to a webm video
+    (writeShellScriptBin "webp2m" ''
+# exit immediately if a command or piped command fails or any undefined var is referenced
+set -euo pipefail
+
+cleanup() {
+  echo :: cleaning up
+  rm -rf "$tf"
+}
+
+ecleanup() {
+  cleanup
+  echo
+  echo usage: webp2m file.webp
+  echo   outputs to file.webmp.webm
+}
+
+trap cleanup EXIT
+trap ecleanup ERR
+
+tf="$(mktemp -d)"
+mkdir -p "$tf"
+
+echo :: extracting frame timings
+${imagemagick}/bin/convert "$@" -verbose info: | grep Delay | sed 's/.*Delay: \([0-9]*\)x100.*/\1/' > "$tf/delays.txt"
+
+echo :: extracting frames
+${imagemagick}/bin/convert "$@" "$tf/frame_%04d.png"
+
+echo :: creating frame data
+# Create a file list with durations
+i=0
+while read -r delay; do
+    duration=$(awk "BEGIN {print $delay/100}") # centiseconds to seconds
+    printf "file 'frame_%04d.png'\nduration %s\n" $i "$duration" >> "$tf/framedata.txt"
+    i=$((i+1))
+done < "$tf/delays.txt"
+
+# Add last frame again (required by FFmpeg)
+printf "file 'frame_%04d.png'\n" $((i-1)) >> "$tf/framedata.txt"
+
+echo :: encoding
+${ffmpeg}/bin/ffmpeg -f concat -safe 0 -i "$tf/framedata.txt" -c:v libvpx-vp9 -b:v 2M -crf 30 "$@.webm"'')
   ]);
 
   programs.direnv.enable = true;
