@@ -94,7 +94,7 @@
         config.permittedInsecurePackages = [
           "python3.12-django-3.1.14" # archivebox
           "olm-3.2.16" # nextcloud
-          "segger-jlink-qt4-796s"
+          "segger-jlink-qt4-810"
         ];
       };
 
