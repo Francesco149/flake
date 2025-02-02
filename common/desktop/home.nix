@@ -65,7 +65,7 @@ with config; {
     maim
     firefox
     telegram-desktop
-    chatterino2
+    chatterino7
     obs-studio
     simplescreenrecorder
     screenkey

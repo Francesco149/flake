@@ -48,7 +48,7 @@ in
     barrier
     custom-obs
     legcord
-    chatterino2
+    chatterino7
     guvcview # NOTE: do NOT use the obs v4l camera, it has all sorts of performance issues. capture this
     noto-fonts
 
