@@ -169,7 +169,7 @@ in
   systemd.user.services.startup-apps =
     let
       apps = [
-        "chatterino2"
+        "chatterino7"
         "legcord"
         "firefox"
       ];
