@@ -6,7 +6,9 @@ let
   inherit (consts.ssh) authorizedKeys;
 
   custom-obs = with pkgs;
-    (wrapOBS {
+  (wrapOBS.override({
+    obs-studio = pkgs.obs-studio.override { browserSupport = true; };
+  }) {
       plugins = with obs-studio-plugins; [
         obs-gstreamer
         obs-move-transition
