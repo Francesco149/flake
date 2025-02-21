@@ -51,6 +51,12 @@ with config; {
     font-awesome
     fira-mono
     roboto
+    cooper-hewitt
+    junicode
+    league-gothic
+    ostrich-sans
+    oswald
+    poppins
 
     v4l-utils
     gh2md
