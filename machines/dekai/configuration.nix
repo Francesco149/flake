@@ -211,8 +211,12 @@ in
         };
       in
       {
-        memevault = sharecfg // {
-          path = "/memevault";
+        #memevault = sharecfg // {
+        #  path = "/memevault";
+        #};
+
+        gigavault = sharecfg // {
+          path = "/gigavault";
         };
 
         public = sharecfg // {
