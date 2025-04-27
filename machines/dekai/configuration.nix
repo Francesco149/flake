@@ -99,6 +99,7 @@ in
       tmux
       internetarchive
       vim
+      chatterino7
     ]);
     openssh.authorizedKeys.keys = authorizedKeys;
   };
@@ -173,7 +174,8 @@ in
     };
 
     script = ''
-      ${pkgs.carla}/bin/carla-jack-multi
+      ${pkgs.carla}/bin/carla-jack-multi &
+      ${pkgs.chatterino7}/bin/chatterino &
     '';
   };
 
