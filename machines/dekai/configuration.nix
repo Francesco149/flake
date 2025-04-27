@@ -74,7 +74,11 @@ in
   hardware.bluetooth.enable = true;
   boot.supportedFilesystems = [ "zfs" ];
   boot.zfs.forceImportRoot = false;
-  services.zfs.autoScrub.enable = true;
+  boot.kernelParams = [ "zfs.zfs_arc_max=107400000000" ];
+  services.zfs.autoScrub = {
+    enable = true;
+    interval = "quarterly";
+  };
   services.zfs.trim.enable = true;
 
   environment.variables = { EDITOR = "vim"; };
