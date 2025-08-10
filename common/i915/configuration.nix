@@ -14,7 +14,7 @@
 
       # qsv support up to 11th gen
       vpl-gpu-rt
-      intel-media-sdk
+      #intel-media-sdk TODO: broken
     ];
   };
 
