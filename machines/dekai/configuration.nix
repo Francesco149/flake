@@ -5,7 +5,6 @@ let
   consts = import ../../common/consts.nix;
   inherit (consts.ssh) authorizedKeys;
   machine = consts.machines.${configName};
-  archiveboxPort = 7777;
   collaboraPort = 9980;
   collaboraSPort = toString collaboraPort;
 
@@ -58,7 +57,6 @@ in
         80 # http
         443 # https
         5357 # wsdd, for samba win10 discovery
-        archiveboxPort
         8123 # home-assistant
       ];
       allowedUDPPorts = [
@@ -253,28 +251,6 @@ in
   };
 
   programs.ssh.knownHosts = consts.ssh.knownHosts;
-
-  systemd.services.archivebox = {
-    enable = true; # TODO: TEMPORARILY BROKEN because of django failing to build
-    description = "Archivebox server";
-    wants = [ "network-online.target" ];
-    after = [ "network-online.target" ];
-    serviceConfig = {
-      Type = "simple";
-      Restart = "on-failure";
-      User = user;
-      Group = "users";
-      WorkingDirectory = "/memevault/memes/archivebox";
-      Environment = [
-        "NODE_BINARY=${pkgs.nodejs}/bin/node"
-        "SINGLEFILE_BINARY=${pkgs.single-file-cli}/bin/single-file"
-        "CHROME_USER_DATA_DIR=/memevault/memes/archivebox-cookies"
-      ];
-      ExecStart = ''
-        ${pkgs.archivebox}/bin/archivebox server ${machine.ip}:${toString archiveboxPort}
-      '';
-    };
-  };
 
   services.nextcloud = {
     enable = true;
