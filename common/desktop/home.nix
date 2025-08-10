@@ -88,6 +88,8 @@ with config; {
     stlink-tool
     segger-jlink
 
+    parsec-bin
+
     # custom shell script to convert a webp animation to a webm video
     (writeShellScriptBin "webp2m" ''
 # exit immediately if a command or piped command fails or any undefined var is referenced
