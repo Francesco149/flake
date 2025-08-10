@@ -18,15 +18,15 @@ let
   }) [
     # (d "name" lib.fakeSha256 )
     (d "arenanet" "sha256-ab927cj5Uihdps2YMiDRFnCQbw/NdGfwf/1NVFOZHzM=" )
-    (d "blizzard" "sha256-LIP8srO7Gg2qW+ORhFfGQMerLMd7VZRoOkGAR3kd4E0=" )
-    (d "epicgames" "sha256-MpqODHAOXsdAWbX8TZXoFCPjSmKwvRz2Dn/Jn9qDzhs=" )
+    (d "blizzard" "sha256-n0YmxO7SUwEdzX5y8YgZo++EI4KJPYrIP6UOJEAQ8bg=" )
+    (d "epicgames" "sha256-PqPq2fCIpx/DKSXG/M/gICVK6U/NR/Zq7SBOA0CEeUI=" )
     (d "steam" "sha256-Zd9AU8rBpcnCiB26RnVaYVaY/3qDcOzRQCcUW+qEd1g=" )
     (d "rockstar" "sha256-hvEQdLi7NBw7lBxlQgqYW3NuF41arW8oOLunrTLJ9IQ=" )
-    (d "sony" "sha256-3sbdEbb4wHqL2PR3zIJ+H7lwkR4051vcTEgRr614IYA=" )
+    (d "sony" "sha256-ECmA2VrARUVi+g0cLLY6qgwZg3l1ZSsz022SFoy86QY=" )
     (d "nexusmods" "sha256-UamIHvoP00+TlTHAcfHGz4uaycdzdq/2gCtWPqXzOSk=" )
-    (d "nintendo" "sha256-MAB7qqEanlANjYbHV1cbuY20FxpGs/8oJkoT3omq0X4=" )
+    (d "nintendo" "sha256-RDVrr7ksYHWVJhoy6XObN3FmNZEvpDHhg4CQ26SZrk4=" )
     (d "uplay" "sha256-DuZ+uXne3shDHq5HSqHD8++0QvsPDqR/6Xywp7g4oxQ=" )
-    (d "xboxlive" "sha256-qnyNE/fZcDtc7QlKFA5+cLBJf4jD/6sn4pKoDCKXUFA=" )
+    (d "xboxlive" "sha256-s4Wuv41KlS6qcULp8A4HzcNuCIZwmyaUmJ3k+9VFoNg=" )
     (d "warframe" "sha256-S2VpJsQlm1cclv/4dThazI9NTLsnnf9p1M87viIdKNI=" )
   ];
 in {
