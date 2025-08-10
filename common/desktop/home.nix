@@ -61,7 +61,7 @@ with config; {
     v4l-utils
     gh2md
     gist
-    fusee-launcher
+    #fusee-launcher upstream deleted TODO find alternative
     pass
 
     seahorse # to manage gnome keyring for apps that want it
