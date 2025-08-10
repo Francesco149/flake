@@ -82,6 +82,7 @@
           "nvidia-x11"
           "nvidia-settings"
           "segger-jlink"
+          "parsec-bin"
         ];
 
         config.segger-jlink.acceptLicense = true;
