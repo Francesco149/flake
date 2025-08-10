@@ -217,6 +217,11 @@ in
           path = "/gigavault";
         };
 
+        footage = sharecfg // {
+          path = "/gigavault/footage";
+          "guest ok" = "yes";
+        };
+
         public = sharecfg // {
           path = "/mnt/Shares/Public";
           "guest ok" = "yes";
