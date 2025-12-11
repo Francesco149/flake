@@ -209,12 +209,12 @@ in
         };
       in
       {
-        #memevault = sharecfg // {
-        #  path = "/memevault";
-        #};
+        private = sharecfg // {
+          path = "/gigavault/private";
+        };
 
-        gigavault = sharecfg // {
-          path = "/gigavault";
+        uwu = sharecfg // {
+          path = "/gigavault/uwu";
         };
 
         footage = sharecfg // {
@@ -223,12 +223,8 @@ in
         };
 
         public = sharecfg // {
-          path = "/mnt/Shares/Public";
+          path = "/gigavault/public";
           "guest ok" = "yes";
-        };
-
-        photos = sharecfg // {
-          path = "/mnt/Shares/Photos";
         };
 
         global = {
