@@ -20,6 +20,8 @@ nixos-rebuild switch --use-remote-sudo --flake .#dummy
 scp machines/dummy/hardware-configuration.nix mainmachine:flake/machines/mymachine/
 ```
 
+check `/etc/nixos/configuration.nix` for the luks uuid line if you're using encryption and add it to configuration.nix . ** important ** or the system won't boot. to recover you can boot an earlier gen
+
 from the main machine, edit `flake.nix` and `machines/mymachine/configuration.nix`
 
 check the bottom of `/etc/nixos/configuration.nix` on the target machines and copy the stateVersion

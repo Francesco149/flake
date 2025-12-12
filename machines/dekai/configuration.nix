@@ -21,6 +21,7 @@ in
       ../../common/gnome/configuration.nix
     ];
 
+  boot.initrd.luks.devices."luks-18ebd863-bc36-473e-a37b-1574c9357791".device = "/dev/disk/by-uuid/18ebd863-bc36-473e-a37b-1574c9357791";
   services.nginx.package = pkgs.nginxMainline.override { withSlice = true; };
   services.nginx.defaultListenAddresses = [ machine.ip ];
 
