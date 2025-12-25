@@ -53,10 +53,12 @@
         path = "/home/${user}/.gist";
       };
 
-      chatterino-settings = mkUserSecret {
-        file = ../../secrets/chatterino/settings.json.age;
-        path = "/home/${user}/.local/share/chatterino/Settings/settings.json";
-      };
+      # TODO: make it so chatterino can refresh its token every month.
+      #       the file gets replaced at every boot if i enable this.
+      #chatterino-settings = mkUserSecret {
+      #  file = ../../secrets/chatterino/settings.json.age;
+      #  path = "/home/${user}/.local/share/chatterino/Settings/settings.json";
+      #};
 
       protonvpn-creds = mkUserSecret {
         file = ../../secrets/protonvpn/creds.txt.age;
