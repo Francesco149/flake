@@ -248,16 +248,45 @@ in
     enable = true;
     hostName = machine.domains.cloud;
     config.adminpassFile = config.age.secrets.nextcloud-pass.path;
-    package = pkgs.nextcloud31;
+    package = pkgs.nextcloud32;
     https = true;
+    configureRedis = true;
 
     extraApps = {
       inherit (config.services.nextcloud.package.packages.apps) richdocuments;
     };
     extraAppsEnable = true;
 
-    config.dbtype = "sqlite"; # TODO: migrate to pg
+    config = {
+      dbtype = "sqlite";
+      adminuser = "admin";
+
+      # TODO: get this working with postgres
+      #dbtype = "pgsql";
+      #dbname = "nextcloud";
+      #dbuser = "nextcloud";
+      #dbhost = "/run/postgresql";
+    };
   };
+
+  services.postgresql = {
+    enable = false;
+    ensureDatabases = [ "nextcloud" ];
+    ensureUsers = [
+      {
+        name = "nextcloud";
+        ensureDBOwnership = true;
+      }
+    ];
+  };
+
+  # TODO: get this working with postgres
+  #systemd = {
+  #  services."nextcloud-setup" = {
+  #    requires = [ "postgresql.service" ];
+  #    after = [ "postgresql.service" ];
+  #  };
+  #};
 
   services.nginx.virtualHosts.${config.services.nextcloud.hostName} = {
     forceSSL = true;
