@@ -361,7 +361,9 @@ in
 
   services.lancache = {
     enable = true;
-    cacheLocation = "/mnt/storage/lancache";
+    # TODO: at the moment I have to manually create and chown these dirs.
+    #       how to automatically do this on a fresh config?
+    cacheLocation = "/gigavault/data/lancache";
     logPrefix = "/var/log/nginx/lancache";
     listenAddress = consts.lancacheIp;
     upstreamDns = [
