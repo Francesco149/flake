@@ -22,6 +22,10 @@ scp machines/dummy/hardware-configuration.nix mainmachine:flake/machines/mymachi
 
 check `/etc/nixos/configuration.nix` for the luks uuid line if you're using encryption and add it to configuration.nix . ** important ** or the system won't boot. to recover you can boot an earlier gen
 
+if you have any shares, ssh into the machine and set a samba password `sudo smbpasswd -a loli`
+
+if you have any zfs pools that you want to auto unlock, set up the password/key files.
+
 from the main machine, edit `flake.nix` and `machines/mymachine/configuration.nix`
 
 check the bottom of `/etc/nixos/configuration.nix` on the target machines and copy the stateVersion
