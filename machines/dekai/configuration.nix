@@ -29,6 +29,10 @@ in
   services.nginx.package = pkgs.nginxMainline.override { withSlice = true; };
   services.nginx.defaultListenAddresses = [ machine.ip ];
 
+  # TODO: move this to a common config
+  security.acme.acceptTerms = true;
+  security.acme.defaults.email = "francesco149@gmail.com";
+
   networking = {
     hostName = "dekai";
     hostId = "09952a93";
@@ -267,6 +271,9 @@ in
       #dbuser = "nextcloud";
       #dbhost = "/run/postgresql";
     };
+
+    settings.allow_local_remote_servers = true;
+    settings.wopi.allow_local_remote_servers = true;
   };
 
   services.postgresql = {
@@ -292,71 +299,84 @@ in
     forceSSL = true;
     sslCertificate = config.age.secrets.nginx-selfsigned-crt.path;
     sslCertificateKey = config.age.secrets.nginx-selfsigned-key.path;
+    #enableACME = true;
+    # TODO: get this to work with auto generated self signed with enableACME
   };
 
-  # https://discourse.nixos.org/t/enabling-nextcloud-office/31349/3
-  virtualisation.oci-containers.containers.collabora = {
-    image = "docker.io/collabora/code:latest";
-    ports = [ "${collaboraSPort}:${collaboraSPort}/tcp" ];
-    environment = {
-      dictionaries = "en_US";
-      extra_params = "--o:ssl.enable=false --o:ssl.termination=true";
+  services.collabora-online = {
+    enable = true;
+    port = collaboraPort;
+    settings = {
+      ssl = {
+        enable = false;
+        termination = true;
+      };
+
+      net = {
+        listen = "loopback";
+        post_allow.host = ["::1"];
+      };
+
+      storage.wopi = {
+        "@allow" = true;
+        host = [ machine.domains.cloud ];
+      };
+
       server_name = machine.domains.office;
-      aliasgroup1 = "https://${machine.domains.cloud}:443";
     };
-    extraOptions = [
-      "--pull=newer"
-    ];
   };
 
-  services.nginx.virtualHosts.${config.virtualisation.oci-containers.containers.collabora.environment.server_name} = {
-    forceSSL = true;
-    sslCertificate = config.age.secrets.nginx-selfsigned-crt.path;
-    sslCertificateKey = config.age.secrets.nginx-selfsigned-key.path;
+  services.nginx = {
+    enable = true;
 
-    extraConfig = ''
-       # static files
-       location ^~ /browser {
-         proxy_pass http://127.0.0.1:${collaboraSPort};
-         proxy_set_header Host $host;
-       }
+    recommendedProxySettings = true;
+    recommendedTlsSettings = true;
 
-       # WOPI discovery URL
-       location ^~ /hosting/discovery {
-         proxy_pass http://127.0.0.1:${collaboraSPort};
-         proxy_set_header Host $host;
-       }
+    virtualHosts."${machine.domains.office}" =  {
+      forceSSL = true;
+      sslCertificate = config.age.secrets.nginx-selfsigned-crt.path;
+      sslCertificateKey = config.age.secrets.nginx-selfsigned-key.path;
+      #enableACME = true;
+      # TODO: get this to work with auto generated self signed with enableACME
+      locations."/" = {
+        proxyPass = "http://[::1]:${toString config.services.collabora-online.port}";
+        proxyWebsockets = true;
+      };
+    };
+  };
 
-       # Capabilities
-       location ^~ /hosting/capabilities {
-         proxy_pass http://127.0.0.1:${collaboraSPort};
-         proxy_set_header Host $host;
-      }
+  # collabora config mostly lifted from: https://diogotc.com/blog/collabora-nextcloud-nixos/
 
-      # main websocket
-      location ~ ^/cool/(.*)/ws$ {
-        proxy_pass http://127.0.0.1:${collaboraSPort};
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
-        proxy_set_header Host $host;
-        proxy_read_timeout 36000s;
-      }
+  networking.hosts =
+  let
+    domains = [ machine.domains.cloud machine.domains.office ];
+  in {
+    "127.0.0.1" = domains;
+    "::1" = domains;
+  };
 
-      # download, presentation and image upload
-      location ~ ^/(c|l)ool {
-        proxy_pass http://127.0.0.1:${collaboraSPort};
-        proxy_set_header Host $host;
-      }
+  systemd.services.nextcloud-config-collabora = let
+    inherit (config.services.nextcloud) occ;
 
-      # Admin Console websocket
-      location ^~ /cool/adminws {
-        proxy_pass http://127.0.0.1:${collaboraSPort};
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "Upgrade";
-        proxy_set_header Host $host;
-        proxy_read_timeout 36000s;
-      }
+    wopi_url = "http://[::1]:${toString config.services.collabora-online.port}";
+    public_wopi_url = machine.domains.office;
+    wopi_allowlist = lib.concatStringsSep "," [
+      "127.0.0.1"
+      "::1"
+    ];
+  in {
+    wantedBy = ["multi-user.target"];
+    after = ["nextcloud-setup.service" "coolwsd.service"];
+    requires = ["coolwsd.service"];
+    script = ''
+      ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_url --value ${lib.escapeShellArg wopi_url}
+      ${occ}/bin/nextcloud-occ config:app:set richdocuments public_wopi_url --value ${lib.escapeShellArg public_wopi_url}
+      ${occ}/bin/nextcloud-occ config:app:set richdocuments wopi_allowlist --value ${lib.escapeShellArg wopi_allowlist}
+      ${occ}/bin/nextcloud-occ richdocuments:setup
     '';
+    serviceConfig = {
+      Type = "oneshot";
+    };
   };
 
   services.lancache = {
